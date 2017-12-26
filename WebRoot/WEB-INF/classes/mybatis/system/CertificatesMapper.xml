@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CertificatesMapper">
+
+      <select id="listPage" parameterType="page" resultType="pd"> 
+		SELECT C.*,U.REAL_NAME AS REAL_NAME, D.NAME AS BIANMA_NAME, N.COMPANY_NAME COMPANY_NAME,
+		case C.STATUS when '01' then '未审核' when '02' then '审核未通过' else  '审核通过' end  as  STATUS_NAME 
+		FROM certificates C LEFT JOIN app_user U ON C.USER_ID=U.ID LEFT JOIN SYS_DICTIONARIES  D ON C.CERTIFICATE_TYPE=D.BIANMA
+		LEFT JOIN COMPANY N ON C.COMPANY_ID=N.ID WHERE  1=1 and C.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.USER_ID !=null and pd.USER_ID !='' ">
+		    and USER_ID LIKE CONCAT(CONCAT('%', #{pd.USER_ID}),'%')
+		</if>
+		<if test="pd.CERTIFICATE_NAME!=null and pd.CERTIFICATE_NAME!=''">	
+			and D.NAME LIKE CONCAT(CONCAT('%', #{pd.CERTIFICATE_NAME}),'%')
+		</if> 
+		<if test="pd.CERTIFICATE_TYPE !=null">	
+			and CERTIFICATE_TYPE=#{pd.CERTIFICATE_TYPE}
+		</if> 
+		<if test="pd.STATUS !=null">	
+			and STATUS=#{pd.STATUS}
+		</if>
+		<if test="pd.IMG_PATH !=null">	
+			and IMG_PATH=#{pd.IMG_PATH}
+		</if>
+		<if test="pd.COMPANY_ID !=null">	
+			and COMPANY_ID=#{pd.COMPANY_ID}
+		</if>
+		<if test="pd.DATE!=null">	
+			and DATE=#{pd.DATE}
+		</if>  
+	</select>  
+	
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM certificates C 
+		LEFT JOIN app_user U ON C.USER_ID=U.ID LEFT JOIN SYS_DICTIONARIES  D ON C.CERTIFICATE_TYPE=D.BIANMA
+        LEFT JOIN COMPANY N ON C.COMPANY_ID=N.ID  WHERE  1=1 and C.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.USER_ID !=null and pd.USER_ID !='' ">
+		    and USER_ID LIKE CONCAT(CONCAT('%', #{pd.USER_ID}),'%')
+		</if>
+		<if test="pd.CERTIFICATE_NAME!=null and pd.CERTIFICATE_NAME!=''">	
+			and D.NAME LIKE CONCAT(CONCAT('%', #{pd.CERTIFICATE_NAME}),'%')
+		</if> 
+		<if test="pd.CERTIFICATE_TYPE !=null">	
+			and CERTIFICATE_TYPE=#{pd.CERTIFICATE_TYPE}
+		</if> 
+		<if test="pd.STATUS !=null">	
+			and STATUS=#{pd.STATUS}
+		</if>
+		<if test="pd.IMG_PATH !=null">	
+			and IMG_PATH=#{pd.IMG_PATH}
+		</if>
+		<if test="pd.COMPANY_ID !=null">	
+			and COMPANY_ID=#{pd.COMPANY_ID}
+		</if>
+		<if test="pd.DATE!=null">	
+			and DATE=#{pd.DATE}
+		</if>  
+	</select> 
+
+	<!-- 查询所有证件信息 -->
+	<select id="querycerti" resultType="pd">
+	SELECT * FROM CERTIFICATES where ISDEL=1
+	</select>
+	<!-- 添加 -->
+	<insert id="addcertifi" parameterType="pd">
+		INSERT INTO CERTIFICATES(ID,USER_ID,CERTIFICATE_NAME,CERTIFICATE_TYPE,STATUS,IMG_PATH,DATE,COMPANY_ID)
+		values(#{ID},#{USER_ID},#{CERTIFICATE_NAME},#{CERTIFICATE_TYPE},#{STATUS},#{IMG_PATH},#{DATE},#{COMPANY_ID})  
+    </insert>
+    <!-- 修改 -->
+	<update id="upcertifi" parameterType="pd" flushCache="false">
+		UPDATE  CERTIFICATES SET  
+		<if test="CERTIFICATE_NAME!=null">	
+			CERTIFICATE_NAME=#{CERTIFICATE_NAME},	
+		</if> 
+		<if test="CERTIFICATE_TYPE !=null">	
+			CERTIFICATE_TYPE=#{CERTIFICATE_TYPE},	
+		</if> 
+		<if test="STATUS !=null">	
+				STATUS=#{STATUS},	
+		</if>
+		<if test="IMG_PATH !=null">	
+			IMG_PATH=#{IMG_PATH},	
+		</if>
+		<if test="COMPANY_ID !=null">	
+			COMPANY_ID=#{COMPANY_ID},	
+		</if>
+		<if test="NOPASSREASON!=null">	
+			NOPASSREASON=#{NOPASSREASON},	
+		</if>  
+		<if test="DATE!=null">	
+			DATE=#{DATE}	
+		</if>  
+			WHERE ID = #{ID}
+	</update>
+	<!-- 通过id获取所有数据 -->
+	<select id="querycertifiid" parameterType="pd" resultType="pd" useCache="false">
+	    SELECT C.*,A.REAL_NAME FROM  CERTIFICATES C LEFT JOIN APP_USER A ON C.USER_ID=A.ID WHERE C.ID = #{ID}
+	</select>
+	 <!-- 批量删除 -->
+    <update id="delcert">
+    	<!-- DELETE FROM  CERTIFICATES WHERE ID IN  -->
+    	update  CERTIFICATES set ISDEL=2 WHERE ID IN 
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </update>
+     <!-- 删除 -->
+     <update id="delcertbyid" parameterType="pd">
+    update  CERTIFICATES set ISDEL=2 WHERE ID=#{ID}
+    </update>
+    <!-- 根据证件名称进行查找 -->
+	<select id="querycertname" parameterType="pd" resultType="pd" useCache="false">
+	SELECT * FROM CERTIFICATES WHERE CERTIFICATE_NAME=#{CERTIFICATE_NAME}
+	</select> 
+	 <!-- 根据证件名称进行查找 -->
+	<select id="queryMsgByStatus"  resultType="pd">
+		select count(*) cert_counts from  certificates  where status='01'
+	</select> 
+	
+	<!-- 获取Excel导出数据 -->
+	<select id="doexlelist" parameterType="pd" resultType="pd">
+	 	SELECT C.*,U.REAL_NAME AS REAL_NAME, D.NAME AS BIANMA_NAME, N.COMPANY_NAME COMPANY_NAME,
+		case C.STATUS when '01' then '未审核' when '02' then '审核未通过' else  '审核通过' end  as  STATUS_NAME 
+		FROM certificates C LEFT JOIN app_user U ON C.USER_ID=U.ID LEFT JOIN SYS_DICTIONARIES  D ON C.CERTIFICATE_TYPE=D.BIANMA
+		LEFT JOIN COMPANY N ON C.COMPANY_ID=N.ID WHERE  1=1 and C.ISDEL=1
+	</select>
+	
+	<update id="updatedelhd" parameterType="pd" flushCache="false">
+		update  certificates set ISSYSLOOK='1'
+	</update>
+</mapper>

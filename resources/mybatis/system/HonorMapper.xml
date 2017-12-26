@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HonorMapper">
+	
+		<!-- 查询 -->
+		<select id="listPageByParam" parameterType="page" resultType="pd">
+			 SELECT H.*,case H.SEX when '1' then '男' when '2' then '女'end AS SEX_NAME FROM HONOR H LEFT JOIN ACTIVITY_HONOR AH ON H.ID=AH.HONOR_ID 
+			 WHERE 1=1 
+			<if test="pd.ID !=null">
+				and H.ID = #{pd.ID}
+			</if>
+			<if test="pd.ACTIVITY_ID!=null">
+				and  AH.ACTIVITY_ID= #{pd.ACTIVITY_ID}
+			</if> 
+			<if test="pd.NAME !=null">
+			    and H.NAME  LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%') 
+			</if>
+			<if test="pd.COMPANY_NAME !=null">	
+				and H.COMPANY_NAME = #{pd.COMPANY_NAME}
+			</if>
+			<if test="pd.POSITION !=null">	
+				and H.POSITION  = #{pd.POSITION}
+			</if>
+			<if test="pd.SEX !=null">	
+				and H.SEX = #{pd.SEX}
+			</if>
+			<if test="pd.AGE !=null">	
+				and H.AGE  = #{pd.AGE}
+			</if>  
+			<if test="pd.IMG_PATH !=null">	
+				and H.IMG_PATH = #{pd.IMG_PATH}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and H.CREATE_BY = #{pd.CREATE_BY}
+			</if> 
+			<if test="pd.CREATE_DATE !=null">	
+				and H.CREATE_DATE = #{pd.CREATE_DATE}
+			</if>  
+		</select> 
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		 SELECT count(*) counts FROM HONOR H LEFT JOIN ACTIVITY_HONOR AH ON H.ID=AH.HONOR_ID 
+			 WHERE 1=1 
+			<if test="pd.ID !=null">
+				and H.ID = #{pd.ID}
+			</if>
+			<if test="pd.ACTIVITY_ID!=null">
+				and  AH.ACTIVITY_ID= #{pd.ACTIVITY_ID}
+			</if> 
+			<if test="pd.NAME !=null">
+			    and H.NAME  LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%') 
+			</if>
+			<if test="pd.COMPANY_NAME !=null">	
+				and H.COMPANY_NAME = #{pd.COMPANY_NAME}
+			</if>
+			<if test="pd.POSITION !=null">	
+				and H.POSITION  = #{pd.POSITION}
+			</if>
+			<if test="pd.SEX !=null">	
+				and H.SEX = #{pd.SEX}
+			</if>
+			<if test="pd.AGE !=null">	
+				and H.AGE  = #{pd.AGE}
+			</if>  
+			<if test="pd.IMG_PATH !=null">	
+				and H.IMG_PATH = #{pd.IMG_PATH}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and H.CREATE_BY = #{pd.CREATE_BY}
+			</if> 
+			<if test="pd.CREATE_DATE !=null">	
+				and H.CREATE_DATE = #{pd.CREATE_DATE}
+			</if>  
+		</select> 
+		
+	<select id="queryById" resultType="pd">
+	   SELECT * FROM HONOR WHERE ID=#{ID}
+	</select>
+	 <!-- 添加用户信息 -->
+	<insert id="save" parameterType="pd" flushCache="false">
+	INSERT INTO  HONOR (
+			ID,
+			NAME,
+			COMPANY_NAME,
+			POSITION,
+			SEX,
+			AGE,
+			IMG_PATH,
+			CREATE_BY,
+			CREATE_DATE 
+		) VALUES (
+			#{ID},
+			#{NAME},
+			#{COMPANY_NAME},
+			#{POSITION},
+			#{SEX},
+			#{AGE},
+			#{IMG_PATH}, 
+			#{CREATE_BY},
+			#{CREATE_DATE} 
+		)
+	</insert> 
+	 
+     <!-- 删除 -->
+    <delete id="delete">
+    	DELETE FROM HONOR WHERE  ID=#{ID}
+    </delete>
+     
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		UPDATE HONOR SET
+		<if test="NAME !=null and NAME !='' ">
+			NAME=#{NAME},	
+		</if>
+		<if test="COMPANY_NAME !=null and COMPANY_NAME !='' ">
+			COMPANY_NAME=#{COMPANY_NAME},	
+		</if>
+		<if test="POSITION !=null and POSITION !='' ">
+			POSITION=#{POSITION},	
+		</if>  
+		<if test="SEX !=null and SEX !='' ">
+			SEX=#{SEX},	
+		</if>
+		<if test="AGE !=null and AGE !='' ">
+			AGE=#{AGE},	
+		</if>
+		<if test="IMG_PATH !=null and IMG_PATH !='' ">
+			IMG_PATH=#{IMG_PATH},
+		</if> 
+		<if test="CREATE_DATE !=null and CREATE_DATE !='' ">
+			CREATE_DATE=#{CREATE_DATE},
+		</if>
+		<if test="CREATE_BY !=null and CREATE_BY !='' ">
+			CREATE_BY=#{CREATE_BY},
+		</if> 
+		ID = #{ID}
+			WHERE ID = #{ID}
+	</update> 
+	
+</mapper>

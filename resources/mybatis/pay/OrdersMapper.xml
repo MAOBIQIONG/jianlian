@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OrdersMapper"> 
+	
+	<select id="listPage" parameterType="page" resultType="pd"> 
+		 SELECT O.* ,CASE O.STATUS WHEN '01' THEN '未支付' WHEN '02' THEN '支付失败' WHEN '03' THEN '支付成功' WHEN '04' THEN '退款' WHEN '05' THEN '已作废'
+		 END AS STATUS_NAME ,U.REAL_NAME ,U.PHONE,U.CARD_NO,C.NAME AS CLAN_NAME,G.NAME AS CATE_NAME,
+		 CASE O.PAY_TYPE WHEN 'ALI_APP' THEN '支付宝' WHEN 'WX_APP' THEN '微信' WHEN 'UN_WEB' THEN '银联' WHEN 'CTC' THEN '公对公' WHEN 'MTM' THEN '现金' END AS PAY_NAME,
+		 CASE O.TYPE WHEN '01' THEN '会费' WHEN '02' THEN '活动费' WHEN '03' THEN '入会续费' END AS OTYPE
+		 from ORDERS O 
+		 LEFT JOIN APP_USER U ON O.USER_ID =U.ID LEFT JOIN CLAN C ON U.CLAN_ID=C.ID LEFT JOIN COMPANY M ON U.COMPANY_ID=M.ID 
+		 LEFT JOIN CATEGORY G ON G.ID=M.CATEGORY_ID LEFT JOIN PAY P ON O.ID=P.ORDER_ID WHERE  1=1 and O.ISDEL=1
+		<if test="pd.ID !=null and pd.ID !=''">
+			and O.ID = #{pd.ID}
+		</if> 
+		<if test="pd.USER_ID !=null">
+		     AND O.USER_ID= #{pd.USER_ID}
+		</if>
+		<if test="pd.PRICE !=null">
+		    AND O.PRICE= #{pd.PRICE}
+		</if>
+		<if test="pd.STATUS !=null and pd.STATUS !=''">
+		    AND O.STATUS= #{pd.STATUS}
+		</if>
+		<if test="pd.EVENT !=null">
+		    AND O.EVENT= #{pd.EVENT}
+		</if> 
+		<if test="pd.DATE !=null">
+		   AND O.DATE=#{pd.DATE}
+		</if>
+		<if test="pd.PAY_TYPE !=null and pd.PAY_TYPE!=''">
+		   AND P.PAY_TYPE=#{pd.PAY_TYPE}
+		</if> 
+		<if test="pd.OTYPE !=null and pd.OTYPE!=''">
+		   AND O.TYPE=#{pd.OTYPE}
+		</if>  
+	</select>  
+	
+	<select id="findCount" parameterType="page" resultType="pd">  
+		 SELECT COUNT(*) counts from ORDERS O  LEFT JOIN APP_USER U ON O.USER_ID =U.ID LEFT JOIN PAY P ON O.ID=P.ORDER_ID WHERE  1=1 and O.ISDEL=1
+		<if test="pd.ID !=null and pd.ID !=''">
+			and O.ID = #{pd.ID}
+		</if> 
+		<if test="pd.USER_ID !=null">
+		     AND O.USER_ID= #{pd.USER_ID}
+		</if>
+		<if test="pd.PRICE !=null">
+		    AND O.PRICE= #{pd.PRICE}
+		</if>
+		<if test="pd.STATUS !=null and pd.STATUS !=''">
+		    AND O.STATUS= #{pd.STATUS}
+		</if>
+		<if test="pd.EVENT !=null">
+		    AND O.EVENT= #{pd.EVENT}
+		</if> 
+		<if test="pd.DATE !=null">
+		   AND O.DATE=#{pd.DATE}
+		</if>
+		<if test="pd.PAY_TYPE !=null and pd.PAY_TYPE!=''">
+		   AND P.PAY_TYPE=#{pd.PAY_TYPE}
+		</if> 
+		<if test="pd.OTYPE !=null and pd.OTYPE!=''">
+		   AND O.TYPE=#{pd.OTYPE}
+		</if>  
+	</select>   
+	
+	<!-- 列表(全部) -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		SELECT * FROM ORDERS WHERE ISDEL=1 AND ID=#{ID};
+	</select> 
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		SELECT * FROM ORDERS WHERE ISDEL=1;
+	</select> 
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		INSERT INTO ORDERS(
+			ID,USER_ID,PRICE,STATUS,EVENT,PAY_TYPE,DATE
+		) values (
+			#{ID},#{USER_ID},#{PRICE},#{STATUS},#{EVENT},#{PAY_TYPE},#{DATE}
+		)
+	</insert>
+	 
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		UPDATE ORDERS SET 
+		<if test="USER_ID !=null">
+		     USER_ID= #{USER_ID},
+		</if>
+		<if test="PRICE !=null">
+		     PRICE= #{PRICE},
+		</if>
+		<if test="STATUS !=null">
+		     STATUS= #{STATUS},
+		</if>
+		<if test="EVENT !=null">
+		     EVENT= #{EVENT},
+		</if> 
+		<if test="PAY_TYPE !=null">
+		     PAY_TYPE= #{PAY_TYPE},
+		</if>  
+		<if test="DATE !=null">
+		    DATE=#{DATE}
+		</if> 
+		WHERE ID = #{ID}
+	</update> 
+	 
+	<!-- 删除用户 -->
+	<update id="delete" parameterType="pd">
+		update ORDERS set ISDEL=2 WHERE ID = #{ID} 
+	</update>
+	
+	<!-- 列表(全部) -->
+	<select id="queryByOid" parameterType="pd" resultType="pd">
+		SELECT I.*,O.PRICE,O.EVENT FROM JL_INVOICE I LEFT JOIN ORDERS O ON I.ORDER_ID=O.ID WHERE I.ORDER_ID=#{ID}
+	</select> 
+	
+	<!-- 获取Excel导出数据 -->
+	<select id="doexlelist" parameterType="pd" resultType="pd">
+	 	 SELECT O.* ,CASE O.STATUS WHEN '01' THEN '未支付' WHEN '02' THEN '支付失败' WHEN '03' THEN '支付成功' WHEN '04' THEN '退款' WHEN '05' THEN '已作废'
+		 END AS STATUS_NAME ,U.REAL_NAME ,U.PHONE,U.CARD_NO,C.NAME AS CLAN_NAME,G.NAME AS CATE_NAME,
+		 CASE O.PAY_TYPE WHEN 'ALI_APP' THEN '支付宝' WHEN 'WX_APP' THEN '微信' WHEN 'UN_WEB' THEN '银联' WHEN 'CTC' THEN '公对公' WHEN 'MTM' THEN '现金' END AS PAY_NAME,
+		 CASE O.TYPE WHEN '01' THEN '会费' WHEN '02' THEN '活动费' WHEN '03' THEN '入会续费' END AS OTYPE
+		 from ORDERS O 
+		 LEFT JOIN APP_USER U ON O.USER_ID =U.ID LEFT JOIN CLAN C ON U.CLAN_ID=C.ID LEFT JOIN COMPANY M ON U.COMPANY_ID=M.ID 
+		 LEFT JOIN CATEGORY G ON G.ID=M.CATEGORY_ID LEFT JOIN PAY P ON O.ID=P.ORDER_ID WHERE  1=1 and O.ISDEL=1
+	</select>
+</mapper>

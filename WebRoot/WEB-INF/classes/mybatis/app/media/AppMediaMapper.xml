@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppMediaMapper">
+
+   <select id="queryPageByParam" parameterType="page" resultType="pd">
+		   SELECT TITLE,IMGS,RESOURCE,COMMENT_COUNT,TYPE_ID  FROM jl_app_media	
+		   WHERE 1=1 AND ISDEL=1   
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.TITLE !=null">
+		    and TITLE = #{pd.TITLE}
+		</if>
+		<if test="pd.USER_ID !=null">	
+			and USER_ID = #{pd.USER_ID}
+		</if>
+		<if test="pd.PUBLISH_DATE !=null">	
+			and PUBLISH_DATE =#{pd.PUBLISH_DATE}
+		</if>
+		<if test="pd.IMGS !=null">	
+			and IMGS =#{pd.IMGS}
+		</if>
+		<if test="pd.TYPE_ID !=null">	
+			and TYPE_ID=#{pd.TYPE_ID}
+		</if>
+		<if test="pd.CONETENT !=null">	
+			and CONETENT =#{pd.CONETENT}
+		</if>
+		<if test="pd.LINK_URL !=null">	
+			and LINK_URL =#{pd.LINK_URL}
+		</if>
+		<if test="pd.RESOURCE !=null">	
+			and RESOURCE = #{pd.RESOURCE}
+		</if>
+		<if test="pd.COMMENT_COUNT !=null">	
+			and COMMENT_COUNT =#{pd.COMMENT_COUNT}
+		</if>
+		<if test="pd.COLLECT_COUNT !=null">	
+			and COLLECT_COUNT =#{pd.COLLECT_COUNT}
+		</if>
+		<if test="pd.SHARE_COUNT !=null">	
+			and SHARE_COUNT=#{pd.SHARE_COUNT}
+		</if>
+		<if test="pd.COLUMN_ID !=null">	
+			and COLUMN_ID =#{pd.COLUMN_ID}
+		</if> 
+		<if test="pd.IS_RECOMMEND !=null">	
+			and IS_RECOMMEND =#{pd.IS_RECOMMEND}
+		</if>
+		<if test="pd.IS_TOP !=null">	
+			and IS_TOP=#{pd.IS_TOP}
+		</if> 
+         ORDER by PUBLISH_DATE desc  
+		<if test="pd.start!=null and pd.end!=null">
+			limit #{pd.start},#{pd.end}
+		</if>
+	</select>  
+	
+	
+	<select id="queryPageByParamzong" parameterType="pd" resultType="pd">
+		   SELECT COUNT(*) as zong  FROM jl_app_media	
+		   WHERE 1=1 AND ISDEL=1   
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.TITLE !=null">
+		    and TITLE = #{pd.TITLE}
+		</if>
+		<if test="pd.USER_ID !=null">	
+			and USER_ID = #{pd.USER_ID}
+		</if>
+		<if test="pd.PUBLISH_DATE !=null">	
+			and PUBLISH_DATE =#{pd.PUBLISH_DATE}
+		</if>
+		<if test="pd.IMGS !=null">	
+			and IMGS =#{pd.IMGS}
+		</if>
+		<if test="pd.TYPE_ID !=null">	
+			and TYPE_ID=#{pd.TYPE_ID}
+		</if>
+		<if test="pd.CONETENT !=null">	
+			and CONETENT =#{pd.CONETENT}
+		</if>
+		<if test="pd.LINK_URL !=null">	
+			and LINK_URL =#{pd.LINK_URL}
+		</if>
+		<if test="pd.RESOURCE !=null">	
+			and RESOURCE = #{pd.RESOURCE}
+		</if>
+		<if test="pd.COMMENT_COUNT !=null">	
+			and COMMENT_COUNT =#{pd.COMMENT_COUNT}
+		</if>
+		<if test="pd.COLLECT_COUNT !=null">	
+			and COLLECT_COUNT =#{pd.COLLECT_COUNT}
+		</if>
+		<if test="pd.SHARE_COUNT !=null">	
+			and SHARE_COUNT=#{pd.SHARE_COUNT}
+		</if>
+		<if test="pd.COLUMN_ID !=null">	
+			and COLUMN_ID =#{pd.COLUMN_ID}
+		</if> 
+		<if test="pd.IS_RECOMMEND !=null">	
+			and IS_RECOMMEND =#{pd.IS_RECOMMEND}
+		</if>
+		<if test="pd.IS_TOP !=null">	
+			and IS_TOP=#{pd.IS_TOP}
+		</if> 
+         ORDER by PUBLISH_DATE desc  
+		<if test="pd.start!=null and pd.end!=null">
+			limit #{pd.start},#{pd.end}
+		</if>
+	</select>  
+	<!-- 媒体分类获取 -->
+	<select id="queryByfenlei" resultType="pd">
+		SELECT * FROM media_title_category WHERE LOCATION_NO_ID LIKE '02_%' AND ISDEL=1 AND IS_SHOW=1 ORDER BY LOCATION_NO_ID
+	</select>
+	
+	<!-- 推荐置顶媒体获取 -->
+	<select id="queryShouYeTopNews" parameterType="pd" resultType="pd"> 
+		SELECT JAM.*,MTC.*,case JAM.TYPE_ID when '1' then '视频' when '2' then '文字'end AS IS_TU  
+		FROM jl_app_media JAM LEFT JOIN media_title_category MTC ON JAM.COLUMN_ID=MTC.ID WHERE LOCATION_NO_ID ='02_00' AND JAM.IS_TOP='1' AND JAM.ISDEL=1
+		ORDER BY JAM.PUBLISH_DATE DESC  
+		<if test="pageSize!=null and start!=null">
+			limit #{start},#{pageSize}
+		</if>  
+	</select>
+	
+	<!-- 媒体首页 -->
+	<select id="queryByshouye" parameterType="pd" resultType="pd">
+		<!-- SELECT JAM.*,MTC.*,case JAM.TYPE_ID when '1' then '视频' when '2' then '文字'end AS IS_TU   FROM jl_app_media JAM LEFT JOIN media_title_category MTC ON JAM.COLUMN_ID=MTC.ID WHERE MTC.TITLE_CATEGORY_NAME ='推荐' -->
+		<!--  SELECT JAM.*,case JAM.TYPE_ID when '1' then '视频' when '2' then '文字'end AS IS_TU   FROM jl_app_media JAM -->
+		SELECT JAM.*,MTC.*,case JAM.TYPE_ID when '1' then '视频' when '2' then '文字'end AS IS_TU  
+		FROM jl_app_media JAM LEFT JOIN media_title_category MTC ON JAM.COLUMN_ID=MTC.ID WHERE LOCATION_NO_ID ='02_00' AND IS_TOP='2' AND JAM.ISDEL=1
+		ORDER BY JAM.PUBLISH_DATE DESC  
+		<if test="pageSize!=null and start!=null">
+			limit #{start},#{pageSize}
+		</if>    
+	</select>
+	<!-- 媒体zong -->
+	<select id="queryByshouyezong" parameterType="pd" resultType="pd">
+		SELECT count(*) AS countzong 
+		FROM jl_app_media JAM LEFT JOIN media_title_category MTC ON JAM.COLUMN_ID=MTC.ID WHERE LOCATION_NO_ID ='02_00' AND IS_TOP='2' AND JAM.ISDEL=1
+		ORDER BY JAM.PUBLISH_DATE DESC  
+	</select>
+	
+	
+	<!-- 推荐置顶媒体获取 -->
+	<select id="queryTopNews" parameterType="pd" resultType="pd"> 
+		 SELECT JAM.*,MTC.*,case JAM.TYPE_ID when '1' then '视频' when '2' then '文字'end AS IS_TU   
+         FROM jl_app_media JAM LEFT JOIN media_title_category MTC ON JAM.COLUMN_ID=MTC.ID WHERE JAM.IS_TOP='1' AND JAM.ISDEL=1
+		 <if test="COLUMN_ID != null and COLUMN_ID !=''">
+		    and  JAM.COLUMN_ID =#{COLUMN_ID}
+		</if>
+		 ORDER BY JAM.PUBLISH_DATE DESC 
+		<if test="pageSize!=null and start!=null">
+			limit #{start},#{pageSize}
+		</if>  
+	</select>
+	
+	<!-- 媒体首页新闻 -->
+	<select id="queryByxinwen" parameterType="pd" resultType="pd">
+		<!-- SELECT TITLE,IMGS,RESOURCE,COMMENT_COUNT,TYPE_ID  FROM jl_app_media WHERE COLUMN_ID =#{COLUMN_ID} -->
+		<!-- SELECT JAM.*,case JAM.TYPE_ID when '1' then '视频' when '2' then '文字'end AS IS_TU   FROM jl_app_media JAM WHERE TITLE_CATEGORY_NAME =#{COLUMN_ID}  -->
+		 SELECT JAM.*,MTC.*,case JAM.TYPE_ID when '1' then '视频' when '2' then '文字'end AS IS_TU   
+         FROM jl_app_media JAM LEFT JOIN media_title_category MTC ON JAM.COLUMN_ID=MTC.ID WHERE IS_TOP='2' AND JAM.ISDEL=1
+		<if test="COLUMN_ID != null and COLUMN_ID !=''">
+		  and JAM.COLUMN_ID =#{COLUMN_ID} 
+		</if>
+		 ORDER BY JAM.PUBLISH_DATE DESC 
+		<if test="pageSize!=null and start!=null">
+			limit #{start},#{pageSize}
+		</if>  
+	</select>
+	<!-- 新闻总数 -->
+	<select id="queryByxinwenzong" parameterType="pd" resultType="pd">
+		<!-- SELECT TITLE,IMGS,RESOURCE,COMMENT_COUNT,TYPE_ID  FROM jl_app_media WHERE COLUMN_ID =#{COLUMN_ID} -->
+		<!-- SELECT JAM.*,case JAM.TYPE_ID when '1' then '视频' when '2' then '文字'end AS IS_TU   FROM jl_app_media JAM WHERE TITLE_CATEGORY_NAME =#{COLUMN_ID}  -->
+		 SELECT count(*) AS xinzong 
+         FROM jl_app_media JAM LEFT JOIN media_title_category MTC ON JAM.COLUMN_ID=MTC.ID WHERE MTC.LOCATION_NO_ID='02_00'  AND IS_TOP='2' AND JAM.ISDEL=1
+		 ORDER BY JAM.PUBLISH_DATE DESC 
+	</select>
+	<!-- 媒体首页id新闻 -->
+  <select id="queryById" parameterType="pd" resultType="pd">
+    SELECT M.* ,U.NAME AS NAME FROM JL_APP_MEDIA M LEFT JOIN sys_user U ON M.CREATE_BY=U.ID WHERE M.ID=#{MEDIA_ID} AND M.ISDEL=1
+  </select> 
+	 
+	<!-- 修改新闻的收藏、分享、评论收藏次数 -->
+	<update id="updateCounts" parameterType="pd">
+		UPDATE jl_app_media SET 
+		<if test="COMMENT_COUNT != null and COMMENT_COUNT !=''">
+		   COMMENT_COUNT=COMMENT_COUNT+1,
+		</if>
+		<if test="COLLECT_COUNT != null and COLLECT_COUNT !=''">
+		   COLLECT_COUNT=COLLECT_COUNT+1,
+		</if>
+		<if test="SHARE_COUNT != null and SHARE_COUNT !=''">
+		   SHARE_COUNT=SHARE_COUNT+1,
+		</if>
+		ID=#{MEDIA_ID} WHERE ID=#{MEDIA_ID}
+    </update>
+    
+    <!-- 修改新闻的收藏、分享、评论取消次数 -->
+    <update id="updateminus" parameterType="pd">
+		UPDATE jl_app_media SET  
+		<if test="COLLECT_COUNT != null and COLLECT_COUNT !=''">
+		   COLLECT_COUNT=#{COLLECT_COUNT},
+		</if> 
+		ID=#{MEDIA_ID} WHERE ID=#{MEDIA_ID}
+    </update>
+    
+    <!-- 媒体分类获取 -->
+	<select id="queryHot" resultType="pd">
+		SELECT M.* FROM jl_app_media M LEFT JOIN media_title_category C ON M.COLUMN_ID=C.ID  
+		WHERE M.ISDEL=1 AND C.IS_SHOW=1 ORDER BY PUBLISH_DATE DESC LIMIT 0,5
+	</select>
+
+	<!-- 根据标题模糊查询 -->
+	<select id="findMediaByTitle" parameterType="pd" resultType="pd">
+    	SELECT m.ID,m.TITLE,m.CONETENT,m.TYPE_ID from JL_APP_MEDIA m where m.TITLE LIKE CONCAT(CONCAT('%', #{TITLE}),'%') AND m.ISDEL=1
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

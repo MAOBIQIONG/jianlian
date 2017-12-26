@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppClanMapper"> 
+
+	 <!-- 获取列表信息 -->
+	<select id="queryAll" parameterType="pd" resultType="pd">
+	    SELECT * FROM CLAN WHERE ISDEL=1 
+	    <if test="NAME !=null and NAME!=''">
+	       and NAME LIKE CONCAT(CONCAT('%', #{NAME}),'%')	 
+		</if>
+		 <if test="value !=null and value!=''">
+	       and AREA_CODE=#{value}
+		</if>
+	     ORDER BY CREATE_DATE DESC 
+	     <if test="pageSize!=null and start!=null">
+			limit #{start},#{pageSize}
+		</if> 
+	</select>
+	
+	<!-- 城市建联总 -->
+	<select id="queryAllzong" parameterType="pd" resultType="pd">
+	    SELECT count(*) AS listzong  FROM CLAN WHERE ISDEL=1  
+	     <if test="NAME !=null and NAME!=''">
+	       and NAME LIKE CONCAT(CONCAT('%', #{NAME}),'%')	 
+		</if>
+		<if test="value !=null and value!=''">
+	       and AREA_CODE=#{value}
+		</if>
+		ORDER BY CREATE_DATE DESC 
+	</select>
+	
+	
+	 <!-- 获取某个用户关注的城市建联信息 -->
+	<select id="queryByUId" resultType="pd" parameterType="pd">
+	   SELECT  C.* FROM CLAN C WHERE C.ID IN (SELECT CLAN_ID FROM CLAN_USER WHERE USER_ID=#{userid}) AND C.ISDEL=1
+	    <if test="NAME !=null and NAME!=''">
+	       and C.NAME LIKE CONCAT(CONCAT('%', #{NAME}),'%')	 
+		</if>
+	    ORDER BY C.CREATE_DATE DESC 
+	     <if test="pageSize!=null and pageSize!=null and start!=null and start!=null">
+			limit #{start},#{pageSize}
+		</if>
+		<!-- <if test="totalSize!=null and totalSize!=null">
+			limit 0,#{totalSize}
+		</if>  --> 
+	</select> 
+	 <!-- 关注城市总 -->
+	 <select id="queryByUIdzong" resultType="pd" parameterType="pd">
+	   SELECT count(*) AS gzcszong   FROM CLAN C WHERE C.ID IN (SELECT CLAN_ID FROM CLAN_USER WHERE USER_ID=#{userid}) AND C.ISDEL=1
+	    <if test="NAME !=null and NAME!=''">
+	       and C.NAME LIKE CONCAT(CONCAT('%', #{NAME}),'%')	 
+		</if>
+	    ORDER BY C.CREATE_DATE DESC 
+	</select> 
+	 
+	 
+	 
+	 <!-- 获取某个城市建联的详细信息 -->
+	<select id="queryById" resultType="pd" parameterType="pd">
+	   SELECT * FROM CLAN  WHERE ID =#{ID} AND ISDEL=1
+	</select>  
+	
+	 <!-- 获取某个城市建联的关注用户的信息 -->
+	<select id="queryByCId" resultType="pd" parameterType="pd">
+	   SELECT  A.*,P.COMPANY_NAME FROM APP_USER A LEFT JOIN COMPANY P ON A.COMPANY_ID=P.ID 
+	   WHERE A.ID IN (SELECT CN.USER_ID FROM CLAN_USER CN WHERE CN.CLAN_ID=#{ID} ) AND A.ISDEL=1
+	   <if test="totalSize!=null and totalSize!=null">
+			limit 0,#{totalSize}
+	   </if>  
+	</select>   
+	
+	<!-- 关注 -->
+	<insert id="saveguanzhu" parameterType="pd">
+		insert into CLAN_USER(
+			ID,CLAN_ID,USER_ID,STATUS,DATE
+		) values (
+			#{ID},#{CLAN_ID},#{userid},1,#{DATE}
+		)
+	</insert>
+	<!-- 取消关注 -->
+	 <delete id="deleteguanzhu" parameterType="pd" flushCache="false">
+		 DELETE FROM CLAN_USER  where USER_ID=#{USER_ID} AND CLAN_ID=#{CLAN_ID}
+	</delete> 
+	<!-- <update id="deleteguanzhu" parameterType="pd">
+		UPDATE CLAN_USER SET  
+		ISDEL='2' WHERE  USER_ID=#{USER_ID} AND CLAN_ID=#{CLAN_ID}
+    </update> -->
+	<!-- 查询当前用户是否已经关注过 -->
+	<select id="queryByuserclan" resultType="pd" parameterType="pd">
+	   SELECT * From clan_user WHERE USER_ID=#{userid} AND CLAN_ID=#{CLAN_ID}
+	</select> 
+	
+	<!-- 关注数量加一 --> 
+	<update id="updateaddClanCounts" parameterType="pd">
+		UPDATE clan SET 
+		<if test="NUMBER_COUNTS !=null">	
+			  NUMBER_COUNTS=NUMBER_COUNTS+1,
+		</if>
+		<if test="MEMBER_COUNT !=null">	
+			  MEMBER_COUNT=MEMBER_COUNT+1,
+		</if>
+		   ID=#{CLAN_ID}
+		   WHERE ID=#{CLAN_ID}
+    </update>
+    <!-- 取消关注数量减少 -->
+    <update id="updatedelClanCounts" parameterType="pd">
+		UPDATE clan SET 
+		<if test="NUMBER_COUNTS !=null">	
+			  NUMBER_COUNTS=NUMBER_COUNTS-1,
+		</if>
+		<if test="MEMBER_COUNT !=null">	
+			  MEMBER_COUNT=MEMBER_COUNT-1,
+		</if> 
+		   ID=#{CLAN_ID}
+		   WHERE ID=#{CLAN_ID}
+    </update>
+    <select id="queryclanusers" parameterType="pd" resultType="pd">
+    	<!-- SELECT CU.ID AS CUID,AU.IMG,AU.REAL_NAME,CP.COMPANY_NAME,AU.POSITION,AU.ID AS UID FROM clan_user CU LEFT JOIN app_user AU ON CU.USER_ID=AU.ID LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		WHERE CU.CLAN_ID=#{CLAN_ID} AND CU.ISDEL=1-->
+		select AU.ID AS UID,AU.IMG,AU.REAL_NAME,CL.NAME,CL.ID AS CID,CP.COMPANY_NAME,AU.POSITION from app_user AU LEFT JOIN clan CL ON AU.CLAN_ID=CL.ID LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		 WHERE AU.CLAN_ID=#{CLAN_ID} AND AU.ISDEL=1
+		 <if test="pageSize!=null and pageSize!=null and start!=null and start!=null">
+			limit #{start},#{pageSize}
+		</if>
+		<!-- <if test="totalSize!=null and totalSize!=null">
+			limit 0,#{totalSize}
+		</if>--> 
+    </select>
+    <!-- 成员数 -->
+    <select id="queryclanuserscount" parameterType="pd" resultType="pd">
+    	<!-- SELECT count(*) counts FROM clan_user CU LEFT JOIN app_user AU ON CU.USER_ID=AU.ID LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		WHERE CU.CLAN_ID=#{CLAN_ID} AND CU.ISDEL=1 -->
+		 select count(*) counts from app_user AU LEFT JOIN clan CL ON AU.CLAN_ID=CL.ID LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		 WHERE AU.CLAN_ID=#{CLAN_ID} AND AU.ISDEL=1
+    </select>
+    
+    <select id="queryclanlist" parameterType="pd" resultType="pd">
+	    SELECT NAME AS text,ID AS value FROM clan WHERE  AREA_CODE=#{value} AND ISDEL=1
+	</select> 
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HdianMapper">
+
+	<!-- 接单管理人数增加 -->
+	<select id="queryjdByStatus" resultType="pd">
+		select count(*) jy_counts from  project  where ISSYSLOOK='0' and ISDEL=1
+	</select> 
+	
+	<!-- 项目代发管理 -->
+	<select id="queryxmdfByStatus" resultType="pd">
+		select count(*) xmdf_counts from  JL_XM_DF  where ISSYSLOOK='0'
+	</select> 
+	
+	<!-- 证件上传 -->
+	<select id="queryzjscByStatus" resultType="pd">
+		select count(*) zjsc_counts from  certificates  where ISSYSLOOK='0' and ISDEL=1
+	</select> 
+	<!-- 支付入会 -->
+	<select id="queryrhByStatus" resultType="pd">
+		select count(*) rh_counts from  JL_UPGRADE  where ISSYSLOOK='0'
+	</select> 
+	<!-- 活动提交审核 -->
+	<select id="queryhdtjByStatus" resultType="pd">
+		select count(*) hdtj_counts from  activity  where ISSYSLOOK='0' and ISDEL=1
+	</select> 
+	<!-- 加入城市建联 -->
+	<select id="querycsjlByStatus" resultType="pd">
+		select count(*) csjl_counts from  clan  where ISSYSLOOK='0' and ISDEL=1
+	</select> 
+	<!-- 城市合伙人申请 -->
+	<select id="querycshhrByStatus" resultType="pd">
+		select count(*) cshhr_counts from  jl_clan_applicant  where ISSYSLOOK='0'
+	</select> 
+	<!-- 场地预订 -->
+	<select id="querycdydByStatus" resultType="pd">
+		select count(*) cdyd_counts from  club_reservation  where ISSYSLOOK='0' AND ISDEL=1
+	</select> 
+	<!-- 反馈通知 -->
+	<select id="queryfkByStatus" resultType="pd">
+		select count(*) fk_counts from  feedback  where ISSYSLOOK='0' AND ISDEL=1
+	</select> 
+	<!-- ppp人数增加   -->
+	<select id="querypppcyByStatus" resultType="pd">
+		select count(*) pppcy_counts from  ppp_project  where ISSYSLOOK='0' AND ISDEL=1
+	</select> 
+</mapper>

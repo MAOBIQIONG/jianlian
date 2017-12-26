@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ShopMapper">  
+ 
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT S.*,A.REAL_NAME,A.USER_NAME,C.COMPANY_NAME FROM JL_DP_SHOP S LEFT JOIN APP_USER A ON S.USER_ID=A.ID 
+		LEFT JOIN COMPANY C ON C.ID=A.COMPANY_ID WHERE 1=1  
+			<if test="pd.REAL_NAME !=null">
+			    and A.REAL_NAME  LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+			</if>
+			<if test="pd.USER_NAME !=null">	
+				and A.USER_NAME LIKE CONCAT(CONCAT('%', #{pd.USER_NAME}),'%') 
+			</if>
+			<if test="pd.COMPANY_NAME !=null">	
+				and C.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+			<if test="pd.SHOP_NAME !=null">	
+				and S.SHOP_NAME LIKE CONCAT(CONCAT('%', #{pd.SHOP_NAME}),'%') 
+			</if> 
+	</select> 
+	
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM JL_DP_SHOP S LEFT JOIN APP_USER A ON S.USER_ID=A.ID 
+		LEFT JOIN COMPANY C ON C.ID=A.COMPANY_ID WHERE 1=1  
+			<if test="pd.REAL_NAME !=null">
+			    and A.REAL_NAME  LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+			</if>
+			<if test="pd.USER_NAME !=null">	
+				and A.USER_NAME LIKE CONCAT(CONCAT('%', #{pd.USER_NAME}),'%') 
+			</if>
+			<if test="pd.COMPANY_NAME !=null">	
+				and C.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+			<if test="pd.SHOP_NAME !=null">	
+				and S.SHOP_NAME LIKE CONCAT(CONCAT('%', #{pd.SHOP_NAME}),'%') 
+			</if> 
+	</select> 
+	
+	<select id="queryById" parameterType="pd" resultType="pd">
+	   SELECT S.*,A.REAL_NAME FROM JL_DP_SHOP S LEFT JOIN APP_USER A ON S.USER_ID=A.ID WHERE S.ID=#{ID}
+	</select>  
+	
+	<select id="queryBySId" parameterType="pd" resultType="pd">
+	   SELECT * FROM JL_DP_SHOP WHERE ID=#{SHOP_ID}
+	</select>  
+	
+
+	 <!-- 添加店铺信息 -->
+	<insert id="save" parameterType="pd">
+		INSERT INTO JL_DP_SHOP (ID,USER_ID,SHOP_NAME,SHOP_DESC,SHOP_THEME,SHOP_PORTRALT,ADDR,CREATE_DATE) VALUES 
+		(#{ID},#{USER_ID},#{SHOP_NAME},#{SHOP_DESC},#{SHOP_THEME},#{SHOP_PORTRALT},#{ADDR},#{CREATE_DATE})
+	</insert>
+	
+	<update id="edit" parameterType="pd">
+		UPDATE JL_DP_SHOP SET 
+		<if test="SHOP_NAME !=null and SHOP_NAME !='' ">
+			SHOP_NAME=#{SHOP_NAME},	
+		</if>
+		<if test="SHOP_DESC !=null and SHOP_DESC !='' ">
+			SHOP_DESC=#{SHOP_DESC},
+		</if>	
+		<if test="SHOP_THEME !=null and SHOP_THEME !='' ">
+			SHOP_THEME=#{SHOP_THEME},
+		</if>	
+		<if test="SHOP_PORTRALT !=null and SHOP_PORTRALT !='' ">
+			SHOP_PORTRALT=#{SHOP_PORTRALT},
+		</if>	
+		<if test="STATUS !=null and STATUS !='' ">
+			STATUS=#{STATUS},
+		</if>  
+		<if test="ADDR !=null and ADDR !='' ">
+			ADDR=#{ADDR},
+		</if>  
+		<if test="CREATE_DATE !=null and CREATE_DATE !='' ">
+			CREATE_DATE=#{CREATE_DATE},
+		</if>  
+		ID = #{ID}
+		WHERE ID = #{ID}
+	</update> 
+	 
+    <delete id="delete" parameterType="pd">
+		DELETE FROM JL_DP_SHOP WHERE ID=#{ID} 
+	</delete>
+</mapper>

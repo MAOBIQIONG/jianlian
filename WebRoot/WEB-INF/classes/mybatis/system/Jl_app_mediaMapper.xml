@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Jl_app_mediaMapper">
+
+	<!-- 查询所有栏目 -->
+	<select id="querymedia" resultType="pd">
+	SELECT * FROM  JL_APP_MEDIA  where ISDEL=1
+	</select>
+	
+	<!-- 通过栏目编号查询所有栏目 -->
+	<select id="querybybhname" resultType="pd">
+	SELECT * FROM media_title_category WHERE TYPE='02' AND ISDEL=1 AND IS_SHOW=1
+	</select>
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+	SELECT J.*,AU.NAME AS UNAME,MTC.TITLE_CATEGORY_NAME AS TC_NAME,case J.TYPE_ID when '1' then '视频' when '2' then '文字'end AS SHOW_SP,
+	case J.IS_RECOMMEND when '1' then '推荐' when '2' then '不推荐'end AS SHOW_TJ,case J.IS_TOP when '1' then '置顶' when '2' then '不置顶'end AS SHOW_ZD 
+	FROM JL_APP_MEDIA J LEFT JOIN sys_user AU ON J.CREATE_BY=AU.ID LEFT JOIN MEDIA_TITLE_CATEGORY MTC ON J.COLUMN_ID=MTC.ID WHERE 1=1 and J.ISDEL=1
+		<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.STATUS !=null">
+				and STATUS = #{pd.STATUS}
+			</if>
+			<if test="pd.TITLE !=null">
+			    and TITLE  LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%') 
+			</if>
+			<if test="pd.USER_ID !=null">	
+				and USER_ID= #{pd.USER_ID}
+			</if>
+			<if test="pd.PUBLISH_DATE !=null">	
+				and PUBLISH_DATE= #{pd.PUBLISH_DATE}
+			</if>
+			<if test="pd.VIDEOS !=null">	
+				and VIDEOS= #{pd.VIDEOS}
+			</if>
+			<if test="pd.TYPE_ID !=null">	
+				and TYPE_ID= #{pd.TYPE_ID}
+			</if>
+			<if test="pd.CONETENT !=null">	
+				and CONETENT= #{pd.CONETENT}
+			</if>
+			<if test="pd.LINK_URL !=null">	
+				and LINK_URL= #{pd.LINK_URL}
+			</if>
+			<if test="pd.RESOURCE !=null">	
+				and RESOURCE= #{pd.RESOURCE}
+			</if>
+			<if test="pd.COMMENT_COUNT !=null">	
+				and COMMENT_COUNT= #{pd.COMMENT_COUNT}
+			</if>
+			<if test="pd.COLLECT_COUNT !=null">	
+				and COLLECT_COUNT= #{pd.COLLECT_COUNT}
+			</if>
+			<if test="pd.SHARE_COUNT !=null">	
+				and SHARE_COUNT= #{pd.SHARE_COUNT}
+			</if>
+			<if test="pd.COLUMN_ID !=null">	
+				and COLUMN_ID= #{pd.COLUMN_ID}
+			</if>
+			<if test="pd.IS_RECOMMEND !=null">	
+				and IS_RECOMMEND= #{pd.IS_RECOMMEND}
+			</if>
+			<if test="pd.IS_TOP !=null">	
+				and IS_TOP= #{pd.IS_TOP}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY = #{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE = #{pd.CREATE_DATE}
+			</if>
+			<if test="pd.MODIFY_BY !=null">	
+				and MODIFY_BY= #{pd.MODIFY_BY}
+			</if>
+			<if test="pd.MODIFY_DATE !=null">	
+				and MODIFY_DATE= #{pd.MODIFY_DATE}
+			</if>
+			<if test="pd.STATUS !=null">	
+				and STATUS= #{pd.STATUS}
+			</if>
+	</select>
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM JL_APP_MEDIA J LEFT JOIN sys_user AU ON J.CREATE_BY=AU.ID LEFT JOIN MEDIA_TITLE_CATEGORY MTC ON J.COLUMN_ID=MTC.ID 
+		WHERE 1=1 and J.ISDEL=1
+		<if test="pd.ID !=null">
+		
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.STATUS !=null">
+				and STATUS = #{pd.STATUS}
+			</if>
+			<if test="pd.TITLE !=null">
+			    and TITLE  LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%') 
+			</if>
+			<if test="pd.USER_ID !=null">	
+				and USER_ID= #{pd.USER_ID}
+			</if>
+			<if test="pd.PUBLISH_DATE !=null">	
+				and PUBLISH_DATE= #{pd.PUBLISH_DATE}
+			</if>
+			<if test="pd.VIDEOS !=null">	
+				and VIDEOS= #{pd.VIDEOS}
+			</if>
+			<if test="pd.TYPE_ID !=null">	
+				and TYPE_ID= #{pd.TYPE_ID}
+			</if>
+			<if test="pd.CONETENT !=null">	
+				and CONETENT= #{pd.CONETENT}
+			</if>
+			<if test="pd.LINK_URL !=null">	
+				and LINK_URL= #{pd.LINK_URL}
+			</if>
+			<if test="pd.RESOURCE !=null">	
+				and RESOURCE= #{pd.RESOURCE}
+			</if>
+			<if test="pd.COMMENT_COUNT !=null">	
+				and COMMENT_COUNT= #{pd.COMMENT_COUNT}
+			</if>
+			<if test="pd.COLLECT_COUNT !=null">	
+				and COLLECT_COUNT= #{pd.COLLECT_COUNT}
+			</if>
+			<if test="pd.SHARE_COUNT !=null">	
+				and SHARE_COUNT= #{pd.SHARE_COUNT}
+			</if>
+			<if test="pd.COLUMN_ID !=null">	
+				and COLUMN_ID= #{pd.COLUMN_ID}
+			</if>
+			<if test="pd.IS_RECOMMEND !=null">	
+				and IS_RECOMMEND= #{pd.IS_RECOMMEND}
+			</if>
+			<if test="pd.IS_TOP !=null">	
+				and IS_TOP= #{pd.IS_TOP}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY = #{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE = #{pd.CREATE_DATE}
+			</if>
+			<if test="pd.MODIFY_BY !=null">	
+				and MODIFY_BY= #{pd.MODIFY_BY}
+			</if>
+			<if test="pd.MODIFY_DATE !=null">	
+				and MODIFY_DATE= #{pd.MODIFY_DATE}
+			</if>
+			<if test="pd.STATUS !=null">	
+				and STATUS= #{pd.STATUS}
+			</if>
+	</select>
+	<!-- 通过id获取所有数据 -->
+	<select id="querymediaid" parameterType="pd" resultType="pd" useCache="false">
+	    SELECT * FROM  JL_APP_MEDIA WHERE ID=#{ID}
+	</select>
+	<!-- 添加 -->
+	<insert id="addmedia" parameterType="pd">
+	INSERT INTO
+	JL_APP_MEDIA(ID,TITLE,USER_ID,PUBLISH_DATE,VIDEOS,IMGS,TYPE_ID,CONETENT,LINK_URL,RESOURCE,COMMENT_COUNT,COLLECT_COUNT,SHARE_COUNT,COLUMN_ID,IS_RECOMMEND,IS_TOP,CREATE_BY,CREATE_DATE,MODIFY_BY,MODIFY_DATE,SUMMARY,STATUS,MORS)
+	VALUES(#{ID},#{TITLE},#{USER_ID},#{PUBLISH_DATE},#{VIDEOS},#{IMGS},#{TYPE_ID},#{CONETENT},#{LINK_URL},#{RESOURCE},#{COMMENT_COUNT},#{COLLECT_COUNT},#{SHARE_COUNT},#{COLUMN_ID},#{IS_RECOMMEND},#{IS_TOP},#{CREATE_BY},#{CREATE_DATE},#{MODIFY_BY},#{MODIFY_DATE},#{SUMMARY},'01',#{MORS})  
+    </insert>
+    <!-- 修改 -->
+	<update id="upmedia" parameterType="pd" flushCache="false">
+		UPDATE  JL_APP_MEDIA SET 
+		<if test="TITLE !=null">
+			TITLE=#{TITLE},	
+		</if>
+		<if test="USER_ID !=null">
+			USER_ID=#{USER_ID},	
+		</if>
+		<if test="PUBLISH_DATE !=null">
+			PUBLISH_DATE=#{PUBLISH_DATE},	
+		</if>
+		<if test="VIDEOS !=null">
+			VIDEOS=#{VIDEOS},	
+		</if>
+		<if test="IMGS !=null">
+			IMGS=#{IMGS},	
+		</if> 
+		<if test="TYPE_ID !=null">
+			TYPE_ID=#{TYPE_ID},	
+		</if>
+		<if test="CONETENT !=null">
+			CONETENT=#{CONETENT},
+		</if>
+		<if test="RESOURCE !=null">
+			RESOURCE=#{RESOURCE},
+		</if>
+		<if test="COMMENT_COUNT !=null">
+			COMMENT_COUNT=#{COMMENT_COUNT},
+		</if>
+		<if test="COLLECT_COUNT !=null">
+			COLLECT_COUNT=#{COLLECT_COUNT},
+		</if>
+		<if test="SHARE_COUNT !=null">
+			SHARE_COUNT=#{SHARE_COUNT},
+		</if>
+		<if test="COLUMN_ID !=null">
+			COLUMN_ID=#{COLUMN_ID},
+		</if>
+		<if test="IS_RECOMMEND !=null">
+			IS_RECOMMEND=#{IS_RECOMMEND},
+		</if>
+		<if test="IS_TOP !=null">
+			IS_TOP=#{IS_TOP},
+		</if>
+		<if test="CREATE_BY !=null">
+			CREATE_BY=#{CREATE_BY},
+		</if>
+		<if test="CREATE_DATE !=null">
+			CREATE_DATE=#{CREATE_DATE},
+		</if>
+		<if test="MODIFY_BY !=null">
+			MODIFY_BY=#{MODIFY_BY},
+		</if>
+		<if test="MODIFY_DATE !=null">
+			MODIFY_DATE=#{MODIFY_DATE},
+		</if>
+		<if test="STATUS !=null">
+			STATUS=#{STATUS},
+		</if>
+		<if test="MORS !=null">
+			MORS=#{MORS},
+		</if> 
+		<if test="SUMMARY !=null and SUMMARY!=''">
+			SUMMARY=#{SUMMARY},
+		</if> 
+			LINK_URL=#{LINK_URL},
+			STATUS='01'
+			WHERE ID = #{ID}
+	</update>
+	 <!-- 批量删除 -->
+    <update id="delmedia">
+        update JL_APP_MEDIA set ISDEL=2 WHERE ID in
+    	<!-- DELETE FROM JL_APP_MEDIA WHERE ID in -->
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </update>
+    
+    <!-- 根据图片ID进行查找 -->
+	<select id="querymediatitle" parameterType="pd" resultType="pd" useCache="false">
+	SELECT * FROM JL_APP_MEDIA WHERE 
+	     <if test="TITLE !=null">
+			TITLE=#{TITLE}
+		</if> 
+	</select>
+	<!-- 推荐/不推荐 -->
+     <update id="upISMMEND" parameterType="pd" flushCache="false">
+		UPDATE JL_APP_MEDIA SET IS_RECOMMEND=${IS_RECOMMEND}
+		WHERE ID=#{ID}
+	</update>
+	<!-- 置顶/不置顶 -->
+     <update id="upISTOP" parameterType="pd" flushCache="false">
+		UPDATE JL_APP_MEDIA SET IS_TOP=${IS_TOP}
+		WHERE ID=#{ID}
+	</update>
+	<!-- 删除 -->
+     <update id="delmediaByid" parameterType="pd">
+      update JL_APP_MEDIA set ISDEL=2 WHERE ID=#{ID}
+  <!--   update FROM JL_APP_MEDIA WHERE ID=#{ID} -->
+    </update>
+    <!-- 新闻上下线 -->
+     <update id="updates" parameterType="pd">
+      update JL_APP_MEDIA set STATUS=#{status} WHERE ID=#{ID}
+  <!--   update FROM JL_APP_MEDIA WHERE ID=#{ID} -->
+    </update>
+    
+    <!-- 查询需要导出的Excel信息 -->
+    <select id="doexlelist" parameterType="pd" resultType="pd">
+	 	SELECT J.*,AU.NAME AS UNAME,MTC.TITLE_CATEGORY_NAME AS TC_NAME,case J.TYPE_ID when '1' then '视频' when '2' then '文字'end AS SHOW_SP,
+	case J.IS_RECOMMEND when '1' then '推荐' when '2' then '不推荐'end AS SHOW_TJ,case J.IS_TOP when '1' then '置顶' when '2' then '不置顶'end AS SHOW_ZD 
+	FROM JL_APP_MEDIA J LEFT JOIN sys_user AU ON J.CREATE_BY=AU.ID LEFT JOIN MEDIA_TITLE_CATEGORY MTC ON J.COLUMN_ID=MTC.ID WHERE 1=1 and J.ISDEL=1
+	</select>
+</mapper>

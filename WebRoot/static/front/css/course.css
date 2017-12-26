@@ -1,0 +1,210 @@
+body{
+-webkit-animation: fadeIn  0.6s ease 0s 1 both;
+ 
+}
+.courseMain{
+	position: relative;
+	height: 100%;
+}
+.top{
+	 height:140p;
+}
+.mui-table-view:nth-of-type(1){
+-webkit-animation: flipInY  1s ease 0.1s 1 both;
+}
+.mui-table-view:nth-of-type(2){
+-webkit-animation: flipInY  1s ease 0.2s 1 both;
+}
+.mui-table-view:nth-of-type(3){
+-webkit-animation: flipInY  1s ease 0.4s 1 both;
+}
+.mui-table-view:nth-of-type(4){
+-webkit-animation: flipInY  1s ease 0.6s 1 both;
+}
+.mui-table-view:nth-of-type(5){
+-webkit-animation: flipInY  1s ease 0.8s 1 both;
+}
+.mui-table-view:nth-of-type(6){
+-webkit-animation: flipInY  1s ease 1.0s 1 both;
+}
+.mui-table-view:nth-of-type(7){
+-webkit-animation: flipInY  1s ease 1.2s 1 both;
+}
+
+.item-left{
+	float:left;
+	width:60%;
+}
+
+.course_name{
+}
+.course_time{
+	color:#999;
+}
+
+.item-right{
+	float:right;
+	width:36%;
+	text-align: right;
+}
+.like{
+}
+.like .heart{
+	width:20px;
+	margin:5px;
+	transition: all 0.35s ease 0s;
+	opacity:0.5;
+	vertical-align: bottom;
+}
+.like .big-heart{
+	-webkit-transform:scale(1.7,1.7) ;
+	-o-transform:scale(1.3,1.3);
+	-moz-transform:scale(1.3,1.3);
+	opacity:1;
+}
+
+.editCourse{
+	position: relative;
+	margin-top:140px;
+	width:100%;
+}
+.sw,.xw{
+	position: relative;
+}
+.xw{
+	margin-bottom:30px;
+}
+
+.title-xw,.title-sw{
+	left:5px;
+	
+	width:50px;
+	height:34px;
+	border-radius:10px;
+	background-color:#f39c12;
+	color:white;
+	line-height:40px;
+	padding-top:1px;
+	text-align:center;
+	margin-left:20px;
+}
+
+.title-xw-line,.title-sw-line{
+	width:100%;
+	position: absolute;
+	top:0px;
+	height:10px;
+	background: #f39c12;
+	z-index:-1;
+}
+
+.title-sw-line,.title-sw{
+	background: #2ecc71;
+}
+
+
+.content-sw,.content-xw{
+	padding:15px;
+}
+
+.course-li{
+	position: relative;
+	margin-bottom:5px;
+	background-color:#ecf0f1;
+	min-height:80px;
+}
+.course-index,.course-index-add{
+	position: absolute;
+	left:20px;
+	top:10px;
+	width:60px;
+	height:30x;
+	border-radius:40px;
+	color:#fff;
+	text-align:center;
+	font-size:0.8em;
+	background-color:#2980b9;
+	
+}
+.course-index-add{
+	background: #e67e22;
+}
+.course-name{
+	position: absolute;
+	left:100px;
+	top:5px;
+	padding-top:5px;
+}
+.course-content{
+	position: absolute;
+	left:100px;
+	top:45px;
+	font-size:0.8em;
+	color:#7f8c8d;
+}
+
+.course-content input{
+	font-size:0.7em;
+}
+.course-add-ts{
+	-webkit-animation:fadeInRight 0.8s ease 0.5s 1 both;
+}
+.course-index div{
+	<!--width:20px;
+	height:20x;
+	background-color:#2980b9;
+	border-radius:40px;-->
+}
+.course-select{
+	width:50px;
+	position: absolute;
+	left:190px;
+	top:10px;
+	height:30px;
+}
+
+.course-remove{
+	width:20px;
+	position: absolute;
+	right:-10px;
+	top:-5px;
+	height:22px;
+	padding:0px;
+}
+
+
+.course-select-list{
+	position: absolute;
+	left:-3px;
+	top:30px;
+	z-index:15;
+	width:60px;
+	-webkit-animation:fadeIn 0.35s ease 0s 1 both;
+	-moz-animation:fadeIn 0.35s ease 0s 1 both;
+	-o-animation:fadeIn 0.35s ease 0s 1 both;
+	padding:0px;
+}
+
+.course-select-list div{
+	clear: both;
+	border-radius:0px;
+	marign:0px;
+	margin-bottom:1px;
+}
+
+.tools{
+	text-align: center;
+	background: #ecf0f1;
+	padding:5px;
+}
+.tools button{
+	width:100px;
+}
+
+
+
+.my-input{
+	width:80px;
+	height:30px;
+}
+

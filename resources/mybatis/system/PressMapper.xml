@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PressMapper">
+
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT M.*,S.NAME AS NAME,case M.IS_SHOW when '1' then '显示' when '2' then '不显示'end AS SHOW_NAME,
+		case M.TYPE when '01' then '大图栏目' when '02' then '普通栏目'end AS TYPE_NAME 
+		FROM MEDIA_TITLE_CATEGORY M LEFT JOIN SYS_USER S ON M.CREATE_BY=S.ID WHERE 1=1 and M.ISDEL=1
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.TITLE_CATEGORY_NAME !=null">
+			    and TITLE_CATEGORY_NAME  LIKE CONCAT(CONCAT('%', #{pd.TITLE_CATEGORY_NAME}),'%') 
+			</if>
+			<if test="pd.IS_SHOW !=null">	
+				and IS_SHOW = #{pd.IS_SHOW}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY= #{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE= #{pd.CREATE_DATE}
+			</if>
+			<if test="pd.MODIFY_BY !=null">	
+				and MODIFY_BY= #{pd.MODIFY_BY}
+			</if>
+			<if test="pd.MODIFY_DATE !=null">	
+				and MODIFY_DATE = #{pd.MODIFY_DATE}
+			</if>
+			<if test="pd.TYPE !=null">	
+				and TYPE= #{pd.TYPE}
+			</if>
+			<if test="pd.LOCATION_NO_ID !=null">	
+				and LOCATION_NO_ID = #{pd.LOCATION_NO_ID}
+			</if>
+	</select>
+	
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM MEDIA_TITLE_CATEGORY M LEFT JOIN SYS_USER S ON M.CREATE_BY=S.ID WHERE 1=1 and M.ISDEL=1
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.TITLE_CATEGORY_NAME !=null">
+			    and TITLE_CATEGORY_NAME  LIKE CONCAT(CONCAT('%', #{pd.TITLE_CATEGORY_NAME}),'%') 
+			</if>
+			<if test="pd.IS_SHOW !=null">	
+				and IS_SHOW = #{pd.IS_SHOW}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY= #{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE= #{pd.CREATE_DATE}
+			</if>
+			<if test="pd.MODIFY_BY !=null">	
+				and MODIFY_BY= #{pd.MODIFY_BY}
+			</if>
+			<if test="pd.MODIFY_DATE !=null">	
+				and MODIFY_DATE = #{pd.MODIFY_DATE}
+			</if>
+			<if test="pd.TYPE !=null">	
+				and TYPE= #{pd.TYPE}
+			</if>
+			<if test="pd.LOCATION_NO_ID !=null">	
+				and LOCATION_NO_ID = #{pd.LOCATION_NO_ID}
+			</if>
+	</select> 
+	
+	<!-- 通过id获取所有数据 -->
+	<select id="querypressid" parameterType="pd" resultType="pd" useCache="false">
+	    select * from  MEDIA_TITLE_CATEGORY where ID=#{ID}
+	</select>
+	<!-- 添加 -->
+	<insert id="addpress" parameterType="pd">
+		insert into MEDIA_TITLE_CATEGORY(ID,TITLE_CATEGORY_NAME,IS_SHOW,CREATE_BY,CREATE_DATE,MODIFY_BY,MODIFY_DATE,TYPE,LOCATION_NO_ID)
+		values(#{ID},#{TITLE_CATEGORY_NAME},#{IS_SHOW},#{CREATE_BY},#{CREATE_DATE},#{MODIFY_BY},#{MODIFY_DATE},#{TYPE},#{LOCATION_NO_ID})  
+    </insert>
+    <!-- 修改 -->
+	<update id="uppress" parameterType="pd" flushCache="false">
+		update  MEDIA_TITLE_CATEGORY set 
+		<if test="TITLE_CATEGORY_NAME !=null">	
+			TITLE_CATEGORY_NAME=#{TITLE_CATEGORY_NAME},	
+		</if>
+		<if test="IS_SHOW !=null">	
+			IS_SHOW=#{IS_SHOW},
+		</if>
+		<if test="MODIFY_BY !=null">		
+			MODIFY_BY=#{MODIFY_BY},	
+		</if>
+		<if test="MODIFY_DATE !=null">	
+			MODIFY_DATE=#{MODIFY_DATE},	
+		</if>
+		<if test="TYPE !=null">	
+			TYPE=#{TYPE}, 	
+		</if>
+		<if test="LOCATION_NO_ID !=null">	
+			LOCATION_NO_ID=#{LOCATION_NO_ID},
+		</if>
+		ID = #{ID}
+			where ID = #{ID}
+	</update>
+	 <!-- 批量删除 -->
+    <!-- <delete id="delpress">
+    	delete from MEDIA_TITLE_CATEGORY where ID in
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </delete> -->
+    <update id="delpress" parameterType="pd" flushCache="false">
+		update MEDIA_TITLE_CATEGORY set ISDEL='2'
+		 where ID in
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+	</update>
+    
+    <!-- 根据企业名称，用户名称进行查找 -->
+	<select id="querypressname" parameterType="pd" resultType="pd" useCache="false">
+	select * from MEDIA_TITLE_CATEGORY WHERE 
+	     <if test="TITLE_CATEGORY_NAME !=null">
+			TITLE_CATEGORY_NAME=#{TITLE_CATEGORY_NAME}
+		</if> 
+	</select>
+	<!-- 关闭/显示 -->
+     <update id="upis_show" parameterType="pd" flushCache="false">
+		update MEDIA_TITLE_CATEGORY set IS_SHOW=${IS_SHOW}
+		where ID=#{ID}
+	</update>
+	<!-- 删除 -->
+     <!-- <delete id="delpressByid" parameterType="pd">
+    delete from MEDIA_TITLE_CATEGORY where ID=#{ID}
+    </delete> -->
+    <update id="delpressByid" parameterType="pd" flushCache="false">
+		update MEDIA_TITLE_CATEGORY set ISDEL='2'
+		where ID=#{ID}
+	</update>
+</mapper>

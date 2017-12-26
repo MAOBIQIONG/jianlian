@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="JobMapper">
+	<!--查询超24小时的所有订单  -->
+	<select id="queryJobAll" resultType="pd" parameterType="pd">
+		select ID,USER_ID,PRICE,`EVENT`,TYPE,OBJECT_ID,ORDER_NO from `orders` `a` where (((now() - interval 1 day) > `a`.`DATE`) and (`a`.`ISDEL` = '1'))
+	</select>
+	<!-- 查询 -->
+	
+    <update id="editOr" parameterType="pd">
+		UPDATE  orders SET ISDEL='2'
+		WHERE ID =#{ID}
+	</update>
+   
+    <!-- 获取提前七天将要过期的会员用户 -->
+   <select id="finduserVip" resultType="pd" parameterType="pd">
+		 select ID,REAL_NAME,NICK_NAME,USER_NAME,POSITION,COMPANY_ID,PHONE,EMAIL,(SELECT NAME FROM SYS_DICTIONARIES WHERE 
+							CONCAT('viptype_',VIP_LEVEL) = P_BM) LEVELNAME,DUE_DATE,
+datediff(DUE_DATE,DATE_FORMAT(NOW(),'%Y-%m-%d')) DAYS
+from APP_USER where ISDEL='1' and IS_VIP='1' and DUE_DATE is not null and 
+datediff(DUE_DATE,DATE_FORMAT(NOW(),'%Y-%m-%d')) &lt;=7 and datediff(DUE_DATE,DATE_FORMAT(NOW(),'%Y-%m-%d')) &gt;=0
+		 
+	</select>
+  
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="JlWtMapper">
+ 
+	<!-- 分页查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT W.*,U.REAL_NAME FROM JL_WT W LEFT JOIN APP_USER U ON W.USER_ID =U.ID
+		WHERE W.ISDEL=1
+		<if test="pd.ID !=null and pd.ID !=''">
+			and W.ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''">
+		    and U.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+		</if>
+		<if test="pd.TITLE !=null and pd.TITLE !=''">
+		    and W.TITLE LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%') 
+		</if> 
+	</select>
+	
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM JL_WT W LEFT JOIN APP_USER U ON W.USER_ID =U.ID WHERE W.ISDEL=1
+		<if test="pd.ID !=null and pd.ID !=''">
+			and W.ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''">
+		    and U.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+		</if>
+		<if test="pd.TITLE !=null and pd.TITLE !=''">
+		    and W.TITLE LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%') 
+		</if> 
+	</select>
+	
+	<select id="queryById" resultType="pd">
+	    select * from  JL_WT where ID=#{ID}
+	</select>
+	
+	<!-- 添加 -->
+	<insert id="save" parameterType="pd">
+		insert into JL_WT(ID,TITLE,DESCRIPTION,IMG_PATH,USER_ID,CREATE_DATE)
+		values(#{ID},#{TITLE},#{DESCRIPTION},#{IMG_PATH},#{USER_ID},#{CREATE_DATE})  
+    </insert> 
+   
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		UPDATE JL_WT SET 
+		<if test="TITLE !=null and TITLE !=''">
+			TITLE=#{TITLE},	
+		</if>
+		<if test="DESCRIPTION !=null">
+			DESCRIPTION=#{DESCRIPTION},	
+		</if>
+		<if test="IMG_PATH !=null">
+			IMG_PATH=#{IMG_PATH},	
+		</if>
+		<if test="AGREE_COUNT !=null">
+			AGREE_COUNT=#{AGREE_COUNT},	
+		</if>
+		<if test="COMMENT_COUNT !=null">
+			COMMENT_COUNT=#{COMMENT_COUNT},	
+		</if>
+		<if test="FOCUS_COUNT !=null">
+			FOCUS_COUNT=#{FOCUS_COUNT},	
+		</if>
+		<if test="USER_ID !=null">
+			USER_ID=#{USER_ID},
+		</if>  
+		<if test="CREATE_DATE !=null">
+			CREATE_DATE=#{CREATE_DATE},
+		</if>  
+		    ID = #{ID} where ID = #{ID}  
+	</update>  
+	 
+    <!--删除 -->
+	<update id="delById" parameterType="pd" flushCache="false">
+	    update JL_WT set ISDEL=2 where ID=#{ID}
+	</update> 
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserMapper">
+	<sql id="userColumns">USERNAME,NAME,PASSWORD,RIGHTS,STATUS,ROLE_ID</sql>
+
+	<resultMap type="User" id="userAndRoleResultMap">
+		<id column="ID" property="ID"/>
+		<result column="USERNAME" property="USERNAME"/>
+		<result column="PASSWORD" property="PASSWORD"/>
+		<result column="NAME" property="NAME"/>
+		<result column="RIGHTS" property="RIGHTS"/>
+		<result column="LAST_LOGIN" property="LAST_LOGIN"/>
+		<result column="IP" property="IP"/>
+		<result column="STATUS" property="STATUS"/> 
+		<result column="WYTOKEN" property="WYTOKEN"/> 
+		<association property="role" column="ID" javaType="Role">
+			<id column="ROLE_ID" property="ROLE_ID"/>
+			<result column="ROLE_NAME" property="ROLE_NAME"/>
+			<result column="ROLE_RIGHTS" property="RIGHTS"/>
+		</association>
+	</resultMap>
+	<resultMap type="User" id="userResultMap">
+		<id column="ID" property="ID"/>
+		<result column="USERNAME" property="USERNAME"/>
+		<result column="PASSWORD" property="PASSWORD"/>
+		<result column="NAME" property="NAME"/>
+		<result column="RIGHTS" property="RIGHTS"/>
+		<result column="LAST_LOGIN" property="LAST_LOGIN"/>
+		<result column="IP" property="IP"/>
+		<result column="STATUS" property="STATUS"/>
+		<result column="ROLE_ID" property="ROLE_ID"/> 
+	</resultMap>
+	
+	<!-- 判断用户名和密码 -->
+	<select id="getUserInfo" parameterType="User" resultMap="userResultMap">
+		select * from SYS_USER 
+		where 1=1
+		<if test="USERNAME!=null and PASSWORD!=null">
+		and USERNAME = #{USERNAME} and PASSWORD=#{PASSWORD}
+		</if>
+		<if test="ID!=null and ID>0">
+		and ID = #{ID}
+		</if>
+	</select>
+	
+	<select id="findRolesByUsername" parameterType="String" resultType="pd">
+		select r.ROLE_NAME from sys_user u left join sys_role r on u.role_id = r.role_id
+		where
+		1=1
+		and 
+		username = #{USERNAME}
+	</select>
+	
+	<select id="getUserAndRoleById" parameterType="String" resultMap="userAndRoleResultMap">
+		select  u.ID,
+				u.USERNAME,
+				u.NAME,
+				u.RIGHTS,
+				u.PASSWORD, 
+				u.WYTOKEN,
+				r.ROLE_ID,
+				r.ROLE_NAME,
+				r.RIGHTS as ROLE_RIGHTS 
+		from SYS_USER u 
+		left join SYS_ROLE r 
+		on u.ROLE_ID=r.ROLE_ID 
+		where  u.ID=#{ID}
+	</select>
+	
+	<!-- 查询总数 -->
+	<select id="findCount" parameterType="pd" resultType="pd">
+		select
+		count(ID) zs
+		from
+		SYS_USER where USERNAME != 'admin' 
+		<if test="USERNAME!=null and PASSWORD!=null">
+		and USERNAME = #{USERNAME} and PASSWORD=#{PASSWORD}
+		</if>
+	</select>
+
+	<update id="updateLastLogin" parameterType="User">
+		update SYS_USER set 
+		LAST_LOGIN=#{LAST_LOGIN} 
+		where ID=#{ID}
+	</update>
+	
+	<update id="upWytoken" parameterType="pd">
+		update SYS_USER set 
+		WYTOKEN=#{WYTOKEN} 
+		where ID=#{ID}
+	</update>
+</mapper>

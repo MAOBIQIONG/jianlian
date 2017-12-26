@@ -1,0 +1,26 @@
+package com.fh.resolver;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
+
+public class MyExceptionResolver implements HandlerExceptionResolver {
+	
+	
+	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
+			Exception ex) {
+		//System.out.println("==============异常开始=============");
+		ex.printStackTrace();
+		//System.out.println("==============异常结束=============");
+		ModelAndView mv = new ModelAndView("error");
+		mv.addObject("exception", ex.toString().replaceAll("\n", "<br/>"));
+		return mv;
+	}
+}
+
+/*
+ * Location: F:\掌上幼儿园\源码\yzy_web\WEB-INF\classes\ Qualified Name:
+ * com.fh.resolver.MyExceptionResolver JD-Core Version: 0.6.2
+ */

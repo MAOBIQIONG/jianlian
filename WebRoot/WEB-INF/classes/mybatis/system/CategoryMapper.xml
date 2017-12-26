@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CategoryMapper"> 
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		SELECT * FROM CATEGORY where ISDEL=1;
+	</select> 
+
+	<select id="listPage" parameterType="page" resultType="pd">
+		SELECT  C1.* FROM CATEGORY C1 left join CATEGORY C2  
+		on C1.PID = C2.ID  where 1=1 and C1.ISDEL=1 
+		<if test="pd.ID !=null">
+			and C1.ID = #{pd.ID}
+		</if>
+		<if test="pd.PID != null and pd.PID != ''">
+			and C1.PID = #{pd.PID}
+		</if>
+		<if test="pd.NAME !=null">
+		    and C1.NAME LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%')
+		</if> 
+		<if test="pd.DESCRIPTION !=null">	
+			and C1.DESCRIPTION=#{pd.DESCRIPTION}
+		</if> 
+	</select>
+	
+	 <!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd"> 
+		SELECT  count(*) counts FROM CATEGORY C1 left join CATEGORY C2  
+		on C1.PID = C2.ID  where 1=1 and C1.ISDEL=1
+		<if test="pd.ID !=null">
+			and C1.ID = #{pd.ID}
+		</if>
+		<if test="pd.PID != null and pd.PID != ''">
+			and C1.PID = #{pd.PID}
+		</if>
+		<if test="pd.NAME !=null">
+		    and C1.NAME LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%')
+		</if> 
+		<if test="pd.DESCRIPTION !=null">	
+			and C1.DESCRIPTION=#{pd.DESCRIPTION}
+		</if> 
+	</select>  
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd"> 
+		insert into  CATEGORY (ID,NAME,DESCRIPTION,PID) values (#{ID},#{NAME},#{DESCRIPTION},#{PID})
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  CATEGORY set 
+			NAME=#{NAME}, 
+			DESCRIPTION=#{DESCRIPTION},  
+			PID=#{PID} 
+			where ID = #{ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select * from CATEGORY where ID = #{ID} 
+	</select>
+	
+	<!-- 删除用户 -->
+	<update id="delete" parameterType="pd" flushCache="false">
+	    UPDATE CATEGORY SET ISDEL=2 where ID = #{ID}
+		<!-- delete from CATEGORY where ID = #{ID}  -->
+	</update> 
+	
+	<select id="listByPId" parameterType="String" resultType="pd">
+		SELECT * FROM CATEGORY where PID =#{PID}
+	</select> 
+</mapper>

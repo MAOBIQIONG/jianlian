@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppConnectionMapper">
+	<!-- 我的人脉列表 -->
+	<select id="querConnectionUser" parameterType="pd" resultType="pd">
+		<!-- SELECT AU.* FROM APP_USER AU WHERE ID IN(SELECT CONTRACT_ID FROM MY_CONTRACTS AS MC WHERE USER_ID=#{USER_ID}) -->
+		SELECT AU.ID,AU.REAL_NAME,AU.IMG,AU.VALERIE FROM APP_USER AU WHERE AU.ID IN(SELECT CONTRACT_ID FROM MY_CONTRACTS AS MC WHERE USER_ID=#{userid} AND ISDEL=1 ) AND AU.ISDEL=1 
+		<if test="NAME !=null and NAME !='' ">
+		AND REAL_NAME LIKE CONCAT(CONCAT('%', #{NAME}),'%')
+		</if>
+		Order by VALERIE ASC
+	</select>
+	<!-- 我的人脉-个人信息详情 -->
+	<select id="queroneUser" parameterType="pd" resultType="pd">
+		SELECT U.*,C.COMPANY_NAME AS COMPANY_NAME,D.NAME AS LEVEL_NAME FROM  APP_USER U LEFT JOIN COMPANY C ON U.COMPANY_ID=C.ID LEFT JOIN sys_dictionaries D ON U.VIP_LEVEL=D.BIANMA  WHERE U.ID= #{USER_ID} AND U.ISDEL=1 
+	</select> 
+	
+	<!-- 我的人脉-个人信息评论 -->
+	<select id="queronepinlun" parameterType="pd" resultType="pd">
+		SELECT A.* FROM MY_CONTRACTS M,APP_USER A  WHERE M.USER_ID=A.ID AND  M.USER_ID =#{USER_ID}
+	</select>
+	<!-- 我的人脉-关注 -->
+	<insert id="addconcern" parameterType="pd">
+		INSERT INTO MY_CONTRACTS(ID,USER_ID,CONTRACT_ID,DATE)
+		VALUES(#{ID},#{USER_ID},#{CONTRACT_ID},#{DATE})  
+    </insert>
+    <!-- 取消关注 -->
+     <delete id="delconcern" parameterType="pd">
+    DELETE FROM  MY_CONTRACTS WHERE USER_ID =#{USER_ID} AND CONTRACT_ID =#{CONTRACT_ID}
+    </delete> 
+    
+    <!-- 人脉搜索 -->
+    <select id="querUsername" parameterType="pd" resultType="pd">
+		 SELECT A.* FROM APP_USER A WHERE ID IN (SELECT M.CONTRACT_ID FROM MY_CONTRACTS M WHERE M.USER_ID=#{ID})
+		  AND A.REAL_NAME LIKE CONCAT(CONCAT('%', #{REAL_NAME}),'%') AND A.ISDEL=1
+	</select>
+	 
+	  <!-- 判断某个人是否已经加了关注 -->
+    <select id="checkConnected" parameterType="pd" resultType="pd">
+		SELECT * FROM MY_CONTRACTS WHERE USER_ID =#{userid} AND CONTRACT_ID=#{USER_ID} 
+	</select> 
+	
+	<!--拓展人脉推荐列表获取 -->
+	<select id="quertuijian" parameterType="pd" resultType="pd"> 
+	SELECT CG.NAME AS CATEGORY_NAME,AU.ID as USER_ID,AU.REAL_NAME AS REAL_NAME,AU.IMG AS IMG,CP.COMPANY_NAME FROM app_user AU,company CP,category CG 	
+	WHERE AU.COMPANY_ID=CP.ID AND CP.CATEGORY_ID=CG.ID AND (CG.ID=#{CATEGORY_ID} or CG.PID=#{CATEGORY_ID}) AND AU.ID!=#{userid} AND AU.ID NOT IN (SELECT CONTRACT_ID FROM MY_CONTRACTS WHERE USER_ID=#{userid}) AND AU.ISDEL=1
+	<if test="COMPANY_NAME!=null and COMPANY_NAME!=''">
+	AND CP.COMPANY_NAME  LIKE CONCAT(CONCAT('%', #{COMPANY_NAME}),'%')
+	</if> 
+	<if test="pageSize!=null and pageSize!=null and start!=null and start!=null">
+		limit #{start},#{pageSize}
+	</if>
+   <!--<if test="totalSize!=null and totalSize!=null">
+		limit 0,#{totalSize}
+   		</if>-->
+	</select>
+	<!-- 推荐总 -->
+	<select id="quertuijianzong" parameterType="pd" resultType="pd"> 
+	SELECT COUNT(*) AS tzong FROM app_user AU,company CP,category CG 	
+	WHERE AU.COMPANY_ID=CP.ID AND CP.CATEGORY_ID=CG.ID AND (CG.ID=#{CATEGORY_ID} or CG.PID=#{CATEGORY_ID}) AND AU.ID!=#{userid} AND AU.ID NOT IN (SELECT CONTRACT_ID FROM MY_CONTRACTS WHERE USER_ID=#{userid}) AND AU.ISDEL=1
+	<if test="COMPANY_NAME!=null and COMPANY_NAME!=''">
+	AND CP.COMPANY_NAME  LIKE CONCAT(CONCAT('%', #{COMPANY_NAME}),'%')
+	</if> 
+   <if test="totalSize!=null and totalSize!=null">
+		limit 0,#{totalSize}
+   </if>  
+	</select>	
+	  <!--查询某个会员关注的人脉的总数 -->
+    <select id="countUsersByUid" parameterType="pd" resultType="pd">
+		SELECT count(*) counts FROM MY_CONTRACTS WHERE USER_ID =#{userid}
+	</select> 
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysRelationMapper">
+   <select id="listPageByStatus" parameterType="page" resultType="pd">
+	   SELECT AU.ID,AU.REAL_NAME,AU.USER_NAME,AU.PHONE,AU.EMAIL,AU.CARD_NO,SR.STATUS,SU.NAME AS SYSNAME FROM app_user AU
+		LEFT JOIN sys_relation SR ON AU.ID=SR.APPU_ID
+		LEFT JOIN sys_user SU ON SU.ID=SR.SYSU_ID
+	   WHERE AU.ISDEL=1
+		<if test="pd.CARD_NO !=null">
+		    and AU.CARD_NO LIKE CONCAT(CONCAT('%', #{pd.CARD_NO}),'%')
+		</if>
+		<if test="pd.PHONE !=null">
+		    and AU.PHONE LIKE CONCAT(CONCAT('%', #{pd.PHONE}),'%')
+		</if>
+		<if test="pd.REAL_NAME !=null">
+		    and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+	</select> 
+	
+	 <!-- 查询总数 -->
+	<select id="findCountByStatus" parameterType="page" resultType="pd">   
+		  SELECT count(*) counts FROM app_user AU
+		LEFT JOIN sys_relation SR ON AU.ID=SR.APPU_ID
+		LEFT JOIN sys_user SU ON SU.ID=SR.SYSU_ID
+		 WHERE AU.ISDEL=1
+		<if test="pd.CARD_NO !=null">
+		    and AU.CARD_NO LIKE CONCAT(CONCAT('%', #{pd.CARD_NO}),'%')
+		</if>
+		<if test="pd.PHONE !=null">
+		    and AU.PHONE LIKE CONCAT(CONCAT('%', #{pd.PHONE}),'%')
+		</if>
+		<if test="pd.REAL_NAME !=null">
+		    and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+	</select>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into sys_relation(
+		<if test="SYSU_ID != null">
+			SYSU_ID,
+		</if>
+		<if test="APPU_ID != null">
+			APPU_ID,
+		</if> 
+			ID
+		) values (
+		<if test="SYSU_ID != null">
+			#{SYSU_ID},
+		</if>
+		<if test="APPU_ID != null">
+			#{APPU_ID},
+		</if> 
+			#{ID}
+		) 
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update sys_relation set 
+		<if test="SYSU_ID !=null">
+		     SYSU_ID= #{SYSU_ID},
+		</if>
+		<if test="APPU_ID !=null">	
+			APPU_ID=#{APPU_ID},
+		</if> 
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	<delete id="relaDel">
+		delete from sys_relation
+		where ID=#{ID}
+	</delete>
+	
+	<!-- 查询是否已经关联过了 -->
+	<select id="usrela" parameterType="pd" resultType="pd">
+		select * from sys_relation
+		where APPU_ID=#{ID}
+	</select>
+</mapper>

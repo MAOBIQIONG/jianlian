@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProjectScheduleMapper">
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select * from project_schedule where ISDEL=1;
+	</select> 
+	
+	<select id="listPage" parameterType="page" resultType="pd">  
+		SELECT S.*,P.DISTINGUISH,P.PROJECT_NAME AS PROJECT_NAME, D.NAME AS BIANMA_NAME,
+		(CASE WHEN  U.NAME IS NOT NULL THEN U.NAME WHEN  U.NAME IS NULL THEN A.REAL_NAME END ) AS CREATE_NAME  FROM project_schedule S 
+		LEFT JOIN PROJECT P ON S.PROJECT_ID=P.ID LEFT JOIN SYS_DICTIONARIES  D ON S.SCHEDULE=D.BIANMA 
+		LEFT JOIN sys_user U ON S.OPER_BY=U.ID  LEFT JOIN APP_USER A ON A.ID=S.OPER_BY
+        WHERE  1=1 and S.ISDEL=1 and P.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.PROJECT_NAME !=null and pd.PROJECT_NAME !='' ">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+		<if test="pd.PROJECT_ID !=null and pd.PROJECT_NAME !='' ">
+		    and PROJECT_ID LIKE CONCAT(CONCAT('%', #{pd.PROJECT_ID}),'%')
+		</if>
+		<if test="pd.SCHEDULE !=null">	
+			and SCHEDULE=#{pd.SCHEDULE}
+		</if> 
+		<if test="pd.DATE!=null">	
+			and DATE=#{pd.DATE}
+		</if> 
+		<if test="pd.OPER_BY !=null">	
+			and OPER_BY=#{pd.OPER_BY}
+		</if> 
+	</select>  
+	
+	<select id="findCount" parameterType="page" resultType="pd"> 
+		SELECT count(*) counts  FROM project_schedule S 
+		LEFT JOIN PROJECT P ON S.PROJECT_ID=P.ID LEFT JOIN SYS_DICTIONARIES  D ON S.SCHEDULE=D.BIANMA 
+		LEFT JOIN sys_user U ON S.OPER_BY=U.ID  LEFT JOIN APP_USER A ON A.ID=S.OPER_BY
+        WHERE  1=1 and S.ISDEL=1 and P.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.PROJECT_NAME !=null and pd.PROJECT_NAME !='' ">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+		<if test="pd.PROJECT_ID !=null and pd.PROJECT_ID !='' ">
+		    and PROJECT_ID LIKE CONCAT(CONCAT('%', #{pd.PROJECT_ID}),'%')
+		</if>
+		<if test="pd.SCHEDULE !=null">	
+			and SCHEDULE=#{pd.SCHEDULE}
+		</if> 
+		<if test="pd.DATE!=null">	
+			and DATE=#{pd.DATE}
+		</if> 
+		<if test="pd.OPER_BY !=null">	
+			and OPER_BY=#{pd.OPER_BY}
+		</if> 
+	</select>  
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into project_schedule( ID,PROJECT_ID,SCHEDULE,DATE,OPER_BY,DESCRIPTION)  
+		values ( #{ID},#{PROJECT_ID},#{SCHEDULE},#{DATE},#{OPER_BY},#{DESCRIPTION})
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  project_schedule set 
+			PROJECT_ID=#{PROJECT_ID},
+			SCHEDULE=#{SCHEDULE},
+			DESCRIPTION=#{DESCRIPTION},
+			DATE=#{DATE},
+			OPER_BY=#{OPER_BY}
+			where ID = #{ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd" useCache="false">
+		select * from project_schedule where ID = #{ID} AND ISDEL=1  
+	</select>
+	
+	<!-- 删除用户 -->
+	<update id="delete" parameterType="pd" flushCache="false">
+		update project_schedule set ISDEL=2 where ID = #{ID} 
+	</update>
+	<!-- 查询Excel导出数据 -->
+	<select id="doexlelist" parameterType="pd" resultType="pd">
+	 	SELECT S.*,P.DISTINGUISH,P.PROJECT_NAME AS PROJECT_NAME, D.NAME AS BIANMA_NAME,
+		(CASE WHEN  U.NAME IS NOT NULL THEN U.NAME WHEN  U.NAME IS NULL THEN A.REAL_NAME END ) AS CREATE_NAME  FROM project_schedule S 
+		LEFT JOIN PROJECT P ON S.PROJECT_ID=P.ID LEFT JOIN SYS_DICTIONARIES  D ON S.SCHEDULE=D.BIANMA 
+		LEFT JOIN sys_user U ON S.OPER_BY=U.ID  LEFT JOIN APP_USER A ON A.ID=S.OPER_BY
+        WHERE  1=1 and S.ISDEL=1 and P.ISDEL=1
+	</select>
+</mapper>

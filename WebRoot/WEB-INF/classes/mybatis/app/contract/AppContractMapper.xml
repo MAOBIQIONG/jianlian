@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppContractMapper">
+	<!-- 合同列表 -->
+	<select id="querContractlist" parameterType="pd" resultType="pd">
+		SELECT CM.*,SU.NAME FROM CONTRACT_MODEL CM LEFT JOIN SYS_USER SU ON CM.UPLOAD_BY=SU.ID WHERE CM.ISDEL=1
+	</select>
+	
+	<!-- 根据ID查询 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		SELECT CM.*,SU.NAME FROM CONTRACT_MODEL CM LEFT JOIN SYS_USER SU ON CM.UPLOAD_BY=SU.ID WHERE CM.ID=#{ID} AND CM.ISDEL=1
+	</select>
+	
+</mapper>

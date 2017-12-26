@@ -1,0 +1,274 @@
+@charset "utf-8";
+/* CSS Document */
+
+ul,li{ list-style-type:none; margin:0;padding:0;}
+p,span{ margin:0;}
+span{ display:inline-block}
+img{margin:0;display:block; border:none;}
+.bigbox
+{
+	width:1080px;
+	margin:0 auto;
+	font-family:"微软雅黑";
+	background-color:#f5f5f5;
+	padding-bottom:20px;
+}
+/*顶部操作栏-
+.top_operation
+{
+	width:100%;
+	height:132px;
+	background-color:#509dd7;
+	color:#aedbfc;
+	text-align:center;
+	line-height:132px;
+	position:relative;
+}
+.top_operation .title
+{
+	font-size:45px;
+	letter-spacing:1px;
+}
+.school
+{
+	font-size:35px;
+	position:absolute;
+	left:34px;
+}
+.phone
+{
+	position:absolute;
+	right:36px;
+	bottom:52px;
+	background-image:url(images-/1-1_2_07.png);
+	background-repeat:no-repeat;
+	background-position:center right;
+	padding-right:38px;
+}*/
+/*banner*/
+.banner
+{
+	position:relative;	
+}
+.game
+{
+	width:100%;
+	background-image:url(images-/background.png);
+	position:absolute;
+	bottom:0;
+	
+}
+.game p
+{
+	font-size:50px;
+    line-height:84px;
+	color:#FFF;
+	padding-left:34px;
+}
+.game span
+{
+	font-size:34px;
+	margin-left:378px;
+	background-image:url(images-/1-1_2_15.png);
+	background-repeat:no-repeat;
+	background-position:left 15px;
+	padding-left:70px; 
+}
+.photo
+{
+	width:222px;
+	height:208px;
+	border:#FFF 3px solid;
+	position:absolute;
+	bottom:10px;
+	right:25px;
+}
+
+.weather
+{
+	width:100%;
+	height:127px;
+	border-bottom:2px solid #ebebeb;
+	background-color:#fff;
+	overflow:hidden;
+	padding-top:28px;
+}
+.degree
+{
+	font-family:"华文细黑";
+	font-size:84px;
+	color:#ffb642;
+    line-height:100px;
+	float:left;
+}
+.weather1
+{
+	font-family:"华文细黑";
+	font-size:34px;
+	color:#7e818a;
+	line-height:50px;
+	float:left;
+	border-left:#e4e4e4 2px solid;
+	padding-left:26px;
+}
+/*四个按钮*/
+.four_buttons
+{
+	margin:25px;
+	font-size:40px;
+	color:#a5a5a5;
+	line-height:106px;
+	width:1025px;
+	height:235px;
+	background-color:#FFF;
+	border:2px solid #d9dde2;
+	padding-top:45px;
+}
+.four_buttons li
+{
+
+	width:129px;
+	text-align:center;
+	float:left;
+}
+
+/*通知*/
+.notice
+{
+	width:1025px;
+	margin:25px;
+	background-color:#FFF;
+	border:2px solid #d9dde2;
+}
+.notice_title
+{
+	font-size:45px;
+	color:black;
+	line-height:45px;
+	background-image:url(images-/1-1_2_37.png);
+	background-repeat:no-repeat;
+	background-position:left center;
+	padding-left:70px;
+	margin:46px 0 0 35px;
+}
+.notice_title span
+{
+	margin-left:470px;
+}
+.content
+{
+	font-size:40px;
+	color:#000;
+	margin:32px 42px 0 42px;
+	line-height:50px;
+  
+}
+.time
+{
+	font-size:37px;
+	color:black; 
+	text-align:right;
+	line-height:98px; 
+	margin:0 46px;
+	border-bottom:#aaaaaa 2px  dashed;
+}
+
+
+/*作业上传*/
+.work
+{
+	width:1025px;
+	margin:25px 25px 0 25px;
+	background-color:#FFF;
+	border:2px solid #d9dde2;
+
+}
+.work_title
+{
+	font-size:45px;
+	color:black;
+	line-height:45px;
+	background-image: url(images-/1-1_2_45.png);
+	background-repeat:no-repeat;
+	background-position:left center;
+	padding-left:70px;
+	line-height:98px;
+	margin-left:35px;
+
+}
+.work_title span
+{
+	color:black;
+	font-size:33px;
+}
+.works
+{
+	width:1025px;
+	margin:0 25px 0 25px;
+	background-color:#FFF;
+	border:2px solid #d9dde2;
+	border-top:none;
+	padding-top:43px;
+	padding-bottom:98px;
+	overflow:hidden;
+}
+.works li
+{
+	width:226px;
+	height:210px;
+	border:#d9d9d9 2px solid;
+	border-radius:6px 6px 6px 6px;
+	background-color:#efefef;
+	float:left;
+}
+.works p
+{
+	font-size:30px;
+	color:#569fd6;
+	line-height:56px;
+	padding:0 0 0 62px;
+	background-image:url(images-/1-1_2_53.png);
+	background-position:left top;
+	background-repeat:no-repeat;
+	margin:27px 0 0 60px;
+}
+.works img
+{
+	width:226px;
+	height:210px;
+}
+
+
+/*作业获得的名次*/
+.work2
+{
+	width:1025px;
+	height:454px;
+	margin:25px 25px 0 25px;
+	background-color:#FFF;
+	border:2px solid #d9dde2;
+    position:relative;
+}
+.medal
+{
+	margin:37px 0 0 338px;
+}
+.work2 p
+{
+	font-size:40px;
+	text-align:center;
+	color:#feea09;
+	line-height:57px;
+    margin-top:6px;
+}
+.all
+{
+	margin:20px 0 0 413px;
+}
+.end
+{
+	position:absolute;
+	bottom:62px;
+	right:19px;
+}
+

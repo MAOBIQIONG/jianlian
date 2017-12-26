@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TbcompanyMapper">
+	
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		      SELECT C.*,SU.NAME AS NAME,A.REAL_NAME,CG.NAME AS CG_NAME, (CASE WHEN  SU.NAME IS NOT NULL THEN SU.NAME WHEN  SU.NAME IS NULL THEN A.REAL_NAME END ) AS CREATE_NAME 
+    		FROM company C LEFT JOIN sys_user SU  ON SU.ID=C.CREATE_BY LEFT JOIN app_user A ON C.CREATE_BY=A.ID LEFT JOIN category CG ON C.CATEGORY_ID=CG.ID WHERE 1=1 and C.ISDEL=1
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.COMPANY_NAME !=null">
+			    and COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+			<if test="pd.BUSINESS_LICENSE !=null">	
+				and BUSINESS_LICENSE = #{pd.BUSINESS_LICENSE}
+			</if>
+			<if test="pd.ADDR !=null">	
+				and ADDR = #{pd.ADDR}
+			</if>
+			<if test="pd.CATEGORY_ID !=null">	
+				and CATEGORY_ID = #{pd.CATEGORY_ID}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY = #{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE = #{pd.CREATE_DATE}
+			</if> 
+			<if test="pd.LOGO !=null">	
+				and LOGO = #{pd.LOGO}
+			</if>
+			<if test="pd.DESCRIPTION !=null">	
+				and DESCRIPTION = #{pd.DESCRIPTION}
+			</if>
+			<if test="pd.INTERNET_PATH !=null">	
+				and INTERNET_PATH = #{pd.INTERNET_PATH}
+			</if>
+	</select>
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+	SELECT count(*) counts  FROM company C LEFT JOIN sys_user SU 
+        ON SU.ID=C.CREATE_BY LEFT JOIN app_user A ON C.CREATE_BY=A.ID LEFT JOIN category CG ON C.CATEGORY_ID=CG.ID WHERE 1=1 and C.ISDEL=1
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.COMPANY_NAME !=null">
+			    and COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+			<if test="pd.BUSINESS_LICENSE !=null">	
+				and BUSINESS_LICENSE = #{pd.BUSINESS_LICENSE}
+			</if>
+			<if test="pd.ADDR !=null">	
+				and ADDR = #{pd.ADDR}
+			</if>
+			<if test="pd.CATEGORY_ID !=null">	
+				and CATEGORY_ID = #{pd.CATEGORY_ID}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY = #{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE = #{pd.CREATE_DATE}
+			</if> 
+			<if test="pd.LOGO !=null">	
+				and LOGO = #{pd.LOGO}
+			</if>
+			<if test="pd.DESCRIPTION !=null">	
+				and DESCRIPTION = #{pd.DESCRIPTION}
+			</if>
+			<if test="pd.INTERNET_PATH !=null">	
+				and INTERNET_PATH = #{pd.INTERNET_PATH}
+			</if>
+	</select>
+	<!--查询个人企业信息  -->
+	<select id="querycompany" resultType="pd"> 
+	select * from company where COMPANY_NAME=#{COMPANY_NAME},BUSINESS_LICENSE=#{BUSINESS_LICENSE}
+	</select>
+	<!-- 修改 -->
+	<update id="upcom" parameterType="pd" flushCache="false">
+		update  company set 
+		<if test="COMPANY_NAME !=null and COMPANY_NAME !='' ">
+			COMPANY_NAME=#{COMPANY_NAME},	
+		</if>
+		<if test="BUSINESS_LICENSE !=null and BUSINESS_LICENSE !='' ">
+			BUSINESS_LICENSE=#{BUSINESS_LICENSE},	
+		</if>
+		<if test="ADDR !=null and ADDR !='' ">
+			ADDR=#{ADDR},	
+		</if>
+		<if test="CATEGORY_ID !=null and CATEGORY_ID !='' ">
+			CATEGORY_ID=#{CATEGORY_ID},
+		</if> 
+		<if test="LOGO !=null and LOGO !='' ">
+			LOGO=#{LOGO},	
+		</if>
+		<if test="DESCRIPTION !=null and DESCRIPTION !='' ">
+			DESCRIPTION=#{DESCRIPTION},	
+		</if>
+		<if test="INTERNET_PATH !=null and INTERNET_PATH !='' ">
+			INTERNET_PATH=#{INTERNET_PATH},
+		</if>
+		ISDEL='1',ID = #{ID}
+			where ID = #{ID}
+	</update>
+	<!-- 通过id获取所有数据 -->
+	<select id="querypanyid" parameterType="pd" resultType="pd" useCache="false">
+	    select (SELECT ID FROM category WHERE ID=(select PID from category where ID=C.CATEGORY_ID))TYPE_ID,C.*,S.ID AS SID,A.ID AS AID from  company C LEFT JOIN sys_user S ON S.ID=C.CREATE_BY LEFT JOIN app_user A ON C.CREATE_BY=A.ID where C.ID=#{ID} 
+	</select>
+	<!-- 添加 -->
+	<insert id="addcompany" parameterType="pd">
+		insert into company(ID,COMPANY_NAME,BUSINESS_LICENSE,ADDR,CATEGORY_ID,CREATE_BY,CREATE_DATE,DESCRIPTION,INTERNET_PATH)
+		values(#{ID},#{COMPANY_NAME},#{BUSINESS_LICENSE},#{ADDR},#{CATEGORY_ID},#{CREATE_BY},#{CREATE_DATE},#{DESCRIPTION},#{INTERNET_PATH})  
+    </insert>
+    <!-- 删除 -->
+     <update id="delcompanybyid" parameterType="pd">
+      update company set ISDEL=2 where ID=#{ID}
+   <!--  delete from company where ID=#{ID} -->
+    </update>
+     <!-- 批量删除 -->
+    <update id="delpany">
+    	<!-- delete from company where ID in -->
+    	update company set ISDEL=2 where ID in
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </update>
+    <!-- 根据企业名称，用户名称进行查找 -->
+	<select id="querycompanyname" parameterType="pd" resultType="pd" useCache="false">
+	select * from company WHERE COMPANY_NAME=#{COMPANY_NAME} and ISDEL=1
+	</select>
+	<!-- 分配 -->
+	<insert id="inmanagers" parameterType="pd">
+		insert into company(ID,COMPANY_NAME,BUSINESS_LICENSE,ADDR,CATEGORY_ID,CREATE_BY,CREATE_DATE,LOGO,DESCRIPTION,INTERNET_PATH)
+		values(#{ID},#{COMPANY_NAME},#{BUSINESS_LICENSE},#{ADDR},#{CATEGORY_ID},#{CREATE_BY},#{CREATE_DATE},#{LOGO},#{DESCRIPTION},#{INTERNET_PATH})  
+    </insert>
+	<select id="querybyhangye" parameterType="pd" resultType="pd" >
+	    SELECT * from category where ISDEL=1
+	</select>
+</mapper>

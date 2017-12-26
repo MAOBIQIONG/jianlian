@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppCollectionMapper">
+
+<!-- 收藏获取接口 -->
+<select id="findCollection" parameterType="pd" resultType="pd">
+SELECT C.*,M.TITLE,M.TYPE_ID,P.PROJECT_NAME,P.STATUS AS PROJECT_STATUS, A.ACTIVITY_NAME 
+FROM COLLECTION C LEFT JOIN JL_APP_MEDIA M ON C.OBJECT_ID=M.ID LEFT JOIN PROJECT P ON P.ID=C.OBJECT_ID 
+LEFT JOIN ACTIVITY A ON A.ID=C.OBJECT_ID where C.USER_ID = #{userid} AND C.ISDEL=1
+   ORDER BY C.COLLECT_DATE DESC 
+   <if test="pageSize!=null and pageSize!=null and start!=null and start!=null">
+		limit #{start},#{pageSize}
+	</if>
+   <!-- <if test="totalSize!=null and totalSize!=null">
+		limit 0,#{totalSize}
+   </if> -->  
+</select>
+
+<!-- 收藏总 -->
+<select id="findCollectionsczong" parameterType="pd" resultType="pd">
+SELECT  COUNT(*) AS sczong
+FROM COLLECTION C LEFT JOIN JL_APP_MEDIA M ON C.OBJECT_ID=M.ID LEFT JOIN PROJECT P ON P.ID=C.OBJECT_ID 
+LEFT JOIN ACTIVITY A ON A.ID=C.OBJECT_ID where C.USER_ID = #{userid} AND C.ISDEL=1
+   ORDER BY C.COLLECT_DATE DESC 
+</select>
+
+<!-- 收藏新增接口 -->
+<insert id="saveCollection" parameterType="pd">
+	insert into collection(
+	ID,
+	USER_ID,
+	COLLECT_DATE,
+	TYPE,
+	OBJECT_ID
+	)
+	values(
+	#{ID},
+	#{USER_ID},
+	#{COLLECT_DATE},
+	#{TYPE},
+	#{OBJECT_ID}
+	)
+</insert>
+
+<!-- 收藏删除接口 -->
+<!-- <delete id="delCollection" parameterType="pd">
+delete from collection where USER_ID =#{USER_ID} AND TYPE=#{TYPE} AND OBJECT_ID=#{OBJECT_ID}
+</delete> -->
+	<update id="delCollection" parameterType="pd">
+		UPDATE collection SET  
+		ISDEL='2' WHERE  USER_ID =#{USER_ID} AND TYPE=#{TYPE} AND OBJECT_ID=#{OBJECT_ID}
+    </update>
+<!-- 查询当前用户是否 收藏过 -->
+<select id="checkCollection" parameterType="pd" resultType="pd">
+		SELECT * FROM collection WHERE USER_ID =#{USER_ID} AND TYPE=#{TYPE} AND OBJECT_ID=#{OBJECT_ID} AND ISDEL=1 
+</select>
+
+<!-- 根据用户id和对象id查询 -->
+<select id="queryByUidAndOid" parameterType="pd" resultType="pd">
+	SELECT * FROM collection WHERE USER_ID =#{userid} AND OBJECT_ID=#{ID} AND ISDEL=1 
+</select>
+
+</mapper>

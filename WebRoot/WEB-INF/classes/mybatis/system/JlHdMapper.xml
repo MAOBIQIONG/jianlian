@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="JlHdMapper">
+ 
+	<!-- 分页查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT H.*,U.REAL_NAME FROM JL_HD H LEFT JOIN APP_USER U ON H.USER_ID=U.ID 
+		WHERE H.ISDEL=1 
+		<if test="pd.WT_ID!=null and pd.WT_ID !=''">
+			and H.WT_ID = #{pd.WT_ID}
+		</if>
+		<if test="pd.ID !=null and pd.ID !=''">
+			and H.ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''">
+		    and U.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+		</if> 
+	</select>
+	
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM JL_HD H LEFT JOIN APP_USER U ON H.USER_ID=U.ID 
+		WHERE H.ISDEL=1 
+		<if test="pd.WT_ID!=null and pd.WT_ID !=''">
+			and H.WT_ID = #{pd.WT_ID}
+		</if>
+		<if test="pd.ID !=null and pd.ID !=''">
+			and H.ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''">
+		    and U.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+		</if> 
+	</select> 
+	 
+    <!--删除 -->
+	<update id="delByHDId" parameterType="pd">
+	    update JL_HD set ISDEL=2 where ID=#{ID}
+	</update> 
+</mapper>

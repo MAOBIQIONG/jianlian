@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppActivityHonorMapper">  
+
+	 <!-- 添加信息 -->
+	<insert id="save" parameterType="pd" flushCache="false">
+	INSERT INTO  ACTIVITY_HONOR (
+			ID,
+			ACTIVITY_ID,
+			HONOR_ID
+		) VALUES (
+			#{ID},
+			#{ACTIVITY_ID},
+			#{HONOR_ID} 
+		)
+	</insert> 
+	 
+     <!-- 删除 -->
+    <!-- <delete id="delete">
+    	DELETE FROM ACTIVITY_HONOR WHERE  ACTIVITY_ID=#{ACTIVITY_ID} AND HONOR_ID=#{HONOR_ID} 
+    </delete>  -->
+    <update id="delete" parameterType="pd">
+		UPDATE ACTIVITY_HONOR SET  
+		ISDEL='2' WHERE  ACTIVITY_ID=#{ACTIVITY_ID} AND HONOR_ID=#{HONOR_ID} 
+    </update>
+</mapper>

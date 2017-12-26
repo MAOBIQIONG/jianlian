@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppcertificatesMapper">
+    <!-- 根据USER_ID查询我的证件信息-->
+	<select id="findByUserId" parameterType="pd" resultType="pd">
+		SELECT CF.* FROM  CERTIFICATES CF LEFT JOIN APP_USER AU ON CF.USER_ID=AU.ID AND CF.COMPANY_ID=AU.COMPANY_ID WHERE CF.USER_ID=#{userid} AND CF.ISDEL=1
+	</select> 
+	
+	<!-- 我的证件删除 -->
+	<!-- <delete id="delCertByid" parameterType="pd">
+    DELETE FROM CERTIFICATES WHERE ID=#{ID}
+    </delete> -->
+    <update id="delCertByid" parameterType="pd">
+		UPDATE CERTIFICATES SET  
+		ISDEL='2' WHERE  ID=#{ID}
+    </update>
+    
+    <!-- 我的证件新增 -->
+    <insert id="addconcern" parameterType="pd">
+		INSERT INTO certificates(ID,USER_ID,CERTIFICATE_NAME,CERTIFICATE_TYPE,STATUS,IMG_PATH,DATE,COMPANY_ID) 
+		VALUES(#{ID},#{userid},#{CERTIFICATE_NAME},#{CERTIFICATE_TYPE},#{STATUS},#{IMG_PATH},NOW(),#{COMPANY_ID}) 
+    </insert>
+    
+     <!-- 证件类型 -->
+    <select id="queryByPBM" parameterType="String" resultType="pd" >
+		SELECT * FROM  SYS_DICTIONARIES
+		WHERE PARENT_ID =(SELECT ZD_ID FROM  SYS_DICTIONARIES
+		WHERE BIANMA=#{BIANMA} AND ISDEL=1) AND CF.ISDEL=1
+	</select>
+	
+	<!-- 查询三证 -->
+	<select id="queryBysanzhen" parameterType="String" resultType="pd" >
+		select C.* from certificates C left join app_user A on C.USER_ID=A.ID 
+		where A.ID =#{userid} AND C.CERTIFICATE_TYPE='1' AND C.ISDEL=1
+	</select>
+	<!-- 查询名片 -->
+	<select id="queryByminpian" parameterType="String" resultType="pd" >
+		select C.* from certificates C left join app_user A on C.USER_ID=A.ID 
+		where A.ID =#{userid} AND C.CERTIFICATE_TYPE='2' AND C.ISDEL=1
+	</select>
+	<!-- 查询logo -->
+	<select id="queryBymlogo" parameterType="String" resultType="pd" >
+		select C.* from certificates C left join app_user A on C.USER_ID=A.ID 
+		where A.ID =#{userid} AND C.CERTIFICATE_TYPE='3' AND C.ISDEL=1
+	</select>
+	<!-- 查询其它1 -->
+	<select id="queryBymqita1" parameterType="String" resultType="pd" >
+		select C.* from certificates C left join app_user A on C.USER_ID=A.ID 
+		where A.ID =#{userid} AND C.CERTIFICATE_TYPE='4' AND C.ISDEL=1
+	</select>
+	
+	<!-- 修改证件信息-->
+	<update id="edit" parameterType="pd">
+		update certificates set  
+		<if test="IMG_PATH != null">
+			IMG_PATH = #{IMG_PATH},
+		</if> 
+		<if test="CERTIFICATE_NAME != null">
+				CERTIFICATE_NAME = #{CERTIFICATE_NAME},
+		</if>
+		<if test="CERTIFICATE_TYPE != null">
+				CERTIFICATE_TYPE = #{CERTIFICATE_TYPE},
+		</if>
+		<if test="STATUS != null">
+				STATUS = #{STATUS},
+		</if>  
+		<if test="COMPANY_ID != null">
+				COMPANY_ID = #{COMPANY_ID},
+		</if>
+		DATE =NOW(),
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+</mapper>

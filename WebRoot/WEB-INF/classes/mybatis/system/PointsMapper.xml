@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PointsMapper">
+
+    <select id="listPage" parameterType="page" resultType="pd"> 
+		SELECT P.*,U.REAL_NAME AS REAL_NAME, D.NAME AS BIANMA_NAME FROM POINTS P 
+		LEFT JOIN app_user U ON P.USER_ID=U.ID 
+		LEFT JOIN SYS_DICTIONARIES  D ON P.POINT_TYPE=D.BIANMA  
+        WHERE  1=1 AND P.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.USER_ID !=null and pd.USER_ID !='' ">
+		    and USER_ID LIKE CONCAT(CONCAT('%', #{pd.USER_ID}),'%')
+		</if>
+		<if test="pd.POINTS !=null">	
+			and POINTS=#{pd.POINTS}
+		</if> 
+		<if test="pd.POINT_TYPE !=null">	
+			and POINT_TYPE=#{pd.POINT_TYPE}
+		</if> 
+		<if test="pd.DESCRIPTION !=null">	
+			and DESCRIPTION=#{pd.DESCRIPTION}
+		</if>
+		<if test="pd.DATE!=null">	
+			and DATE=#{pd.DATE}
+		</if>  
+	</select>  
+	
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM POINTS P 
+		LEFT JOIN app_user U ON P.USER_ID=U.ID 
+		LEFT JOIN SYS_DICTIONARIES  D ON P.POINT_TYPE=D.BIANMA  
+        WHERE  1=1 AND P.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.USER_ID !=null and pd.USER_ID !='' ">
+		    and USER_ID LIKE CONCAT(CONCAT('%', #{pd.USER_ID}),'%')
+		</if>
+		<if test="pd.POINTS !=null">	
+			and POINTS=#{pd.POINTS}
+		</if> 
+		<if test="pd.POINT_TYPE !=null">	
+			and POINT_TYPE=#{pd.POINT_TYPE}
+		</if> 
+		<if test="pd.DESCRIPTION !=null">	
+			and DESCRIPTION=#{pd.DESCRIPTION}
+		</if>
+		<if test="pd.DATE!=null">	
+			and DATE=#{pd.DATE}
+		</if>  
+	</select>  
+
+	<!-- 查询所有证件信息 -->
+	<select id="querypoint" resultType="pd">
+	SELECT * FROM POINTS where ISDEL=1
+	</select>
+	<!-- 添加 -->
+	<insert id="addpoint" parameterType="pd">
+		INSERT INTO POINTS(ID,USER_ID,POINTS,POINT_TYPE,DESCRIPTION,DATE)
+		values(#{ID},#{USER_ID},#{POINTS},#{POINT_TYPE},#{DESCRIPTION},#{DATE})  
+    </insert>
+    <!-- 修改 -->
+	<update id="uppoint" parameterType="pd" flushCache="false">
+		UPDATE POINTS SET  
+		<if test="USER_ID !=null and USER_ID !='' ">
+		    USER_ID =#{USER_ID},
+		</if>
+		<if test="POINTS !=null">	
+			POINTS=#{POINTS},
+		</if> 
+		<if test="POINT_TYPE !=null">	
+			POINT_TYPE=#{POINT_TYPE},
+		</if> 
+		<if test="DESCRIPTION !=null">	
+			DESCRIPTION=#{DESCRIPTION},	
+		</if>
+		<if test="DATE!=null">	
+			DATE=#{DATE}
+		</if>  
+			WHERE ID = #{ID}
+	</update>
+	<!-- 通过id获取所有数据 -->
+	<select id="querypointid" parameterType="pd" resultType="pd" useCache="false">
+	   SELECT * FROM POINTS  WHERE ID=#{ID}
+	</select>
+	 <!-- 批量删除 -->
+    <update id="delpoint">
+    	update POINTS set ISDEL=2 WHERE ID IN
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </update>
+     <!-- 删除 -->
+    <update id="delpointbyid" parameterType="pd">
+        update  POINTS SET ISDEL=2 WHERE ID=#{ID}
+    </update>
+    <!-- 根据证件名称进行查找 -->
+	<select id="querypointname" parameterType="pd" resultType="pd" useCache="false">
+	SELECT * FROM POINTS WHERE USER_ID=#{USER_ID} AND ISDEL=1
+	</select>
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppPayMapper"> 
+	
+	<select id="listPage" parameterType="page" resultType="pd"> 
+		SELECT * FROM PAY WHERE  1=1 AND ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.ORDER_ID !=null">
+		    AND ORDER_ID= #{pd.ORDER_ID}
+		</if>
+		<if test="pd.USER_ID !=null">
+		     AND USER_ID= #{pd.USER_ID}
+		</if>
+		<if test="pd.PRICE !=null">
+		    AND PRICE= #{pd.PRICE}
+		</if>
+		<if test="pd.STATUS !=null">
+		    AND STATUS= #{pd.STATUS}
+		</if>
+		<if test="pd.DESCRIPTION !=null">
+		    AND DESCRIPTION= #{pd.DESCRIPTION}
+		</if>
+		<if test="pd.PAY_TYPE !=null">
+		   ANND  PAY_TYPE= #{pd.PAY_TYPE}
+		</if>
+		<if test="pd.DATE !=null">
+		   AND DATE=#{pd.DATE}
+		</if> 
+	</select>  
+	
+	<select id="findCount" parameterType="page" resultType="pd">
+			SELECT COUNT(*) counts FROM PAY WHERE  1=1 AND ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.ORDER_ID !=null">
+		    AND ORDER_ID= #{pd.ORDER_ID}
+		</if>
+		<if test="pd.USER_ID !=null">
+		     AND USER_ID= #{pd.USER_ID}
+		</if>
+		<if test="pd.PRICE !=null">
+		    AND PRICE= #{pd.PRICE}
+		</if>
+		<if test="pd.STATUS !=null">
+		    AND STATUS= #{pd.STATUS}
+		</if>
+		<if test="pd.DESCRIPTION !=null">
+		    AND DESCRIPTION= #{pd.DESCRIPTION}
+		</if>
+		<if test="pd.PAY_TYPE !=null">
+		   ANND  PAY_TYPE= #{pd.PAY_TYPE}
+		</if>
+		<if test="pd.DATE !=null">
+		   AND DATE=#{pd.DATE}
+		</if> 
+	</select>   
+	
+	<!--根据Id查询 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		SELECT * FROM PAY WHERE ID=#{ID} AND ISDEL=1
+	</select>
+	 
+	<!-- 根据User_Id查询 -->
+	<select id="findByUId" parameterType="pd" resultType="pd">
+		SELECT * FROM PAY WHERE USER_ID=#{USER_ID} AND ISDEL=1
+	</select> 
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		SELECT * FROM PAY AND ISDEL=1
+	</select> 
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		INSERT INTO PAY(
+			ID,ORDER_ID,USER_ID,PRICE,STATUS,DESCRIPTION,PAY_TYPE,DATE
+		) values (
+			#{ID},#{ORDER_ID},#{USER_ID},#{PRICE},#{STATUS},#{DESCRIPTION},#{PAY_TYPE},#{DATE}
+		)
+	</insert>
+	 
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		UPDATE PAY SET
+		<if test="ORDER_ID !=null">
+		     ORDER_ID= #{ORDER_ID},
+		</if>
+		<if test="USER_ID !=null">
+		     USER_ID= #{USER_ID},
+		</if>
+		<if test="PRICE !=null">
+		     PRICE= #{PRICE},
+		</if>
+		<if test="STATUS !=null">
+		     STATUS= #{STATUS},
+		</if>
+		<if test="DESCRIPTION !=null">
+		     DESCRIPTION= #{DESCRIPTION},
+		</if>
+		<if test="PAY_TYPE !=null">
+		     PAY_TYPE= #{PAY_TYPE},
+		</if>
+		<if test="DATE !=null">
+		    DATE=#{DATE}
+		</if> 
+		WHERE ID = #{ID}
+	</update> 
+	 
+	<!-- 删除用户 -->
+	<!-- <delete id="delete" parameterType="pd">
+		DELETE FROM PAY WHERE ID = #{ID} 
+	</delete> -->
+	<update id="delete" parameterType="pd">
+		UPDATE PAY SET  
+		ISDEL='2' WHERE ID = #{ID} 
+    </update>
+</mapper>

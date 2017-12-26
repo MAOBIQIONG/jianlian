@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppNotificationMapper">
+	<!-- 系统通知列表获取接口 -->
+	<select id="findNotification"  parameterType="pd" resultType="pd">
+		select * from sys_notification where USER_ID=#{userid} or USER_ID='jianlian'
+		 ORDER BY IS_READ ASC,CREATE_DATE DESC 
+		   <if test="totalSize!=null and totalSize!=null">
+				limit 0,#{totalSize}
+		   </if>  
+	</select>
+	
+	<!-- 系统通知数量 -->
+	<select id="countNotification" parameterType="pd" resultType="pd">
+		select count(*) countS from sys_notification where USER_ID=#{userid} or USER_ID='jianlian'
+		ORDER BY IS_READ ASC,CREATE_DATE DESC  
+	   <if test="totalSize!=null and totalSize!=null">
+			limit 0,#{totalSize}
+	   </if>  
+	</select>
+	
+	<select id="queryAll" resultType="pd">
+	     SELECT * FROM sys_notification;
+	</select> 
+	
+	<select id="listByParam" parameterType="pd" resultType="pd">
+	       <!-- SELECT s.*,p.PROJECT_NAME,p.STATUS AS PRO_STATUS,a.ACTIVITY_NAME FROM sys_notification s left join project p on s.object_id=p.id and s.TABLE_NAME='project' 
+	       left join activity a on s.object_id=a.id and s.TABLE_NAME='activity' where s.USER_ID=#{userid} or s.USER_ID='jianlian' -->
+		    SELECT s.*,p.PROJECT_NAME,p.STATUS AS PRO_STATUS,a.ACTIVITY_NAME FROM sys_notification s 
+			left join project p on s.object_id=p.id and s.TABLE_NAME='project' 
+			left join activity a on s.object_id=a.id and s.TABLE_NAME='activity' 
+			where (s.USER_ID=#{userid} or s.USER_ID='jianlian') 
+			AND s.CREATE_DATE > ( SELECT u.REGISTER_DATE FROM app_user u WHERE u.ID= #{userid} )
+			ORDER BY s.IS_READ ASC,s.CREATE_DATE DESC 
+			 <if test="pageSize!=null and pageSize!=null and start!=null and start!=null">
+				limit #{start},#{pageSize}
+			</if>
+		 <!-- <if test="totalSize!=null and totalSize!=null">
+				limit 0,#{totalSize}
+		 </if> --> 
+	</select>  
+	
+	<!-- 消息总 -->
+	<select id="listByParamzong" parameterType="pd" resultType="pd">
+	       SELECT COUNT(*) AS listbpzong FROM sys_notification s left join project p on s.object_id=p.id and s.TABLE_NAME='project' 
+	       left join activity a on s.object_id=a.id and s.TABLE_NAME='activity' where s.USER_ID=#{userid} or s.USER_ID='jianlian'
+	    ORDER BY s.IS_READ ASC,s.CREATE_DATE DESC
+	</select> 
+	
+	<select id="queryCountsByParam" parameterType="pd" resultType="pd">
+	     SELECT count(*) counts FROM sys_notification where 1=1
+	     <if test="USER_ID != null and USER_ID != ''">
+				and (USER_ID = #{USER_ID} or USER_ID='jianlian')
+		</if>
+		<if test="ID != null and ID != ''">
+				and ID = #{ID}
+		</if>
+		<if test="TABLE_NAME != null and TABLE_NAME != ''">
+				and TABLE_NAME = #{TABLE_NAME}
+		</if>
+	    <if test="IS_READ != null and IS_READ != ''">
+				and IS_READ = #{IS_READ}
+		</if>
+		<if test="STATUS != null and STATUS != ''">
+				and STATUS = #{STATUS}
+		</if>
+		<if test="OBJECT_ID != null and OBJECT_ID != ''">
+				and OBJECT_ID = #{OBJECT_ID}
+		</if>
+	</select>  
+	
+	<select id="queryByParam" parameterType="pd" resultType="pd">
+	     SELECT * FROM sys_notification where 1=1
+	     <if test="USER_ID != null and USER_ID != ''">
+				and USER_ID = #{USER_ID}
+		</if>
+		<if test="ID != null and ID != ''">
+				and ID = #{ID}
+		</if>
+		<if test="TABLE_NAME != null and TABLE_NAME != ''">
+			   and	TABLE_NAME = #{TABLE_NAME}
+		</if>
+	    <if test="IS_READ != null and IS_READ != ''">
+				and IS_READ = #{IS_READ}
+		</if>
+		<if test="STATUS != null and STATUS != ''">
+				and STATUS = #{STATUS}
+		</if>
+		<if test="OBJECT_ID != null and OBJECT_ID != ''">
+				and OBJECT_ID = #{OBJECT_ID}
+		</if>
+	</select>  
+	 
+	<insert id="save" parameterType="pd">
+		INSERT INTO sys_notification(ID,CONTENT,USER_ID,CREATE_DATE,TABLE_NAME,OBJECT_ID,STATUS,DESCRIPTION)
+		   values (#{ID},#{CONTENT},#{USER_ID},#{CREATE_DATE},#{TABLE_NAME},#{OBJECT_ID},#{STATUS},#{DESCRIPTION})
+	</insert>  
+	 
+	<delete id="delete" parameterType="pd">
+		DELETE FROM  sys_notification where ID = #{ID}
+	</delete> 
+	
+	<!-- 修改系统通知信息-->
+	<update id="edit" parameterType="pd">
+		update sys_notification set IS_READ='1' where ID = #{ID}
+	</update>
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cacheMapper">
+
+	
+	<select id="listPageByStatus" parameterType="page" resultType="pd">
+	   SELECT * FROM jl_cache 
+	   where 1=1
+		<if test="pd.NAME !=null">
+		    and NAME LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%')
+		</if>
+	</select> 
+	
+	 <!-- 查询总数 -->
+	<select id="findCountByStatus" parameterType="page" resultType="pd">
+	   SELECT count(*) counts FROM jl_cache 
+	   where 1=1
+		<if test="pd.NAME !=null">
+		    and NAME LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%')
+		</if>
+	</select>
+	
+	
+	<select id="listPage" parameterType="page" resultType="pd">
+		SELECT * FROM jl_cache 
+	   	where 1=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.NAME !=null">
+		    and NAME LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%')
+		</if>
+		<if test="pd.VERSION !=null">	
+			and VERSION=#{pd.VERSION}
+		</if> 
+		<if test="pd.DESP !=null">	
+			and DESP=#{pd.DESP}
+		</if>
+		<if test="pd.MODIFY_DATE !=null">	
+			and MODIFY_DATE=#{pd.MODIFY_DATE}
+		</if>
+	</select> 
+	
+	<!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts  FROM jl_cache 
+	   	where 1=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.NAME !=null">
+		    and NAME LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%')
+		</if>
+		<if test="pd.VERSION !=null">	
+			and VERSION=#{pd.VERSION}
+		</if> 
+		<if test="pd.DESP !=null">	
+			and DESP=#{pd.DESP}
+		</if>
+		<if test="pd.MODIFY_DATE !=null">	
+			and MODIFY_DATE=#{pd.MODIFY_DATE}
+		</if>
+	</select> 
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into JL_CACHE(
+		<if test="NAME != null">
+			NAME,
+		</if>
+		<if test="VERSION != null">
+			VERSION,
+		</if>
+		<if test="DESP != null">
+			DESP,
+		</if>
+		<if test="MODIFY_DATE != null">
+			MODIFY_DATE,
+		</if>
+			ID
+		) values (
+		<if test="NAME != null">
+			#{NAME},
+		</if>
+		<if test="VERSION != null">
+			#{VERSION},
+		</if>
+		<if test="DESP != null">
+			#{DESP},
+		</if>
+		<if test="MODIFY_DATE != null">
+			#{MODIFY_DATE},
+		</if>
+			#{ID}
+		) 
+	</insert>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  JL_CACHE set 
+		<if test="NAME != null">
+			NAME=#{NAME},
+		</if>
+		<if test="VERSION != null">
+			VERSION=#{VERSION},
+		</if>
+		<if test="DESP != null">
+			DESP=#{DESP},
+		</if>
+		<if test="MODIFY_DATE != null">
+			MODIFY_DATE=#{MODIFY_DATE},
+		</if>
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	
+	<!-- 删除缓存 -->
+	<update id="delete" parameterType="pd">
+		DELETE FROM JL_CACHE WHERE ID=#{ID}
+	</update>
+	
+	<!-- 根据编号查讯项目详情 -->
+	<select id="querybyid" parameterType="page" resultType="pd">
+	   SELECT * FROM JL_CACHE
+		where ID=#{ID}
+	</select>   
+	
+	<update id="update" parameterType="pd">
+		UPDATE JL_CACHE SET VERSION=VERSION+1 
+	</update>
+</mapper>

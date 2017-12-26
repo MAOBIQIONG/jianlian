@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppUserMapper">
+	<!-- 登录用户返回格式 -->
+	<resultMap type="pd" id="loginUserBean">
+		<result column="USER_ID" property="USER_ID" />
+		<result column="NAME" property="NAME" />
+		<result column="PORTRAIT_URI" property="PORTRAIT_URI" />
+		<result column="STATUS" property="STATUS" />
+		<result column="IS_VIP" property="IS_VIP" />
+		<result column="DUE_TIME" property="DUE_TIME" />
+	</resultMap>
+
+	<!-- 判断用户名和密码 -->
+	<select id="login" parameterType="pd" resultType="pd" useCache="false">
+		select 
+		u.USER_ID,
+		u.USERNAME,
+		u.USER_TYPE_ID,
+		u.USER_TYPE,
+		u.IMTOKEN
+		from SYS_APP_USER u
+		where 1=1 AND u.ISDEL=1
+		<if test="USERNAME != null and PASSWORD != null">
+	  	and	(
+	  		(USERNAME = #{USERNAME} and PASSWORD = #{PASSWORD})
+	  		or
+	  		(EMAIL = #{USERNAME} and PASSWORD = #{PASSWORD})
+	  		or
+	  		(NUMBER = #{USERNAME} and PASSWORD = #{PASSWORD})
+	  		)
+		</if>
+		
+	</select>
+	<!--获取学生信息-->
+	<select id="getStudentInfo" parameterType="pd" resultType="pd" useCache="false">
+		select
+			u.USER_ID,
+			u.USERNAME,
+			u.USER_TYPE_ID,
+			u.USER_TYPE,
+			u.IMTOKEN,
+			s.NAME,
+			u.PORTRAITURI,
+			s.AGE,
+			s.PHONE,
+			s.SEX
+		from 
+			Y_STUDENT s left join SYS_APP_USER u on u.USER_TYPE_ID = s.ID
+		where 
+			s.ID = #{USER_TYPE_ID} AND s.ISDEL=1
+	</select>
+	
+	<!--获取老师信息-->
+	<select id="getTeacherInfo" parameterType="pd" resultType="pd" useCache="false">
+		select
+			u.USER_ID,
+			u.USERNAME,
+			u.USER_TYPE_ID,
+			u.USER_TYPE,
+			u.IMTOKEN,
+			t.NAME,
+			u.PORTRAITURI,
+			t.AGE,
+			t.PHONE,
+			t.SEX,
+			t.SUBJECT,
+			t.GRADE,
+			t.LEVEL,
+			t.STAR
+		from 
+			Y_TEACHER t left join SYS_APP_USER u on u.USER_TYPE_ID = t.ID
+		where 
+			t.ID = #{USER_TYPE_ID} AND t.ISDEL=1
+	</select>
+	
+	<!-- 通过id获取数据 -->
+	<select id="findByUId" parameterType="pd" resultType="pd">
+		select b.USER_ID,
+		b.USERNAME,
+		b.PHONE,
+		b.EMAIL,
+		b.IS_VIP,
+		b.DUE_TIME,
+		b.NAME
+		from
+		SYS_APP_USER b
+		where
+		b.USER_ID = #{USER_ID} AND b.ISDEL=1
+	</select>
+	<!-- 通过username获取数据 -->
+	<select id="findByUsername" parameterType="pd" resultType="pd">
+		select
+			b.USER_TYPE_ID, 
+			b.USER_TYPE,
+			b.USER_ID,
+			b.PORTRAITURI
+		from
+			SYS_APP_USER b 
+		where
+			b.USERNAME = #{USERNAME} AND b.ISDEL=1
+	</select>
+	<!-- 通过username获取数据 -->
+	<select id="findByUsernameS" parameterType="pd" resultType="pd">
+		select 
+			s.NAME,
+			b.USER_ID,
+			b.PORTRAITURI
+		from
+			SYS_APP_USER b left join Y_STUDENT s on b.USER_TYPE_ID = s.ID
+		where
+			s.ID = #{USER_TYPE_ID} AND b.ISDEL=1
+	</select>
+	<!-- 通过username获取数据 -->
+	<select id="findByUsernameT" parameterType="pd" resultType="pd">
+		select 
+			s.NAME,
+			b.USER_ID,
+			b.PORTRAITURI
+		from
+			SYS_APP_USER b left join Y_TEACHER s on b.USER_TYPE_ID = s.ID
+		where
+			s.ID = #{USER_TYPE_ID} AND b.ISDEL=1
+	</select>
+	<!-- 通过PHONE获取数据 -->
+	<select id="findByPhone" parameterType="pd" resultType="pd">
+		select b.USER_ID,
+			b.USERNAME,
+			b.PHONE,
+			b.EMAIL,
+			b.IS_VIP,
+			b.DUE_TIME,
+			b.NAME
+		from
+			SYS_APP_USER b
+		where
+			b.USERNAME = #{PHONE} AND b.ISDEL=1 
+	</select>
+	
+	<!-- 通过id获取数据 -->
+	<select id="findCoByUId" parameterType="pd" resultType="pd">
+		select b.USER_ID,
+		b.USERNAME,
+		b.PHONE as MOBILE,
+		b.EMAIL,
+		b.IS_VIP,
+		b.DUE_TIME,
+		b.NAME,
+		c.ID AS COMPANY_ID,
+		c.COMPANY_NAME,
+		c.CITY,
+		c.PROVINCE,
+		c.COUNTY,
+		c.COUNTRY,
+		c.ADDRESS,
+		c.LOGO,
+		c.COMPANY_TYPE,
+		c.NATURE,
+		c.SCALE,
+		c.BUSINESS_SCOPE,
+		c.LINKMAN,
+		c.PHONE,
+		c.BUSINESS_LICENSE 
+		from
+		SYS_APP_USER b left join company_info c on b.COMPANY_ID = c.ID
+		where
+		b.USER_ID = #{USER_ID} AND b.ISDEL=1
+	</select>
+	
+	<!-- 更新登录时间 -->
+	<update id="updateLastLogin" parameterType="pd" flushCache="false">
+		update SYS_APP_USER set 
+		LAST_LOGIN = #{LAST_LOGIN} 
+		where USER_ID = #{USER_ID}
+	</update>
+	<!-- 修改密码 -->
+	<update id="updatePassword" parameterType="pd" flushCache="false">
+		update SYS_APP_USER set 
+		PASSWORD = #{PASSWORD} 
+		where USER_ID = #{USER_ID}
+	</update>
+	
+	<!-- 更新个推CID,手机型号 -->
+	<update id="updateCID" parameterType="pd" flushCache="false">
+		update SYS_APP_USER set 
+		<if test="CID != null">
+				GTCID = #{CID} ,
+		</if>
+		<if test="MOBILE_TYPE != null">
+				MOBILE_TYPE = #{MOBILE_TYPE}
+		</if>
+		where USER_ID = #{USER_ID}
+	</update>
+	
+	<!-- 更新企业信息 -->
+	<update id="updateCompanyId" parameterType="pd" flushCache="false">
+		update SYS_APP_USER set 
+		COMPANY_ID = #{COMPANY_ID} 
+		where USER_ID = #{USER_ID}
+	</update>
+	
+	<insert id="saveU">
+		insert into SYS_APP_USER
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="USER_ID != null">
+				USER_ID,
+			</if>
+			<if test="USERNAME != null">
+				USERNAME,
+			</if>
+			<if test="PASSWORD != null">
+				PASSWORD,
+			</if>
+			<if test="USER_TYPE_ID != null">
+				USER_TYPE_ID,
+			</if>
+			<if test="USER_TYPE != null">
+				USER_TYPE,
+			</if>
+			<if test="IMTOKEN != null">
+				IMTOKEN,
+			</if>
+			<if test="PORTRAITURI != null">
+				PORTRAITURI,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="USER_ID != null">
+				#{USER_ID},
+			</if>
+			<if test="USERNAME != null">
+				#{USERNAME},
+			</if>
+			<if test="PASSWORD != null">
+				#{PASSWORD},
+			</if>
+			<if test="USER_TYPE_ID != null">
+				#{USER_TYPE_ID},
+			</if>
+			<if test="USER_TYPE != null">
+				#{USER_TYPE},
+			</if>
+			<if test="IMTOKEN != null">
+				#{IMTOKEN},
+			</if>
+			<if test="PORTRAITURI != null">
+				#{PORTRAITURI},
+			</if>
+		</trim>
+	</insert>
+
+</mapper>

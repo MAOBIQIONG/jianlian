@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OperLogMapper">  
+	<!-- 列出二级角色信息 -->
+	<select id="listAllOperLog" resultType="pd">
+	     SELECT * FROM oper_log;
+	</select>
+	 
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		<!-- SELECT ID, USER_ID,IP_ADDR,OPER_TYPE,OPER_OBJECT,OPER_DATE -->
+		SELECT O.*,U.NAME AS USER_NAME FROM oper_log O LEFT JOIN SYS_USER U ON O.USER_ID=U.ID where 1=1 
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.USER_ID !=null">
+			    and USER_ID= #{pd.USER_ID}
+			</if>
+			<if test="pd.IP_ADDR !=null">	
+				and IP_ADDR LIKE CONCAT(CONCAT('%', #{pd.IP_ADDR}),'%')
+			</if>
+			<if test="pd.OPER_TYPE !=null">	
+				and OPER_TYPE LIKE CONCAT(CONCAT('%', #{pd.OPER_TYPE}),'%')
+			</if>
+			<if test="pd.OPER_OBJECT !=null">	
+				and OPER_OBJECT LIKE CONCAT(CONCAT('%', #{pd.OPER_OBJECT}),'%')
+			</if>
+			<if test="pd.START_DATE !=null">	
+				and OPER_DATE &gt;= #{pd.START_DATE}
+			</if> 
+			<if test="pd.END_DATE !=null">	
+				and OPER_DATE &lt;= #{pd.END_DATE}
+			</if> 
+	</select> 
+	
+	<select id="findCount" parameterType="page" resultType="pd"> 
+		SELECT count(*) counts FROM oper_log O LEFT JOIN SYS_USER U ON O.USER_ID=U.ID where 1=1  
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.USER_ID !=null">
+			    and USER_ID= #{pd.USER_ID}
+			</if>
+			<if test="pd.IP_ADDR !=null">	
+				and IP_ADDR LIKE CONCAT(CONCAT('%', #{pd.IP_ADDR}),'%')
+			</if>
+			<if test="pd.OPER_TYPE !=null">	
+				and OPER_TYPE LIKE CONCAT(CONCAT('%', #{pd.OPER_TYPE}),'%')
+			</if>
+			<if test="pd.OPER_OBJECT !=null">	
+				and OPER_OBJECT LIKE CONCAT(CONCAT('%', #{pd.OPER_OBJECT}),'%')
+			</if>
+			<if test="pd.START_DATE !=null">	
+				and OPER_DATE &gt;= #{pd.START_DATE}
+			</if> 
+			<if test="pd.END_DATE !=null">	
+				and OPER_DATE &lt;= #{pd.END_DATE}
+			</if> 
+	</select> 
+	
+	<!-- <insert id="saveOperLog" parameterType="pd">
+		INSERT INTO oper_log(ID, USER_ID,IP_ADDR,OPER_TYPE,OPER_OBJECT,OPER_DATE)
+		   values (#{ID},#{USER_ID},#{IP_ADDR},#{OPER_TYPE},#{OPER_OBJECT},#{OPER_DATE} )
+	</insert>  --> 
+	
+	<update id="updateOperLog" parameterType="pd">
+		UPDATE oper_log  SET  
+			<if test="USER_ID !=null">
+			    USER_ID= #{USER_ID}
+			</if>
+			<if test="IP_ADDR !=null">	
+				IP_ADDR=#{IP_ADDR}
+			</if>
+			<if test="OPER_TYPE !=null">	
+				OPER_TYPE=#{OPER_TYPE}
+			</if>
+			<if test="OPER_OBJECT !=null">	
+				OPER_OBJECT=#{OPER_OBJECT}
+			</if>
+			<if test="OPER_DATE !=null">	
+				OPER_DATE=#{OPER_DATE}
+			</if> 
+			WHERE ID = #{ID}
+	</update> 
+	 
+	<delete id="deleteOperLogById" parameterType="pd">
+		DELETE FROM  oper_log where ID = #{ID}
+	</delete>
+	
+	 <!-- 批量删除 -->
+    <delete id="delMulty">
+    	DELETE FROM oper_log where ID in
+		<foreach collection="array" item="des" open="(" close=")" separator=",">
+			#{des}
+		</foreach>
+    </delete>  
+    
+    <insert id="saveOperLog" parameterType="pd">
+    	insert into oper_log (
+    		ID,
+    		USER_ID,
+    		IP_ADDR,
+    		OPER_TYPE,
+    		OPER_OBJECT,
+    		OPER_DATE
+    	)values(
+    		#{ID},
+    		#{USER_ID},
+    		#{IP_ADDR},
+    		#{OPER_TYPE},
+    		#{OPER_OBJECT},
+    		#{OPER_DATE}
+    	
+    	)
+    </insert>
+</mapper>

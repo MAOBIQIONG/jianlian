@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/aop   
+        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  
+        http://www.springframework.org/schema/util    
+        http://www.springframework.org/schema/util/spring-util.xsd	
+		http://www.springframework.org/schema/websocket
+		http://www.springframework.org/schema/websocket/spring-websocket.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<mvc:annotation-driven />
+	<mvc:default-servlet-handler />
+
+	<context:component-scan base-package="com.fh.controller" />
+	<context:component-scan base-package="com.json" />
+
+	<!-- 对静态资源文件的访问 restful -->
+	<mvc:resources mapping="/admin/**" location="/,/admin/" />
+	<mvc:resources mapping="/static/**" location="/,/static/" />
+	<mvc:resources mapping="/H-ui/**" location="/,/H-ui/" />
+	<mvc:resources mapping="/plugins/**" location="/,/plugins/" />
+	<mvc:resources mapping="/ueditor/**" location="/,/ueditor/" />
+	
+	<!-- 一定要添加annotation扫描,否则会出现406错误码-->
+    <mvc:annotation-driven />
+    <context:component-scan base-package="com.fh.*"> 
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+    </context:component-scan>
+    
+   <!-- 启用spring对AspectJ注解的支持 -->  
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<bean id="logAopAction" class="com.fh.util.LogAopAction"/>
+
+	<!-- 访问拦截 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**/**" />
+			<bean class="com.fh.interceptor.LoginHandlerInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<mvc:annotation-driven>
+		<!-- 处理responseBody 里面日期类型 -->
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="objectMapper">
+					<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+						<property name="dateFormat">
+							<bean class="java.text.SimpleDateFormat">
+								<constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
+							</bean>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- 配置SpringMVC的视图解析器 -->
+	 <bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean> 
+	
+	<bean id="exceptionResolver" class="com.fh.resolver.MyExceptionResolver"></bean>
+	<!-- 上传拦截，如最大上传值及最小上传值 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize">
+			<value>104857600</value>
+		</property>
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+		<property name="defaultEncoding">
+			<value>utf-8</value>
+		</property>
+	</bean>
+	
+<!-- 	<bean id="websocket" class="com.fh.plugin.pythonsocket.WebsocketEndPoint" /> -->
+
+<!-- 	<websocket:handlers> -->
+<!-- 		<websocket:mapping path="/websocket" handler="websocket" /> -->
+<!-- 		<websocket:handshake-interceptors> -->
+<!-- 			<bean class="com.fh.plugin.pythonsocket.HandshakeInterceptor" /> -->
+<!-- 		</websocket:handshake-interceptors> -->
+<!-- 	</websocket:handlers> -->
+
+</beans>

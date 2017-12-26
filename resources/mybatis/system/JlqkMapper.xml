@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="JlqkMapper">
+	
+	<!-- 查询列表信息-->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+	 SELECT Q.*,S.NAME AS USER_NAME FROM JL_QK Q LEFT JOIN SYS_USER S ON Q.USER_ID=S.ID 
+	 WHERE Q.ISDEL=1 
+	    <if test="pd.ID !=null and pd.ID !=''">
+			and Q.ID = #{pd.ID}
+	    </if>
+	    <if test="pd.TITLE !=null and pd.TITLE !=''">
+		    and Q.TITLE  LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%') 
+		</if>
+	    <if test="pd.VERSION !=null and pd.VERSION !=''">	
+			and Q.VERSION = #{pd.VERSION}
+		</if>   
+		<if test="pd.USER_NAME !=null and pd.USER_NAME !=''">	 
+			and S.NAME  LIKE CONCAT(CONCAT('%', #{pd.USER_NAME}),'%') 
+		</if>
+		<if test="pd.CREATE_DATE !=null and pd.CREATE_DATE !=''">	
+			and Q.CREATE_DATE = #{pd.CREATE_DATE}
+		</if> 
+	</select> 
+	
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd"> 
+		 SELECT count(*) counts FROM JL_QK Q LEFT JOIN SYS_USER S ON Q.USER_ID=S.ID  WHERE Q.ISDEL=1  
+		 <if test="pd.ID !=null and pd.ID !=''">
+			and Q.ID = #{pd.ID}
+	    </if>
+	    <if test="pd.TITLE !=null and pd.TITLE !=''">
+		    and Q.TITLE  LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%') 
+		</if>
+	    <if test="pd.VERSION !=null and pd.VERSION !=''">	
+			and Q.VERSION = #{pd.VERSION}
+		</if>   
+		<if test="pd.USER_NAME !=null and pd.USER_NAME !=''">	 
+			and S.NAME  LIKE CONCAT(CONCAT('%', #{pd.USER_NAME}),'%') 
+		</if>
+		<if test="pd.CREATE_DATE !=null and pd.CREATE_DATE !=''">	
+			and Q.CREATE_DATE = #{pd.CREATE_DATE}
+		</if> 
+	</select> 
+	
+	<select id="queryById" parameterType="pd" resultType="pd">
+	   SELECT * FROM JL_QK WHERE ID=#{ID}
+	</select>
+	
+	 <!-- 添加用户信息 -->
+	<insert id="save" parameterType="pd"> 
+		INSERT INTO  JL_QK ( ID,TITLE,VERSION,COVER_PATH,ABOUT,QK_PATH,USER_ID,CREATE_DATE) VALUES (
+		#{ID}, #{TITLE}, #{VERSION}, #{COVER_PATH}, #{ABOUT},#{QK_PATH}, #{USER_ID}, #{CREATE_DATE} )
+	</insert>  
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		UPDATE JL_QK SET
+		<if test="TITLE !=null and TITLE !='' ">
+			TITLE=#{TITLE},	
+		</if>
+		<if test="VERSION !=null and VERSION !='' ">
+			VERSION=#{VERSION},	
+		</if>
+		<if test="COVER_PATH !=null and COVER_PATH !='' ">
+			COVER_PATH=#{COVER_PATH},	
+		</if>
+		<if test="ABOUT !=null and ABOUT !='' ">
+			ABOUT=#{ABOUT},	
+		</if>
+		<if test="USER_ID !=null and USER_ID !='' ">
+			USER_ID=#{USER_ID},	
+		</if> 
+		<if test="CREATE_DATE !=null and CREATE_DATE !='' ">
+			CREATE_DATE=#{CREATE_DATE},
+		</if> 
+		<if test="QK_PATH !=null and QK_PATH !='' ">
+			QK_PATH=#{QK_PATH},
+		</if> 
+		ID = #{ID} WHERE ID = #{ID}
+	</update> 
+	
+     <update id="delete" parameterType="pd">
+		UPDATE JL_QK SET ISDEL='2' WHERE ID=#{ID} 
+	</update> 
+</mapper>

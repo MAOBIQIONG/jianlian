@@ -1,0 +1,85 @@
+body{
+-webkit-animation: fadeIn  0.6s ease 0s 1 both;
+//overflow: hidden;
+}
+.img {
+	width: 61px;
+	height: 30px;
+	margin-right: 10px;
+	vertical-align: bottom;
+	line-height: 30px;
+}
+.foodMain{
+	margin-top:140px;
+	position: relative;
+	hegiht:100%;
+}
+.mui-table-view:nth-of-type(1){
+-webkit-animation: bounceInLeft  1s ease 0s 1 both;
+-moz-animation: bounceInLeft  1s ease 0s 1 both;
+-o-animation: bounceInLeft  1s ease 0s 1 both;
+animation: bounceInLeft  1s ease 0s 1 both;
+}
+.mui-table-view:nth-of-type(2){
+-webkit-animation: bounceInLeft  1s ease 0.2s 1 both;
+-moz-animation: bounceInLeft  1s ease 0.2s 1 both;
+-o-animation: bounceInLeft  1s ease 0.2s 1 both;
+animation: bounceInLeft  1s ease 0.2s 1 both;
+}
+.mui-table-view:nth-of-type(3){
+-webkit-animation: bounceInLeft  1s ease 0.4s 1 both;
+-moz-animation: bounceInLeft  1s ease 0.4s 1 both;
+-o-animation: bounceInLeft  1s ease 0.4s 1 both;
+animation: bounceInLeft  1s ease 0.4s 1 both;
+}
+.mui-table-view:nth-of-type(4){
+-webkit-animation: bounceInLeft  1s ease 0.6s 1 both;
+-moz-animation: bounceInLeft  1s ease 0.6s 1 both;
+-o-animation: bounceInLeft  1s ease 0.6s 1 both;
+animation: bounceInLeft  1s ease 0.6s 1 both;
+}
+.mui-table-view:nth-of-type(5){
+-webkit-animation: bounceInLeft  1s ease 0.8s 1 both;
+-moz-animation: bounceInLeft  1s ease 0.8s 1 both;
+-o-animation: bounceInLeft  1s ease 0.8s 1 both;
+animation: bounceInLeft  1s ease 0.8s 1 both;
+}
+.mui-table-view:nth-of-type(6){
+-webkit-animation: bounceInLeft  1s ease 1.0s 1 both;
+-moz-animation: bounceInLeft  1s ease 1.0s 1 both;
+-o-animation: bounceInLeft  1s ease 1.0s 1 both;
+animation: bounceInLeft  1s ease 1.0s 1 both;
+}
+.mui-table-view:nth-of-type(7){
+-webkit-animation: bounceInLeft  1s ease 1.2s 1 both;
+-moz-animation: bounceInLeft  1s ease 1.2s 1 both;
+-o-animation: bounceInLeft  1s ease 1.2s 1 both;
+animation: bounceInLeft  1s ease 1.2s 1 both;
+}
+
+.foot_name{
+}
+.foot_time{
+	color:#999;
+}
+
+.item-right{
+	float: left;
+}
+.like{
+}
+.like .heart{
+	width:20px;
+	margin:5px;
+	transition: all 0.35s ease 0s;
+	opacity:0.5;
+	vertical-align: bottom;
+}
+.like .big-heart{
+	-webkit-transform:scale(1.7,1.7) ;
+	-o-transform:scale(1.3,1.3);
+	-moz-transform:scale(1.3,1.3);
+	opacity:1;
+}
+
+

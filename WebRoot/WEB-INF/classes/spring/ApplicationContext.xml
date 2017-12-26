@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/cache
+           http://www.springframework.org/schema/cache/spring-cache.xsd
+           http://www.springframework.org/schema/task  
+			http://www.springframework.org/schema/task/spring-task.xsd">
+	<!-- 启用注解 -->
+	<context:annotation-config />
+
+	<!-- 缓存 属性 -->
+	<bean id="cacheManagerFactory"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml" />
+	</bean>
+
+	<!-- 默认是cacheManager -->
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="cacheManagerFactory" />
+	</bean>
+
+	<!-- 支持缓存注解 -->
+	<cache:annotation-driven cache-manager="cacheManager" />
+
+
+	<!-- 启动组件扫描，排除@Controller组件，该组件由SpringMVC配置文件扫描 -->
+	<context:component-scan base-package="com.fh">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:dbconfig.properties</value>
+				<value>classpath:config.properties</value>
+				<value>classpath:ping.properties</value> 
+			</list>
+		</property>
+	</bean>
+
+	<!-- 只读数据库 -->
+	<bean id="readDs" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<!-- 数据库基本信息配置 -->
+		<property name="url" value="${read.url}" />
+		<property name="username" value="${read.username}" />
+		<property name="password" value="${read.password}" />
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="filters" value="${filters}" />
+		<!-- 最大并发连接数 -->
+		<property name="maxActive" value="${maxActive}" />
+		<!-- 初始化连接数量 -->
+		<property name="initialSize" value="${initialSize}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${maxWait}" />
+		<!-- 最小空闲连接数 -->
+		<property name="minIdle" value="${minIdle}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}" />
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testWhileIdle" value="${testWhileIdle}" />
+		<property name="testOnBorrow" value="${testOnBorrow}" />
+		<property name="testOnReturn" value="${testOnReturn}" />
+		<property name="maxOpenPreparedStatements" value="${maxOpenPreparedStatements}" />
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="${removeAbandoned}" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="${logAbandoned}" />
+	</bean>
+
+	<!-- 写数据库 -->
+	<bean id="writeDs" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<!-- 数据库基本信息配置 -->
+		<property name="url" value="${write.url}" />
+		<property name="username" value="${write.username}" />
+		<property name="password" value="${write.password}" />
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="filters" value="${filters}" />
+		<!-- 最大并发连接数 -->
+		<property name="maxActive" value="${maxActive}" />
+		<!-- 初始化连接数量 -->
+		<property name="initialSize" value="${initialSize}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${maxWait}" />
+		<!-- 最小空闲连接数 -->
+		<property name="minIdle" value="${minIdle}" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}" />
+		<property name="validationQuery" value="${validationQuery}" />
+		<property name="testWhileIdle" value="${testWhileIdle}" />
+		<property name="testOnBorrow" value="${testOnBorrow}" />
+		<property name="testOnReturn" value="${testOnReturn}" />
+		<property name="maxOpenPreparedStatements" value="${maxOpenPreparedStatements}" />
+		<!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandoned" value="${removeAbandoned}" />
+		<!-- 1800秒，也就是30分钟 -->
+		<property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}" />
+		<!-- 关闭abanded连接时输出错误日志 -->
+		<property name="logAbandoned" value="${logAbandoned}" />
+	</bean>
+
+	<bean id="dataSource" class="com.fh.util.ChooseDataSource">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<!-- write -->
+				<entry key="write" value-ref="writeDs" />
+				<!-- read -->
+				<entry key="read" value-ref="readDs" />
+			</map>
+
+		</property>
+		<property name="defaultTargetDataSource" ref="writeDs" />
+	</bean>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="delete*" propagation="REQUIRED" read-only="false"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="insert*" propagation="REQUIRED" read-only="false"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="update*" propagation="REQUIRED" read-only="false"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="save*" propagation="REQUIRED" read-only="false"
+				rollback-for="java.lang.Exception" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 激活自动代理功能 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<!-- 配置数据库注解aop -->
+	<bean id="dataSourceAspect" class="com.fh.util.DataSourceAspect" />
+	<!-- 配置数据库注解aop -->
+	<aop:config>
+		<aop:aspect id="pc" ref="dataSourceAspect">
+			<aop:pointcut id="tx" expression="execution(* com.fh.service..*.*(..))" />
+			<aop:before pointcut-ref="tx" method="before" />
+		</aop:aspect>
+	</aop:config>
+
+	<!-- 事务处理 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean name="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- 配置mybatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml"></property>
+		<!-- mapper扫描 -->
+		<property name="mapperLocations" value="classpath:mybatis/*/**/*.xml"></property>
+	</bean>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- jpush 设定 -->
+<!-- 	<bean id="parentPushService" class="com.fh.service.util.ParentPushService"> -->
+<!-- 		<property ref="parentPushConfig" name="config" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="teacherPushService" class="com.fh.service.util.ParentPushService"> -->
+<!-- 		<property ref="teacherPushConfig" name="config" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="parentPushConfig" class="com.fh.service.util.JPushConfig"> -->
+<!-- 		<property name="appKey" value="${push.parent.appKey}" /> -->
+<!-- 		<property name="appSecret" value="${push.parent.secret}" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="teacherPushConfig" class="com.fh.service.util.JPushConfig"> -->
+<!-- 		<property name="appKey" value="${push.teacher.appKey}" /> -->
+<!-- 		<property name="appSecret" value="${push.teacher.secret}" /> -->
+<!-- 	</bean> -->
+
+	<!-- 定时任务 -->
+	<task:annotation-driven />
+
+	<bean id="appurl" class="com.fh.controller.app.AppUrl">
+		<!-- 不用验证参数直接进入 -->
+		<property name="permitted">
+			<list>
+				<value>appuser/teacher/login</value>
+				<value>appuser/parent/login</value>
+				<value>apprs/food/index</value>
+				<value>apprs/course/index</value>
+				<value>appuser/yssm</value>
+				<value>appuser/gnjs</value>
+				<value>appnavigation/index</value>
+				<value>appuser/tofindpw</value>
+				<value>appuser/tosuggest</value>
+				<value>appuser/suggest/publish</value>
+				<value>appuser/aboutus</value>
+				<value>appuser/password/reset</value>
+				<value>appuser/login/validsms/send</value>
+			</list>
+		</property>
+	</bean>
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++JOB开始++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<!--要调度的对象-->
+  	<bean id="jobBean1" class="com.fh.controller.system.job.CommJob1" />  
+  	<bean id="jobBean2" class="com.fh.controller.system.job.CommJob2" />
+    <bean id="jobDetail_1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject" ref="jobBean1" />  
+        <property name="targetMethod" value="execute" />  
+       <!--将并发设置为false -->     
+        <property name="concurrent" value="false" />  
+    </bean>  
+    <bean id="jobDetail2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject" ref="jobBean2" />  
+        <property name="targetMethod" value="execute" />  
+      	<!--  将并发设置为false     --> 
+        <property name="concurrent" value="false" />  
+    </bean>
+  
+  
+    <bean id="trigger_1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail" ref="jobDetail_1" />  
+       <!-- 表达式，60分钟触发一次     -->
+        <property name="cronExpression" value="0 0/60 * * * ?" />
+    </bean> 
+    <bean id="trigger_2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail" ref="jobDetail2" />  
+         <!-- 表达式，每天中午12点触发    -->
+        <property name="cronExpression" value="0 0 12 * * ?" />
+    </bean>
+  
+     <!--总管理类如果将lazy-init='false'那么容器启动就会执行调度程序    -->
+   <bean id="startQuertz" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="true" >  
+        <property name="triggers">  
+            <list>  
+                <!--作业调度器,list下可加入其他的调度器     --> 
+                <ref bean="trigger_1" />  
+                <ref bean="trigger_2" />
+            </list>  
+        </property>  
+    </bean>
+    
+	
+
+   <!--+++++++++++++++++++++++++++++++++++++++++++++++++JOB结束++++++++++++++++++++++++++++++++++++++++++++++++++-->
+</beans>

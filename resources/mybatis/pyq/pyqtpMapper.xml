@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pyqtpMapper">
+    
+    <!-- 添加图片-->
+	<insert id="save" parameterType="pd">
+		insert into JL_PYQ_TP(
+		<if test="IMG_PATH != null">
+			IMG_PATH,
+		</if>
+		<if test="RELATED_ID != null">
+			RELATED_ID,
+		</if>
+		<if test="ORDER_BY != null">
+			ORDER_BY,
+		</if>
+		<if test="IMG_H != null">
+			IMG_H,
+		</if>
+		<if test="IMG_W != null">
+			IMG_W,
+		</if>
+			ID
+		) values (
+		<if test="IMG_PATH != null">
+			#{IMG_PATH},
+		</if>
+		<if test="RELATED_ID != null">
+			#{RELATED_ID},
+		</if>
+		<if test="ORDER_BY != null">
+			#{ORDER_BY},
+		</if>
+		<if test="IMG_H != null">
+			#{IMG_H},
+		</if>
+		<if test="IMG_W != null">
+			#{IMG_W},
+		</if>
+			#{ID}
+		) 
+	</insert>
+    
+     <!-- 删除图片 -->
+	 <delete id="del" parameterType="pd">
+		delete from JL_PYQ_TP where ID IN 
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+	 </delete>  
+    
+    <!--根据项目id查询项目的图片-->
+    <select id="queryByPid" parameterType="pd" resultType="pd">
+   		SELECT * FROM JL_PYQ_TP WHERE RELATED_ID=#{RELATED_ID}
+	</select> 
+	
+	 <!--根据项目id查询图片最大排序数-->
+    <select id="queryMaxOrderby" parameterType="pd" resultType="pd">
+   		SELECT MAX(ORDER_BY) AS ORDER_BY FROM JL_PYQ_TP WHERE RELATED_ID=#{RELATED_ID}
+	</select>   
+	
+	<!-- 朋友圈图片信息-->
+	<update id="edit" parameterType="pd">
+		update  JL_PYQ_TP set 
+		<if test="IMG_PATH !=null and IMG_PATH !='' ">
+		     IMG_PATH= #{IMG_PATH},
+		</if>
+		<if test="ORDER_BY !=null and ORDER_BY!='' ">	
+			ORDER_BY=#{ORDER_BY},
+		</if>  
+		<if test="RELATED_ID !=null and RELATED_ID!='' ">	
+			RELATED_ID=#{RELATED_ID},
+		</if>  
+		<if test="IMG_H !=null and IMG_H!='' ">	
+			IMG_H=#{IMG_H},
+		</if>  
+		<if test="IMG_W !=null and IMG_W!='' ">	
+			IMG_W=#{IMG_W},
+		</if>  
+		ID = #{TP_ID} where ID = #{TP_ID}
+	</update>   
+</mapper>

@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BusinessMapper">
+	
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+	 SELECT AY.*,(CASE WHEN  U.NAME IS NOT NULL THEN U.NAME WHEN  U.NAME IS NULL THEN AU.REAL_NAME END ) AS CREATE_NAME, 
+	 CASE AY.STATUS WHEN '01' THEN '未审核' WHEN  '02' THEN '审核未通过' WHEN '03' THEN '审核通过' end as STATUS_NAME, 
+	 case AY.IS_FREE when '1' then '免费' when '2' then '不免费'end AS I_FREE ,D.NAME AS TYPE_NAME,case AY.IS_HOT when '1' then '热门' when '0' then '非热门' end AS HOT
+     FROM activity AY LEFT JOIN app_user AU ON AY.USER_ID=AU.ID LEFT JOIN sys_user U ON AY.CREATE_BY=U.ID LEFT JOIN sys_dictionaries D ON D.BIANMA=AY.ACT_TYPE WHERE 1=1 and AY.ISDEL=1 AND AY.HDORSX=2
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.ACT_NAME !=null">
+			    and ACT_NAME  LIKE CONCAT(CONCAT('%', #{pd.ACT_NAME}),'%') 
+			</if>
+			<if test="pd.ACT_TYPE !=null">	
+				and ACT_TYPE = #{pd.ACT_TYPE}
+			</if>
+			<if test="pd.ACT_CONTENT !=null">	
+				and ACT_CONTENT  = #{pd.ACT_CONTENT}
+			</if>
+			<if test="pd.ACT_ADDR !=null">	
+				and ACT_ADDR = #{pd.ACT_ADDR}
+			</if>
+			<if test="pd.START_DATE !=null">	
+				and START_DATE  = #{pd.START_DATE}
+			</if>
+			<if test="pd.ACT_IMG !=null">	
+				and ACT_IMG = #{pd.ACT_IMG}
+			</if>
+			<if test="pd.LINK_URL !=null">	
+				and LINK_URL = #{pd.LINK_URL}
+			</if>
+			<if test="pd.USER_ID !=null">	
+				and USER_ID = #{pd.USER_ID}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE = #{pd.CREATE_DATE}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY = #{pd.CREATE_BY}
+			</if>
+			<if test="pd.STATUS !=null">	
+				and STATUS = #{pd.STATUS}
+			</if>
+			<if test="pd.KEY_WORDS !=null">	
+				and KEY_WORDS = #{pd.KEY_WORDS}
+			</if>
+			<if test="pd.LIMIT_COUNT !=null">	
+				and LIMIT_COUNT = #{pd.LIMIT_COUNT}
+			</if>
+			<if test="pd.PRICE !=null">	
+				and PRICE= #{pd.PRICE}
+			</if>
+			<if test="pd.VIP_PRICE !=null">	
+				and VIP_PRICE = #{pd.VIP_PRICE}
+			</if>
+			<if test="pd.VICE_PRE_PRICE !=null">	
+				and VICE_PRE_PRICE = #{pd.VICE_PRE_PRICE}
+			</if>
+			<if test="pd.EXE_VICE_PRE_PRICE_PRICE !=null">	
+				and EXE_VICE_PRE_PRICE = #{pd.EXE_VICE_PRE_PRICE}
+			</if>
+			<if test="pd.PRESIDENT_PRICE !=null">	
+				and PRESIDENT_PRICE  = #{pd.PRESIDENT_PRICE}
+			</if>
+			<if test="pd.IS_FREE !=null">	
+				and IS_FREE = #{pd.IS_FREE}
+			</if>
+			<if test="pd.END_DATE !=null">	
+				and END_DATE = #{pd.END_DATE}
+			</if>
+			<if test="pd.ACT_CITY !=null">	
+				and ACT_CITY = #{pd.ACT_CITY}
+			</if> 
+			<if test="pd.PART_COUNT !=null">	
+				and PART_COUNT = #{pd.PART_COUNT}
+			</if>  
+	</select> 
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+			 SELECT count(*) counts FROM activity AY LEFT JOIN app_user AU ON AY.USER_ID=AU.ID 
+			 LEFT JOIN sys_user U ON AY.CREATE_BY=U.ID LEFT JOIN sys_dictionaries D ON D.BIANMA=AY.ACT_TYPE WHERE AY.ISDEL=1 AND AY.HDORSX=2	
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.ACT_NAME !=null">
+			    and ACT_NAME  LIKE CONCAT(CONCAT('%', #{pd.ACT_NAME}),'%') 
+			</if>
+			<if test="pd.ACT_TYPE !=null">	
+				and ACT_TYPE = #{pd.ACT_TYPE}
+			</if>
+			<if test="pd.ACT_CONTENT !=null">	
+				and ACT_CONTENT  = #{pd.ACT_CONTENT}
+			</if>
+			<if test="pd.ACT_ADDR !=null">	
+				and ACT_ADDR = #{pd.ACT_ADDR}
+			</if>
+			<if test="pd.START_DATE !=null">	
+				and START_DATE  = #{pd.START_DATE}
+			</if>
+			<if test="pd.ACT_IMG !=null">	
+				and ACT_IMG = #{pd.ACT_IMG}
+			</if>
+			<if test="pd.LINK_URL !=null">	
+				and LINK_URL = #{pd.LINK_URL}
+			</if>
+			<if test="pd.USER_ID !=null">	
+				and USER_ID = #{pd.USER_ID}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE = #{pd.CREATE_DATE}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY = #{pd.CREATE_BY}
+			</if>
+			<if test="pd.STATUS !=null">	
+				and STATUS = #{pd.STATUS}
+			</if>
+			<if test="pd.KEY_WORDS !=null">	
+				and KEY_WORDS = #{pd.KEY_WORDS}
+			</if>
+			<if test="pd.LIMIT_COUNT !=null">	
+				and LIMIT_COUNT = #{pd.LIMIT_COUNT}
+			</if>
+			<if test="pd.PRICE !=null">	
+				and PRICE= #{pd.PRICE}
+			</if>
+			<if test="pd.VIP_PRICE !=null">	
+				and VIP_PRICE = #{pd.VIP_PRICE}
+			</if>
+			<if test="pd.VICE_PRE_PRICE !=null">	
+				and VICE_PRE_PRICE = #{pd.VICE_PRE_PRICE}
+			</if>
+			<if test="pd.EXE_VICE_PRE_PRICE_PRICE !=null">	
+				and EXE_VICE_PRE_PRICE = #{pd.EXE_VICE_PRE_PRICE}
+			</if>
+			<if test="pd.PRESIDENT_PRICE !=null">	
+				and PRESIDENT_PRICE  = #{pd.PRESIDENT_PRICE}
+			</if>
+			<if test="pd.IS_FREE !=null">	
+				and IS_FREE = #{pd.IS_FREE}
+			</if>
+			<if test="pd.END_DATE !=null">	
+				and END_DATE = #{pd.END_DATE}
+			</if>
+			<if test="pd.ACT_CITY !=null">	
+				and ACT_CITY = #{pd.ACT_CITY}
+			</if> 
+			<if test="pd.PART_COUNT !=null">	
+				and PART_COUNT = #{pd.PART_COUNT}
+			</if>  
+	</select> 
+	<select id="queryById" resultType="pd">
+	   SELECT A.*,S.AREANAME,S.AREACODE,S.PARENTID FROM ACTIVITY A LEFT JOIN SYS_AREA S ON S.AREANAME=A.ACT_CITY WHERE A.ID=#{ID} AND A.HDORSX=2
+	</select> 
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into ACTIVITY(
+		<if test="ACT_NAME != null">
+			ACT_NAME,
+		</if>
+		<if test="ACT_TYPE != null">
+			ACT_TYPE,
+		</if>
+		<if test="ACT_CONTENT != null">
+			ACT_CONTENT,
+		</if>
+		<if test="ACT_CITY != null">
+			ACT_CITY,
+		</if>
+		<if test="ACT_ADDR != null">
+			ACT_ADDR,
+		</if>
+		<if test="START_DATE != null">
+			START_DATE,	
+		</if>
+		<if test="END_DATE != null">	
+			END_DATE,
+		</if>
+		<if test="DUE_DATE != null">
+			DUE_DATE,
+		</if>
+		<if test="ACT_IMG != null">
+			ACT_IMG,
+		</if>
+		<if test="LINK_URL != null">
+			LINK_URL,
+		</if>
+		<if test="USER_ID != null">
+			USER_ID,
+		</if>
+		<if test="CREATE_DATE != null">
+			CREATE_DATE,
+		</if>
+		<if test="CREATE_BY != null">
+			CREATE_BY,
+		</if>
+		<if test="STATUS != null">
+			STATUS,
+		</if>
+		<if test="KEY_WORDS != null">
+			KEY_WORDS,
+		</if>
+		<if test="LIMIT_COUNT != null">
+			LIMIT_COUNT,
+		</if>
+		<if test="PART_COUNT != null">
+			PART_COUNT,
+		</if>
+		<if test="COLLECT_COUNT != null">
+			COLLECT_COUNT,
+		</if>
+		<if test="PRICE != null">
+			PRICE,
+		</if>
+		<if test="VIP_PRICE != null">
+			VIP_PRICE,
+		</if>
+		<if test="VICE_PRE_PRICE != null">
+			VICE_PRE_PRICE,
+		</if>
+		<if test="EXE_VICE_PRE_PRICE != null">
+			EXE_VICE_PRE_PRICE,
+		</if>
+		<if test="PRESIDENT_PRICE != null">
+			PRESIDENT_PRICE,
+		</if>
+		<if test="IS_FREE != null">
+			IS_FREE,
+		</if>
+		<if test="FEE_DESCRIPTION != null">
+			FEE_DESCRIPTION,
+		</if>
+		<if test="SPONSOR != null">
+			SPONSOR,
+		</if>
+		<if test="HEADPHONE != null">
+			HEADPHONE,
+		</if>
+		<if test="NOPASSREASON != null">
+			NOPASSREASON,
+		</if>
+		<if test="IS_HOT != null">
+			IS_HOT,
+		</if>
+		<if test="DETAILS_IMG != null">
+			DETAILS_IMG,
+		</if>
+		<if test="YY_IMG != null">
+			YY_IMG,
+		</if>
+		<if test="HDORSX != null">
+			HDORSX,
+		</if>
+			ID
+		) values (
+		<if test="ACT_NAME != null">
+			#{ACT_NAME},
+		</if>
+		<if test="ACT_TYPE != null">
+			#{ACT_TYPE},
+		</if>
+		<if test="ACT_CONTENT != null">
+			#{ACT_CONTENT},
+		</if>
+		<if test="ACT_CITY != null">
+			#{ACT_CITY},
+		</if>
+		<if test="ACT_ADDR != null">
+			#{ACT_ADDR},
+		</if>
+		<if test="START_DATE != null">
+			#{START_DATE},	
+		</if>
+		<if test="END_DATE != null">	
+			#{END_DATE},
+		</if>
+		<if test="DUE_DATE != null">
+			#{DUE_DATE},
+		</if>
+		<if test="ACT_IMG != null">
+			#{ACT_IMG},
+		</if>
+		<if test="LINK_URL != null">
+			#{LINK_URL},
+		</if>
+		<if test="USER_ID != null">
+			#{USER_ID},
+		</if>
+		<if test="CREATE_DATE != null">
+			#{CREATE_DATE},
+		</if>
+		<if test="CREATE_BY != null">
+			#{CREATE_BY},
+		</if>
+		<if test="STATUS != null">
+			#{STATUS},
+		</if>
+		<if test="KEY_WORDS != null">
+			#{KEY_WORDS},
+		</if>
+		<if test="LIMIT_COUNT != null">
+			#{LIMIT_COUNT},
+		</if>
+		<if test="PART_COUNT != null">
+			#{PART_COUNT},
+		</if>
+		<if test="COLLECT_COUNT != null">
+			#{COLLECT_COUNT},
+		</if>
+		<if test="PRICE != null">
+			#{PRICE},
+		</if>
+		<if test="VIP_PRICE != null">
+			#{VIP_PRICE},
+		</if>
+		<if test="VICE_PRE_PRICE != null">
+			#{VICE_PRE_PRICE},
+		</if>
+		<if test="EXE_VICE_PRE_PRICE != null">
+			#{EXE_VICE_PRE_PRICE},
+		</if>
+		<if test="PRESIDENT_PRICE != null">
+			#{PRESIDENT_PRICE},
+		</if>
+		<if test="IS_FREE != null">
+			#{IS_FREE},
+		</if>
+		<if test="FEE_DESCRIPTION != null">
+			#{FEE_DESCRIPTION},
+		</if>
+		<if test="SPONSOR != null">
+			#{SPONSOR},
+		</if>
+		<if test="HEADPHONE != null">
+			#{HEADPHONE},
+		</if>
+		<if test="NOPASSREASON != null">
+			#{NOPASSREASON},
+		</if>
+		<if test="IS_HOT != null">
+			#{IS_HOT},
+		</if>
+		<if test="DETAILS_IMG != null">
+			#{DETAILS_IMG},
+		</if>
+		<if test="YY_IMG != null">
+			#{YY_IMG},
+		</if>
+		<if test="HDORSX != null">
+			#{HDORSX},
+		</if>
+			#{ID}
+		) 
+	</insert>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  ACTIVITY set 
+		<if test="ACT_NAME != null">
+			ACT_NAME=#{ACT_NAME},
+		</if>
+		<if test="ACT_TYPE != null">
+			ACT_TYPE=#{ACT_TYPE},
+		</if>
+		<if test="ACT_CONTENT != null">
+			ACT_CONTENT=#{ACT_CONTENT},
+		</if>
+		<if test="ACT_CITY != null">
+			ACT_CITY=#{ACT_CITY},
+		</if>
+		<if test="ACT_ADDR != null">
+			ACT_ADDR=#{ACT_ADDR},
+		</if>
+		<if test="START_DATE != null">
+			START_DATE=#{START_DATE},	
+		</if>
+		<if test="END_DATE != null">	
+			END_DATE=#{END_DATE},
+		</if>
+		<if test="DUE_DATE != null">
+			DUE_DATE=#{DUE_DATE},
+		</if>
+		<if test="ACT_IMG != null">
+			ACT_IMG=#{ACT_IMG},
+		</if>
+		<if test="LINK_URL != null">
+			LINK_URL=#{LINK_URL},
+		</if>
+		<if test="USER_ID != null">
+			USER_ID=#{USER_ID},
+		</if>
+		<if test="CREATE_DATE != null">
+			CREATE_DATE=#{CREATE_DATE},
+		</if>
+		<if test="CREATE_BY != null">
+			CREATE_BY=#{CREATE_BY},
+		</if>
+		<if test="STATUS != null">
+			STATUS=#{STATUS},
+		</if>
+		<if test="KEY_WORDS != null">
+			KEY_WORDS=#{KEY_WORDS},
+		</if>
+		<if test="LIMIT_COUNT != null">
+			LIMIT_COUNT=#{LIMIT_COUNT},
+		</if>
+		<if test="PART_COUNT != null">
+			PART_COUNT=#{PART_COUNT},
+		</if>
+		<if test="COLLECT_COUNT != null">
+			COLLECT_COUNT=#{COLLECT_COUNT},
+		</if>
+		<if test="PRICE != null">
+			PRICE=#{PRICE},
+		</if>
+		<if test="VIP_PRICE != null">
+			VIP_PRICE=#{VIP_PRICE},
+		</if>
+		<if test="VICE_PRE_PRICE != null">
+			VICE_PRE_PRICE=#{VICE_PRE_PRICE},
+		</if>
+		<if test="EXE_VICE_PRE_PRICE != null">
+			EXE_VICE_PRE_PRICE=#{EXE_VICE_PRE_PRICE},
+		</if>
+		<if test="PRESIDENT_PRICE != null">
+			PRESIDENT_PRICE=#{PRESIDENT_PRICE},
+		</if>
+		<if test="IS_FREE != null">
+			IS_FREE=#{IS_FREE},
+		</if>  
+		<if test="FEE_DESCRIPTION != null">
+			FEE_DESCRIPTION=#{FEE_DESCRIPTION},
+		</if> 
+		<if test="SPONSOR != null">
+			SPONSOR=#{SPONSOR},
+		</if> 
+		<if test="HEADPHONE != null">
+			HEADPHONE=#{HEADPHONE},
+		</if> 
+		<if test="NOPASSREASON != null">
+			NOPASSREASON=#{NOPASSREASON},
+		</if> 
+		<if test="IS_HOT != null">
+			IS_HOT=#{IS_HOT},
+		</if> 
+		<if test="DETAILS_IMG != null">
+			DETAILS_IMG=#{DETAILS_IMG},
+		</if> 
+		<if test="YY_IMG != null">
+			YY_IMG=#{YY_IMG},
+		</if>
+		<if test="HDORSX != null">
+			HDORSX=#{HDORSX},
+		</if> 
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	 <update id="delete" parameterType="pd">
+		UPDATE ACTIVITY SET ISDEL='2' WHERE ID=#{ID}
+	</update>
+	
+	<!-- 修改活动封面路径 -->
+	<update id="updateImgPath" parameterType="pd">
+		UPDATE ACTIVITY SET  ACT_IMG=#{ACT_IMG} WHERE ID=#{ID}
+    </update> 
+	
+	 <!-- 添加活动等级信息 -->
+	<insert id="addactivityLevel" parameterType="pd" flushCache="false">
+		INSERT INTO  ACTIVITY_LEVEL (ID,ACTIVITY_ID,BIANMA, DATE) 
+		VALUES (#{ID},#{ACTIVITY_ID},#{BIANMA},#{DATE})
+	</insert>
+	
+	 
+     <update id="deleteLevel" parameterType="pd" flushCache="false">
+		delete from ACTIVITY_LEVEL WHERE 1=1 
+    	<if test="ACTIVITY_ID !=null">	
+			and ACTIVITY_ID = #{ACTIVITY_ID}
+		</if>
+		<if test="ID !=null">	
+			and ID=#{ID}
+		</if>
+	</update>
+	 
+    
+    <update id="delactivity" parameterType="pd" flushCache="false">
+		UPDATE ACTIVITY SET ISDEL='2' WHERE ID IN 
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+	</update>
+     
+     <update id="delActivityHonor" parameterType="pd" flushCache="false">
+		delete from  ACTIVITY_HONOR WHERE ACTIVITY_ID IN
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+	</update>
+     
+    <update id="delActHonorById" parameterType="pd">
+		delete from  ACTIVITY_HONOR WHERE ACTIVITY_ID=#{ID}
+	</update>
+    
+   
+     <!-- 禁止 -->
+     <update id="upstatus" parameterType="pd" flushCache="false">
+		UPDATE ACTIVITY SET STATUS=${STATUS} WHERE ID=#{ID}
+	</update>
+	 
+	<!--根据活动名称查找所有信息  -->
+	<select id="querybyname" resultType="pd">
+	SELECT * FROM ACTIVITY WHERE ACT_NAME=#{ACT_NAME} and ISDEL=1
+	</select>
+	
+		<!-- 修改收藏次数 -->
+	<update id="updateCounts" parameterType="pd">
+		UPDATE ACTIVITY SET  
+		<if test="COLLECT_COUNT != null and COLLECT_COUNT !=''">
+		   COLLECT_COUNT=COLLECT_COUNT+1,
+		</if>
+		<if test="PART_COUNT != null and PART_COUNT !=''">
+		   PART_COUNT=PART_COUNT+1,
+		</if> 
+		ID=#{ACT_ID} WHERE ID=#{ACT_ID}
+    </update>  
+    
+    <!--根据userid查找用户姓名  -->
+	<select id="querybyuserName" parameterType="pd" resultType="pd">
+	SELECT REAL_NAME FROM activity AY,app_user AU WHERE AY.USER_ID=AU.ID AND USER_ID=#{USER_ID}
+	</select> 
+	
+	<!-- 创建人 -->
+	<select id="querybycreateName" parameterType="pd" resultType="pd">
+	SELECT REAL_NAME FROM activity AY,app_user AU WHERE AY.CREATE_BY=AU.ID AND CREATE_BY=#{CREATE_BY}
+	</select> 
+	
+	<!--统计未审核的记录数 -->
+	<select id="queryMsgByStatus" resultType="pd">
+		select count(*) activity_counts from  activity  where status='01' AND HDORSX=2
+	</select>  
+    
+    <!--根据活动ID查询活动等级 -->
+	<select id="queryLevelbyAid" parameterType="pd" resultType="pd">
+		select *  from  activity_level  where activity_id=#{activity_id}
+	</select>  
+</mapper>

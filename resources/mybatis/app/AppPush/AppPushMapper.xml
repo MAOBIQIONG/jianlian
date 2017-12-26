@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppPushMapper">
+    <!-- 根据USER_ID查询我的证件信息-->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT AU.REAL_NAME,AU.POSITION,CP.COMPANY_NAME,AU.VIP_LEVEL,SD.NAME,AU.CLIENT_ID,AU.PLATFORM,AU.ID FROM sys_dictionaries SD RIGHT JOIN  app_user AU ON SD.BIANMA=AU.VIP_LEVEL LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		WHERE 1=1 AND AU.ISDEL=1
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''"> 
+			and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''"> 
+			and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%')
+		</if>
+		<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''"> 
+			and AU.VIP_LEVEL =#{pd.VIP_LEVEL}
+		</if>
+	</select> 
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM sys_dictionaries SD RIGHT JOIN  app_user AU ON SD.BIANMA=AU.VIP_LEVEL LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		WHERE 1=1 AND AU.ISDEL=1
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''"> 
+			and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''"> 
+			and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%')
+		</if>
+		<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''"> 
+			and AU.VIP_LEVEL =#{pd.VIP_LEVEL}
+		</if>
+	</select>
+</mapper>

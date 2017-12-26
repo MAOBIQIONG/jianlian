@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RecomMapper">
+   <select id="listPageByStatus" parameterType="page" resultType="pd">
+	   SELECT JJX.ID,JJX.TITLE,JJX.CONETENT,SU.NAME,JJX.CREATE_DATE,JJX.STATUS
+		FROM jl_jlb_sxy JJX LEFT JOIN sys_user SU ON JJX.CREATE_BY=SU.id 
+		WHERE JJX.ISDEL=1 and JJX.TYPE='1'
+		<if test="pd.TITLE !=null">
+		    and TITLE LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%')
+		</if>
+	</select> 
+	
+	 <!-- 查询总数 -->
+	<select id="findCountByStatus" parameterType="page" resultType="pd"> 
+		 SELECT count(*) counts FROM jl_jlb_sxy JJX LEFT JOIN sys_user SU ON JJX.CREATE_BY=SU.id WHERE JJX.ISDEL=1 and JJX.TYPE='1'
+		<if test="pd.TITLE !=null">
+		    and TITLE LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%')
+		</if>
+	</select>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into jl_jlb_sxy(
+		<if test="TITLE != null">
+			TITLE,
+		</if>
+		<if test="COVER_PATH != null">
+			COVER_PATH,
+		</if>
+		<if test="COMMENT_COUNT != null">
+			COMMENT_COUNT,
+		</if>
+		<if test="CONETENT != null">
+			CONETENT,
+		</if>
+		<if test="SHARE_COUNT != null">
+			SHARE_COUNT,
+		</if>
+		<if test="TYPE != null">
+			TYPE,	
+		</if>
+		<if test="LIKE_COUNT != null">	
+			LIKE_COUNT,
+		</if>
+		<if test="COLLECT_COUNT != null">
+			COLLECT_COUNT,
+		</if>
+		<if test="CREATE_BY != null">
+			CREATE_BY,
+		</if>
+		<if test="CREATE_DATE != null">
+			CREATE_DATE,
+		</if>
+		<if test="STATUS != null">
+			STATUS,
+		</if>
+		<if test="PUBLISH_DATE != null">
+			PUBLISH_DATE,
+		</if>
+		<if test="IS_TOP != null">
+			IS_TOP,
+		</if> 
+			ID
+		) values (
+		<if test="TITLE != null">
+			#{TITLE},
+		</if>
+		<if test="COVER_PATH != null">
+			#{COVER_PATH},
+		</if>
+		<if test="COMMENT_COUNT != null">
+			#{COMMENT_COUNT},
+		</if>
+		<if test="CONETENT != null">
+			#{CONETENT},
+		</if>
+		<if test="SHARE_COUNT != null">
+			#{SHARE_COUNT},
+		</if>
+		<if test="TYPE != null">
+			#{TYPE},	
+		</if>
+		<if test="LIKE_COUNT != null">	
+			#{LIKE_COUNT},
+		</if>
+		<if test="COLLECT_COUNT != null">
+			#{COLLECT_COUNT},
+		</if>
+		<if test="CREATE_BY != null">
+			#{CREATE_BY},
+		</if>
+		<if test="CREATE_DATE != null">
+			#{CREATE_DATE},
+		</if>
+		<if test="STATUS != null">
+			#{STATUS},
+		</if>
+		<if test="PUBLISH_DATE != null">
+			#{PUBLISH_DATE},
+		</if>
+		<if test="IS_TOP != null">
+			#{IS_TOP},
+		</if> 
+			#{ID}
+		) 
+	</insert>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  jl_jlb_sxy set 
+		<if test="TITLE !=null">
+		     TITLE= #{TITLE},
+		</if>
+		<if test="CONETENT !=null">	
+			CONETENT=#{CONETENT},
+		</if> 
+		<if test="COVER_PATH !=null">	
+			COVER_PATH=#{COVER_PATH},
+		</if> 
+		<if test="MODIFY_BY !=null">	
+			MODIFY_BY=#{MODIFY_BY},
+		</if>
+		<if test="MODIFY_DATE !=null">	
+			MODIFY_DATE=#{MODIFY_DATE},
+		</if> 
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd"> 
+		SELECT ID,TITLE,CONETENT,COVER_PATH FROM jl_jlb_sxy 
+		WHERE ID=#{ID} AND ISDEL=1 
+	</select>
+	
+	<!-- 新闻上下线 -->
+     <update id="updates" parameterType="pd">
+      update jl_jlb_sxy set STATUS=#{status} WHERE ID=#{ID} 
+    </update>
+    
+    <!-- 删除 -->
+     <update id="delsxyByid" parameterType="pd">
+      update jl_jlb_sxy set ISDEL=2 WHERE ID=#{ID} 
+    </update>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CardHistoryMapper"> 
+
+	<!-- 查询城市建联成员数量 -->
+	<select id="queryMaxCard" parameterType="String" resultType="pd"> 
+		SELECT max(CARD_NO) as code from JL_CARD_HISTORY where CARD_NO LIKE  CONCAT(CONCAT('%', #{CODE}), '%')
+	</select>   
+	
+	<!-- 查询用户的卡号在历史表中是否存在 -->
+	<select id="queryCardIsIn" parameterType="String" resultType="pd"> 
+		 SELECT H.ID AS HID,H.CARD_NO,A.* FROM APP_USER A LEFT JOIN JL_CARD_HISTORY H ON A.ID=H.USER_ID AND H.CARD_NO=A.CARD_NO WHERE H.USER_ID=#{{USER_ID}
+	</select>  
+ 
+	 <!-- 添加用户卡号历史表信息 -->
+	<insert id="save" parameterType="pd"> 
+		INSERT INTO JL_CARD_HISTORY ( ID,USER_ID,CARD_NO,IS_USED,START_TIME,END_TIME,CREATE_DATE) 
+		VALUES (#{ID},#{USER_ID},#{CARD_NO},#{IS_USED},#{START_TIME},#{END_TIME},#{CREATE_DATE})
+	</insert>  
+    
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		UPDATE  JL_CARD_HISTORY SET 
+			<if test="USER_ID !=null">	
+				USER_ID=#{USER_ID},
+			</if>  
+			<if test="CARD_NO !=null">	
+				CARD_NO=#{CARD_NO},	
+			</if>  
+			<if test="IS_USED !=null">	
+				IS_USED=#{IS_USED},	
+			</if>  
+			<if test="START_TIME !=null">	
+				START_TIME=#{START_TIME},	
+			</if>  
+			<if test="END_TIME !=null">	
+				END_TIME=#{END_TIME},	  
+			</if> 
+			<if test="CREATE_DATE !=null">	
+				CREATE_DATE=#{CREATE_DATE},	  
+			</if>  
+			 ID = #{ID} 
+			WHERE ID = #{ID}
+	</update> 
+</mapper>

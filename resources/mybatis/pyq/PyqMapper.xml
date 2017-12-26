@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PyqMapper">
+
+	
+	<select id="listPageByStatus" parameterType="page" resultType="pd">
+	   SELECT JP.*,AU.REAL_NAME FROM jl_pyq JP LEFT JOIN app_user AU ON JP.USER_ID=AU.ID LEFT JOIN jl_pyq_pl PL ON PL.PYQ_ID=JP.ID
+	   where JP.ISDEL=1
+		<if test="pd.REAL_NAME !=null">
+		    and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+	</select> 
+	
+	 <!-- 查询总数 -->
+	<select id="findCountByStatus" parameterType="page" resultType="pd">
+	   SELECT count(*) counts FROM jl_pyq JP LEFT JOIN app_user AU ON JP.USER_ID=AU.ID LEFT JOIN jl_pyq_pl PL ON PL.PYQ_ID=JP.ID
+	   where JP.ISDEL=1
+		<if test="pd.REAL_NAME !=null">
+		    and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+	</select>
+	
+	
+	<select id="listPage" parameterType="page" resultType="pd">
+		SELECT JP.*,AU.REAL_NAME,(SELECT count(*) FROM jl_pyq_pl PL WHERE PL.PYQ_ID=JP.ID AND PL.ISDEL=1) as plshu,(SELECT count(*) FROM jl_pyq_dz DZ WHERE DZ.PYQ_ID=JP.ID ) as dzshu FROM jl_pyq JP LEFT JOIN app_user AU ON JP.USER_ID=AU.ID
+	   	where JP.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null">
+		    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.USER_ID !=null">	
+			and USER_ID=#{pd.USER_ID}
+		</if> 
+		<if test="pd.PUBLISH_DATE !=null">	
+			and PUBLISH_DATE=#{pd.PUBLISH_DATE}
+		</if>
+		<if test="pd.CONETENT !=null">	
+			and CONETENT=#{pd.CONETENT}
+		</if>
+		<if test="pd.COMMENT_COUNT !=null">	
+			and COMMENT_COUNT=#{pd.COMMENT_COUNT}
+		</if>
+		<if test="pd.LIKE_COUNT !=null">	
+			and LIKE_COUNT=#{pd.LIKE_COUNT}
+		</if>
+		<if test="pd.SHARE_COUNT !=null">	
+			and SHARE_COUNT=#{pd.SHARE_COUNT}
+		</if>
+		<if test="pd.CITY !=null">	
+			and CITY=#{pd.CITY}
+		</if>
+		<if test="pd.ADDR !=null">	
+			and ADDR=#{pd.ADDR}
+		</if>
+		<if test="pd.LNG !=null">	
+			and LNG=#{pd.LNG}
+		</if>
+		<if test="pd.LAT !=null">	
+			and LAT=#{pd.LAT}
+		</if>
+		<if test="pd.STATUS !=null">	
+			and STATUS=#{pd.STATUS}
+		</if>
+	</select> 
+	
+	<!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts  FROM jl_pyq JP LEFT JOIN app_user AU ON JP.USER_ID=AU.ID
+	   	where JP.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.REAL_NAME !=null">
+		    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.USER_ID !=null">	
+			and USER_ID=#{pd.USER_ID}
+		</if> 
+		<if test="pd.PUBLISH_DATE !=null">	
+			and PUBLISH_DATE=#{pd.PUBLISH_DATE}
+		</if>
+		<if test="pd.CONETENT !=null">	
+			and CONETENT=#{pd.CONETENT}
+		</if>
+		<if test="pd.COMMENT_COUNT !=null">	
+			and COMMENT_COUNT=#{pd.COMMENT_COUNT}
+		</if>
+		<if test="pd.LIKE_COUNT !=null">	
+			and LIKE_COUNT=#{pd.LIKE_COUNT}
+		</if>
+		<if test="pd.SHARE_COUNT !=null">	
+			and SHARE_COUNT=#{pd.SHARE_COUNT}
+		</if>
+		<if test="pd.CITY !=null">	
+			and CITY=#{pd.CITY}
+		</if>
+		<if test="pd.ADDR !=null">	
+			and ADDR=#{pd.ADDR}
+		</if>
+		<if test="pd.LNG !=null">	
+			and LNG=#{pd.LNG}
+		</if>
+		<if test="pd.LAT !=null">	
+			and LAT=#{pd.LAT}
+		</if>
+		<if test="pd.STATUS !=null">	
+			and STATUS=#{pd.STATUS}
+		</if>
+	</select> 
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into jl_pyq(
+		<if test="USER_ID != null">
+			USER_ID,
+		</if>
+		<if test="PUBLISH_DATE != null">
+			PUBLISH_DATE,
+		</if>
+		<if test="CONETENT != null">
+			CONETENT,
+		</if>
+		<if test="COMMENT_COUNT != null">
+			COMMENT_COUNT,
+		</if>
+		<if test="LIKE_COUNT != null">
+			LIKE_COUNT,
+		</if>
+		<if test="SHARE_COUNT != null">
+			SHARE_COUNT,
+		</if>
+		<if test="CITY != null">
+			CITY,
+		</if>
+		<if test="ADDR != null">
+			ADDR,
+		</if>
+		<if test="LNG != null">
+			LNG,
+		</if>
+		<if test="LAT != null">
+			LAT,
+		</if>
+		<if test="STATUS != null">
+			STATUS,
+		</if>
+			ID
+		) values (
+		<if test="USER_ID != null">
+			#{USER_ID},
+		</if>
+		<if test="PUBLISH_DATE != null">
+			#{PUBLISH_DATE},
+		</if>
+		<if test="CONETENT != null">
+			#{CONETENT},
+		</if>
+		<if test="COMMENT_COUNT != null">
+			#{COMMENT_COUNT},
+		</if>
+		<if test="LIKE_COUNT != null">
+			#{LIKE_COUNT},
+		</if>
+		<if test="SHARE_COUNT != null">
+			#{SHARE_COUNT},
+		</if>
+		<if test="CITY != null">
+			#{CITY},
+		</if>
+		<if test="ADDR != null">
+			#{ADDR},
+		</if>
+		<if test="LNG != null">
+			#{LNG},
+		</if>
+		<if test="LAT != null">
+			#{LAT},
+		</if>
+		<if test="STATUS != null">
+			#{STATUS},
+		</if>
+			#{ID}
+		) 
+	</insert>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  jl_pyq set 
+		<if test="USER_ID != null">
+			USER_ID=#{USER_ID},
+		</if>
+		<if test="PUBLISH_DATE != null">
+			PUBLISH_DATE=#{PUBLISH_DATE},
+		</if>
+		<if test="CONETENT != null">
+			CONETENT=#{CONETENT},
+		</if>
+		<if test="COMMENT_COUNT != null">
+			COMMENT_COUNT=#{COMMENT_COUNT},
+		</if>
+		<if test="LIKE_COUNT != null">
+			LIKE_COUNT=#{LIKE_COUNT},
+		</if>
+		<if test="SHARE_COUNT != null">
+			SHARE_COUNT=#{SHARE_COUNT},
+		</if>
+		<if test="CITY != null">
+			CITY=#{CITY},
+		</if>
+		<if test="ADDR != null">
+			ADDR=#{ADDR},
+		</if>
+		<if test="LNG != null">
+			LNG=#{LNG},
+		</if>
+		<if test="LAT != null">
+			LAT=#{LAT},
+		</if>
+		<if test="STATUS != null">
+			STATUS=#{STATUS},
+		</if>	
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	
+	<!-- 删除朋友圈 -->
+	<update id="delete" parameterType="pd">
+		update jl_pyq set ISDEL=2 where ID=#{ID}
+	</update>
+	
+	<!-- 根据编号查讯项目详情 -->
+	<select id="querybyid" parameterType="pd" resultType="pd">
+	   SELECT JP.*,AU.REAL_NAME FROM jl_pyq JP LEFT JOIN APP_USER AU ON JP.USER_ID=AU.ID 
+		where JP.ID=#{ID}
+	</select> 
+	
+	<!-- <select id="querybyplid" parameterType="pd" resultType="pd">
+		SELECT PL.*,AU.REAL_NAME FROM jl_pyq_pl PL LEFT JOIN jl_pyq PQ ON PL.PYQ_ID=PQ.ID LEFT JOIN APP_USER AU ON AU.ID=PL.USER_ID  WHERE PQ.ID=#{ID}
+	</select> -->
+	
+	
+	<select id="querybyplid" parameterType="pd" resultType="pd">
+		SELECT * FROM jl_pyq_pl WHERE ID=#{ID}
+	</select> 
+	
+	
+	<select id="lsitplParam" parameterType="page" resultType="pd">
+		SELECT PL.*,AU.REAL_NAME FROM jl_pyq_pl PL LEFT JOIN jl_pyq PQ ON PL.PYQ_ID=PQ.ID LEFT JOIN APP_USER AU ON AU.ID=PL.USER_ID 
+		WHERE PQ.ID=#{pd.ID} and PL.ISDEL=1
+		 <if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if> 
+	</select>
+	
+	<select id="lsitplcounts" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM jl_pyq_pl PL LEFT JOIN jl_pyq PQ ON PL.PYQ_ID=PQ.ID LEFT JOIN APP_USER AU ON AU.ID=PL.USER_ID  
+		WHERE PQ.ID=#{pd.ID} and PL.ISDEL=1
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if> 
+	</select>
+	
+	<!-- 删除朋友圈评论 -->
+	<update id="pldelete" parameterType="pd">
+		update jl_pyq_pl set ISDEL=2 where ID=#{ID}
+	</update>
+	
+	
+	<select id="lsitDZParam" parameterType="page" resultType="pd">
+		SELECT DZ.*,AU.REAL_NAME FROM jl_pyq_dz DZ LEFT JOIN JL_PYQ PQ ON DZ.PYQ_ID=PQ.ID LEFT JOIN APP_USER AU ON AU.ID=DZ.USER_ID
+		WHERE PQ.ID=#{pd.ID} 
+		 <if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if> 
+	</select>
+	
+	<select id="lsitDZcounts" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM jl_pyq_dz DZ LEFT JOIN JL_PYQ PQ ON DZ.PYQ_ID=PQ.ID LEFT JOIN APP_USER AU ON AU.ID=DZ.USER_ID
+		WHERE PQ.ID=#{pd.ID} 
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if> 
+	</select>
+</mapper>

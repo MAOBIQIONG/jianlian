@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ClubMapper">
+	<!--查询所有  -->
+	<select id="queryClub" resultType="pd">
+	SELECT * FROM  CLUB_RESERVATION
+	</select>
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT C.*,case C.STATUS when '0' then '待审核' when '1' then '审核未通过' when '2' then '审核通过' end AS STATUS_NAME,D.NAME as TYPE_NAME 
+		FROM CLUB_RESERVATION C LEFT JOIN sys_dictionaries D  ON C.TYPE_ID =D.BIANMA WHERE 1=1 AND C.ISDEL=1
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.START_DATE !=null">
+			    and START_DATE  LIKE CONCAT(CONCAT('%', #{pd.START_DATE}),'%') 
+			</if>
+			<if test="pd.END_DATE !=null">	
+				and END_DATE LIKE CONCAT(CONCAT('%', #{pd.END_DATE}),'%')
+			</if>
+			<if test="pd.TYPE_ID !=null">	
+				and TYPE_ID LIKE CONCAT(CONCAT('%', #{pd.TYPE_ID}),'%')
+			</if>
+			<if test="pd.PEOPLE_AMOUNT !=null">	
+				and PEOPLE_AMOUNT LIKE CONCAT(CONCAT('%', #{pd.PEOPLE_AMOUNT}),'%')
+			</if>
+			<if test="pd.LINK_MAN !=null">	
+				and LINK_MAN LIKE CONCAT(CONCAT('%', #{pd.LINK_MAN}),'%')
+			</if>
+			<if test="pd.LINK_PHONE !=null">	
+				and LINK_PHONE LIKE CONCAT(CONCAT('%', #{pd.LINK_PHONE}),'%')
+			</if>
+			<if test="pd.DESCRIPTION !=null">	
+				and DESCRIPTION LIKE CONCAT(CONCAT('%', #{pd.DESCRIPTION}),'%')
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE LIKE CONCAT(CONCAT('%', #{pd.CREATE_DATE}),'%')
+			</if>
+			<if test="pd.MODIFY_BY !=null">	
+				and MODIFY_BY LIKE CONCAT(CONCAT('%', #{pd.MODIFY_BY}),'%')
+			</if>
+	</select>
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM CLUB_RESERVATION C LEFT JOIN sys_dictionaries D  ON C.TYPE_ID =D.BIANMA WHERE 1=1 AND C.ISDEL=1
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.START_DATE !=null">
+			    and START_DATE  LIKE CONCAT(CONCAT('%', #{pd.START_DATE}),'%') 
+			</if>
+			<if test="pd.END_DATE !=null">	
+				and END_DATE LIKE CONCAT(CONCAT('%', #{pd.END_DATE}),'%')
+			</if>
+			<if test="pd.TYPE_ID !=null">	
+				and TYPE_ID LIKE CONCAT(CONCAT('%', #{pd.TYPE_ID}),'%')
+			</if>
+			<if test="pd.PEOPLE_AMOUNT !=null">	
+				and PEOPLE_AMOUNT LIKE CONCAT(CONCAT('%', #{pd.PEOPLE_AMOUNT}),'%')
+			</if>
+			<if test="pd.LINK_MAN !=null">	
+				and LINK_MAN LIKE CONCAT(CONCAT('%', #{pd.LINK_MAN}),'%')
+			</if>
+			<if test="pd.LINK_PHONE !=null">	
+				and LINK_PHONE LIKE CONCAT(CONCAT('%', #{pd.LINK_PHONE}),'%')
+			</if>
+			<if test="pd.DESCRIPTION !=null">	
+				and DESCRIPTION LIKE CONCAT(CONCAT('%', #{pd.DESCRIPTION}),'%')
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE LIKE CONCAT(CONCAT('%', #{pd.CREATE_DATE}),'%')
+			</if>
+			<if test="pd.MODIFY_BY !=null">	
+				and MODIFY_BY LIKE CONCAT(CONCAT('%', #{pd.MODIFY_BY}),'%')
+			</if>
+	</select> 
+	
+	<select id="queryById" resultType="pd">
+	    SELECT * FROM CLUB_RESERVATION WHERE ID=#{ID}
+	</select>
+	 <!-- 添加用户信息 -->
+	<insert id="addClub" parameterType="pd" flushCache="false">
+	INSERT INTO CLUB_RESERVATION (
+			ID,
+			START_DATE,
+			END_DATE,
+			TYPE_ID,
+			PEOPLE_AMOUNT,
+			LINK_MAN,
+			LINK_PHONE,
+			DESCRIPTION,
+			CREATE_DATE,
+			MODIFY_BY,
+			MODIFY_DATE,
+			STATUS,
+			BUDGET,
+			NOPASSREASON  
+		) VALUES (
+			#{ID},
+			#{START_DATE},
+			#{END_DATE},
+			#{TYPE_ID},
+			#{PEOPLE_AMOUNT},
+			#{LINK_MAN},
+			#{LINK_PHONE},
+			#{DESCRIPTION},
+			#{CREATE_DATE},
+			#{MODIFY_BY},
+			#{MODIFY_DATE},
+			#{STATUS},
+			#{BUDGET},
+			#{NOPASSREASON}
+		)
+	</insert>
+	
+      <!-- 批量删除 -->
+    <!-- <delete id="delClub">
+    	DELETE FROM  CLUB_RESERVATION WHERE ID IN
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </delete> -->
+    <update id="delClub" parameterType="pd" flushCache="false">
+		UPDATE  CLUB_RESERVATION SET ISDEL=2
+		WHERE ID IN
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+	</update>
+      <!-- 删除 -->
+    <!-- <delete id="delClubbyid">
+    	DELETE FROM  CLUB_RESERVATION WHERE ID=#{ID}
+    </delete> -->
+     <update id="delClubbyid" parameterType="pd" flushCache="false">
+		UPDATE  CLUB_RESERVATION SET ISDEL=2
+		WHERE ID = #{ID}
+	</update>
+	<!-- 修改 -->
+	<update id="upClub" parameterType="pd" flushCache="false">
+		UPDATE  CLUB_RESERVATION SET 
+			START_DATE=#{START_DATE},	
+			END_DATE=#{END_DATE},	
+			TYPE_ID=#{TYPE_ID},	
+			PEOPLE_AMOUNT=#{PEOPLE_AMOUNT},	
+			LINK_MAN=#{LINK_MAN},	
+			LINK_PHONE=#{LINK_PHONE},	
+			DESCRIPTION=#{DESCRIPTION},
+			CREATE_DATE=#{CREATE_DATE},
+			MODIFY_BY=#{MODIFY_BY},
+			MODIFY_DATE=#{MODIFY_DATE},
+			STATUS=#{STATUS},
+			BUDGET=#{BUDGET},
+			NOPASSREASON=#{NOPASSREASON}
+			WHERE ID = #{ID}
+	</update>
+	<!--根据活动名称查找所有信息  -->
+	<select id="querybyname" resultType="pd">
+	SELECT *  FROM  CLUB_RESERVATION WHERE LINK_MAN=#{LINK_MAN}
+	</select>
+	
+	<!--根据活动名称查找所有信息  -->
+	<select id="queryMsgByStatus" resultType="pd">
+		select count(*) club_counts from  club_reservation  where status='0'
+	</select>
+	
+	<update id="updatedelhd" parameterType="pd" flushCache="false">
+		update  club_reservation set  ISSYSLOOK='1'
+	</update>
+</mapper>

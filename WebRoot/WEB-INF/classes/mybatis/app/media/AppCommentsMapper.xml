@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppCommentsMapper"> 
+
+	<!--根据位置编号查找要显示的轮换大图 -->
+	<select id="queryComByMediaId" parameterType="pd" resultType="pd">
+		SELECT C.*,A.REAL_NAME AS REAL_NAME,U.REAL_NAME AS ANSWER_NAME,M.TITLE FROM COMMENTS C LEFT JOIN APP_USER A 
+	ON C.USER_ID=A.ID LEFT JOIN APP_USER U ON C.ANSWER_ID=U.ID LEFT JOIN JL_APP_MEDIA M ON C.MEDIA_ID=M.ID WHERE C.MEDIA_ID=#{MEDIA_ID} AND C.ISDEL=1
+	</select> 
+	
+	<!-- 添加分享 -->
+	<insert id="addShare" parameterType="pd">
+		INSERT INTO SHARES(ID,USER_ID,MEDIA_ID,SHARE_DATE,SHARE_TARGET)
+		values(#{ID},#{userid},#{MEDIA_ID},#{SHARE_DATE},#{SHARE_TARGET})  
+    </insert>
+    
+	<!-- 添加评论 -->
+	<insert id="save" parameterType="pd">
+		INSERT INTO COMMENTS(ID,USER_ID,MEDIA_ID,CONTENT,COMMENT_DATE,ANSWER_ID,IDENTIFICATION)
+		values(#{ID},#{userid},#{MEDIA_ID},#{CONTENT},#{COMMENT_DATE},#{ANSWER_ID},#{IDENTIFICATION})  
+    </insert>
+    <!-- 查询当前评论是第几条 -->
+    <select id="quseronpin" parameterType="pd" resultType="pd">
+		SELECT count(*) AS counts FROM comments WHERE MEDIA_ID=#{MEDIA_ID} and (ANSWER_ID is null or ANSWER_ID ='' ) AND ISDEL=1
+	</select> 
+	<!-- 查询当前用户回复的第几条 -->
+	<select id="queryusercoms" parameterType="pd" resultType="pd">
+		SELECT * FROM COMMENTS WHERE ANSWER_ID=#{ANSWER_ID} and MEDIA_ID=#{MEDIA_ID} and IDENTIFICATION=#{IDENTIFICATION} AND ISDEL=1
+	</select>
+    <!-- 查询当前新闻的所有评论 -->
+	<select id="queryBypinluns" parameterType="pd" resultType="pd">
+    	SELECT C.*,A.REAL_NAME AS REAL_NAME,U.REAL_NAME AS ANSWER_NAME,M.TITLE FROM COMMENTS C LEFT JOIN APP_USER A 
+		ON C.USER_ID=A.ID LEFT JOIN APP_USER U ON C.ANSWER_ID=U.ID LEFT JOIN JL_APP_MEDIA M ON C.MEDIA_ID=M.ID 
+		WHERE C.MEDIA_ID=#{MEDIA_ID} AND (C.ANSWER_ID IS NULL or C.ANSWER_ID='') AND C.ISDEL=1 ORDER BY C.COMMENT_DATE DESC
+	</select>
+	
+	<!-- 查询当前新闻的所有回复 -->
+	<select id="queryByhuifus" parameterType="pd" resultType="pd">
+    	 SELECT C.*,A.REAL_NAME AS REAL_NAME,U.REAL_NAME AS ANSWER_NAME,M.TITLE FROM COMMENTS C LEFT JOIN APP_USER A 
+		ON C.USER_ID=A.ID LEFT JOIN APP_USER U ON C.ANSWER_ID=U.ID LEFT JOIN JL_APP_MEDIA M ON C.MEDIA_ID=M.ID 
+		WHERE C.MEDIA_ID=#{MEDIA_ID} AND (C.ANSWER_ID IS NOT NULL AND C.ANSWER_ID!='')  AND C.IDENTIFICATION=#{IDENTIFICATION} AND C.ISDEL=1 ORDER BY C.COMMENT_DATE ASC
+		
+		<!--  SELECT C.*,A.REAL_NAME AS REAL_NAME,U.REAL_NAME AS ANSWER_NAME,M.TITLE FROM COMMENTS C LEFT JOIN APP_USER A 
+		ON C.USER_ID=A.ID LEFT JOIN APP_USER U ON C.ANSWER_ID=U.ID LEFT JOIN JL_APP_MEDIA M ON C.MEDIA_ID=M.ID 
+		WHERE C.MEDIA_ID=#{MEDIA_ID} AND C.ANSWER_ID=#{USER_ID} AND C.IDENTIFICATION=#{IDENTIFICATION} ORDER BY C.COMMENT_DATE ASC -->
+	</select>
+</mapper>

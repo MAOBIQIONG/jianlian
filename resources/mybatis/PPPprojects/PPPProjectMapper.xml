@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PPPProjectMapper">
+	
+	<select id="listppp" parameterType="page" resultType="pd">
+	   SELECT ppro.*,A.NAME AS HYNAME,B.NAME AS JDNAME,C.NAME AS JBNAME,SU.NAME AS XTNAME,SUS.REAL_NAME AS XMJL,UD.REAL_NAME AS UNAME,CASE ppro.STATUS WHEN '1' THEN '待审核'  WHEN '2' THEN '审核未通过'  WHEN '3' THEN '审核通过'  WHEN '4' THEN '已分配'  WHEN '5' THEN '待确认'  WHEN '6' THEN '交易完成' END AS PROJECT_STATUS,SA.AREANAME AS CITYS
+	   FROM ppp_project ppro 
+	   LEFT JOIN sys_dictionaries A ON ppro.INDUSTRY=A.BIANMA 
+	   LEFT JOIN sys_dictionaries B ON B.BIANMA=ppro.STAGE 
+	   LEFT JOIN sys_dictionaries C ON C.BIANMA=ppro.LEVEL 
+	   LEFT JOIN sys_user SU ON SU.ID=ppro.CONTACTS 
+	   LEFT JOIN APP_USER SUS ON SUS.ID=ppro.MANAGER 
+	   LEFT JOIN APP_USER UD ON UD.ID=ppro.USER_ID
+	   LEFT JOIN SYS_AREA SA ON SA.AREACODE=ppro.CITY
+		where ppro.ISDEL=1 and ppro.STATUS &gt;=#{pd.STATUS}
+		<if test="pd.PROJECT_NAME !=null">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+	</select> 
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select * from ppp_project where ISDEL=1;
+	</select>
+	
+	<select id="listpppStatus" parameterType="page" resultType="pd">
+	   SELECT count(*) counts
+	   FROM ppp_project ppro 
+	   LEFT JOIN sys_dictionaries A ON ppro.INDUSTRY=A.BIANMA 
+	   LEFT JOIN sys_dictionaries B ON B.BIANMA=ppro.STAGE 
+	   LEFT JOIN sys_dictionaries C ON C.BIANMA=ppro.LEVEL 
+	   LEFT JOIN sys_user SU ON SU.ID=ppro.CONTACTS 
+	   LEFT JOIN APP_USER SUS ON SUS.ID=ppro.MANAGER 
+	   LEFT JOIN APP_USER UD ON UD.ID=ppro.USER_ID
+	   LEFT JOIN SYS_AREA SA ON SA.AREACODE=ppro.CITY
+		where ppro.ISDEL=1 and ppro.STATUS &gt;=#{pd.STATUS}
+		<if test="pd.PROJECT_NAME !=null">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+	</select>
+	
+	<update id="uploadCover" parameterType="pd">
+		update  ppp_project set
+		<if test="COVER_PATH != null || COVER_PATH != ''">
+			COVER_PATH=#{COVER_PATH},
+		</if>	
+		ID = #{PRO_ID}
+		 where ID = #{PRO_ID}
+	</update>
+	
+	
+	<select id="listPage" parameterType="page" resultType="pd">
+		 SELECT ppro.*,A.NAME AS HYNAME,B.NAME AS JDNAME,C.NAME AS JBNAME,SU.NAME AS XTNAME,SUS.REAL_NAME AS XMJL,UD.REAL_NAME AS UNAME,CASE ppro.STATUS WHEN '1' THEN '待审核'  WHEN '2' THEN '审核未通过'  WHEN '3' THEN '审核通过'  WHEN '4' THEN '已分配'  WHEN '5' THEN '待确认'  WHEN '6' THEN '交易完成' END AS PROJECT_STATUS,SA.AREANAME AS CITYS 
+	   FROM ppp_project ppro 
+	   LEFT JOIN sys_dictionaries A ON ppro.INDUSTRY=A.BIANMA 
+	   LEFT JOIN sys_dictionaries B ON B.BIANMA=ppro.STAGE 
+	   LEFT JOIN sys_dictionaries C ON C.BIANMA=ppro.LEVEL 
+	   LEFT JOIN sys_user SU ON SU.ID=ppro.CONTACTS 
+	   LEFT JOIN APP_USER SUS ON SUS.ID=ppro.MANAGER 
+	   LEFT JOIN APP_USER UD ON UD.ID=ppro.USER_ID
+	   LEFT JOIN SYS_AREA SA ON SA.AREACODE=ppro.CITY
+		WHERE ppro.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.PROJECT_NAME !=null">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+		<if test="pd.RELEASE_TIME !=null">	
+			and RELEASE_TIME=#{pd.RELEASE_TIME}
+		</if> 
+		<if test="pd.CITY !=null">	
+			and CITY=#{pd.CITY}
+		</if>
+		<if test="pd.ADDR !=null">	
+			and ADDR=#{pd.ADDR}
+		</if>
+		<if test="pd.INDUSTRY !=null">	
+			and INDUSTRY=#{pd.INDUSTRY}
+		</if>
+		<if test="pd.TOTAL_INVESTMENT !=null">	
+			and TOTAL_INVESTMENT=#{pd.TOTAL_INVESTMENT}
+		</if>
+		<if test="pd.STAGE !=null">	
+			and STAGE=#{pd.STAGE}
+		</if>
+		<if test="pd.START_DATE !=null">
+			and START_DATE=#{pd.START_DATE}
+		</if>
+		<if test="pd.DUE_DATE !=null">	
+			and DUE_DATE=#{pd.DUE_DATE}
+		</if>
+		<if test="pd.LAUNCH_DATE !=null">	
+			and LAUNCH_DATE=#{pd.LAUNCH_DATE}
+		</if>
+		<if test="pd.LEVEL !=null">
+			and LEVEL=#{pd.LEVEL}
+		</if>
+		<if test="pd.CONTACTS !=null">	
+			and CONTACTS=#{pd.CONTACTS}
+		</if>
+		<if test="pd.REWARD_WIT !=null">
+			and REWARD_WIT=#{pd.REWARD_WIT}
+		</if>
+		<if test="pd.PHONE !=null">
+			and PHONE=#{pd.PHONE}
+		</if>
+		<if test="pd.CONTENT !=null">
+			and CONTENT=#{pd.CONTENT}
+		</if>
+		<if test="pd.RANGE !=null">
+			and RANGE=#{pd.RANGE}
+		</if>
+		<if test="pd.TERM !=null">
+			and TERM=#{pd.TERM} 
+		</if>
+		<if test="pd.MODE !=null">
+			and MODE=#{pd.MODE} 
+		</if>
+		<if test="pd.PURCHASE !=null">
+			and PURCHASE=#{pd.PURCHASE} 
+		</if>
+		<if test="pd.STATUS !=null">
+			and STATUS=#{pd.STATUS} 
+		</if>
+		<if test="pd.MANAGER !=null">
+			and MANAGER=#{pd.MANAGER} 
+		</if>
+		<if test="pd.USER_ID !=null">
+			and USER_ID=#{pd.USER_ID} 
+		</if> 
+		<if test="pd.CREATE_BY !=null">
+			and CREATE_BY=#{pd.CREATE_BY} 
+		</if> 
+		<if test="pd.CREATE_DATE !=null">
+			and CREATE_DATE=#{pd.CREATE_DATE} 
+		</if> 
+		<if test="pd.MODIFY_BY !=null">
+			and MODIFY_BY=#{pd.MODIFY_BY} 
+		</if> 
+		<if test="pd.MODIFY_DATE !=null">
+			and MODIFY_DATE=#{pd.MODIFY_DATE} 
+		</if> 
+		<if test="pd.AUDIT_BY !=null">
+			and AUDIT_BY=#{pd.AUDIT_BY} 
+		</if> 
+		<if test="pd.AUDIT_DATE!=null">
+			and AUDIT_DATE=#{pd.AUDIT_DATE} 
+		</if> 
+		<if test="pd.BIDDER!=null">
+			and  BIDDER=#{pd.BIDDER} 
+		</if> 
+		<if test="pd.BIDDER_DATE!=null">
+			and  BIDDER_DATE=#{pd.BIDDER_DATE} 
+		</if>
+		<if test="pd.IS_PHPNED!=null">
+			and  IS_PHPNED=#{pd.IS_PHPNED} 
+		</if>
+		<if test="pd.COMPLETE_DATE!=null">
+			and  COMPLETE_DATE=#{pd.COMPLETE_DATE} 
+		</if>
+		<if test="pd.TOTAL_BIDDER!=null">
+			and  TOTAL_BIDDER=#{pd.TOTAL_BIDDER} 
+		</if>
+		<if test="pd.COM_QUALIFICATION!=null">
+			and  COM_QUALIFICATION=#{pd.COM_QUALIFICATION} 
+		</if>
+		<if test="pd.COLLECT_COUNT!=null">
+			and  COLLECT_COUNT=#{pd.COLLECT_COUNT} 
+		</if>
+		<if test="pd.IS_SIGNED!=null">
+			and  IS_SIGNED=#{pd.IS_SIGNED} 
+		</if>
+		<if test="pd.SIGNE_DATE!=null">
+			and  SIGNE_DATE=#{pd.SIGNE_DATE} 
+		</if>
+	</select>  
+	
+	
+	<!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		 SELECT count(*) counts
+	   FROM ppp_project ppro 
+	   LEFT JOIN sys_dictionaries A ON ppro.INDUSTRY=A.BIANMA 
+	   LEFT JOIN sys_dictionaries B ON B.BIANMA=ppro.STAGE 
+	   LEFT JOIN sys_dictionaries C ON C.BIANMA=ppro.LEVEL 
+	   LEFT JOIN sys_user SU ON SU.ID=ppro.CONTACTS 
+	   LEFT JOIN APP_USER SUS ON SUS.ID=ppro.MANAGER 
+	   LEFT JOIN APP_USER UD ON UD.ID=ppro.USER_ID
+	   LEFT JOIN SYS_AREA SA ON SA.AREACODE=ppro.CITY
+		WHERE ppro.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.PROJECT_NAME !=null">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+		<if test="pd.RELEASE_TIME !=null">	
+			and RELEASE_TIME=#{pd.RELEASE_TIME}
+		</if> 
+		<if test="pd.CITY !=null">	
+			and CITY=#{pd.CITY}
+		</if>
+		<if test="pd.ADDR !=null">	
+			and ADDR=#{pd.ADDR}
+		</if>
+		<if test="pd.INDUSTRY !=null">	
+			and INDUSTRY=#{pd.INDUSTRY}
+		</if>
+		<if test="pd.TOTAL_INVESTMENT !=null">	
+			and TOTAL_INVESTMENT=#{pd.TOTAL_INVESTMENT}
+		</if>
+		<if test="pd.STAGE !=null">	
+			and STAGE=#{pd.STAGE}
+		</if>
+		<if test="pd.START_DATE !=null">
+			and START_DATE=#{pd.START_DATE}
+		</if>
+		<if test="pd.DUE_DATE !=null">	
+			and DUE_DATE=#{pd.DUE_DATE}
+		</if>
+		<if test="pd.LAUNCH_DATE !=null">	
+			and LAUNCH_DATE=#{pd.LAUNCH_DATE}
+		</if>
+		<if test="pd.LEVEL !=null">
+			and LEVEL=#{pd.LEVEL}
+		</if>
+		<if test="pd.CONTACTS !=null">	
+			and CONTACTS=#{pd.CONTACTS}
+		</if>
+		<if test="pd.REWARD_WIT !=null">
+			and REWARD_WIT=#{pd.REWARD_WIT}
+		</if>
+		<if test="pd.PHONE !=null">
+			and PHONE=#{pd.PHONE}
+		</if>
+		<if test="pd.CONTENT !=null">
+			and CONTENT=#{pd.CONTENT}
+		</if>
+		<if test="pd.RANGE !=null">
+			and RANGE=#{pd.RANGE}
+		</if>
+		<if test="pd.TERM !=null">
+			and TERM=#{pd.TERM} 
+		</if>
+		<if test="pd.MODE !=null">
+			and MODE=#{pd.MODE} 
+		</if>
+		<if test="pd.PURCHASE !=null">
+			and PURCHASE=#{pd.PURCHASE} 
+		</if>
+		<if test="pd.STATUS !=null">
+			and STATUS=#{pd.STATUS} 
+		</if>
+		<if test="pd.MANAGER !=null">
+			and MANAGER=#{pd.MANAGER} 
+		</if>
+		<if test="pd.USER_ID !=null">
+			and USER_ID=#{pd.USER_ID} 
+		</if> 
+		<if test="pd.CREATE_BY !=null">
+			and CREATE_BY=#{pd.CREATE_BY} 
+		</if> 
+		<if test="pd.CREATE_DATE !=null">
+			and CREATE_DATE=#{pd.CREATE_DATE} 
+		</if> 
+		<if test="pd.MODIFY_BY !=null">
+			and MODIFY_BY=#{pd.MODIFY_BY} 
+		</if> 
+		<if test="pd.MODIFY_DATE !=null">
+			and MODIFY_DATE=#{pd.MODIFY_DATE} 
+		</if> 
+		<if test="pd.AUDIT_BY !=null">
+			and AUDIT_BY=#{pd.AUDIT_BY} 
+		</if> 
+		<if test="pd.AUDIT_DATE!=null">
+			and AUDIT_DATE=#{pd.AUDIT_DATE} 
+		</if> 
+		<if test="pd.BIDDER!=null">
+			and  BIDDER=#{pd.BIDDER} 
+		</if> 
+		<if test="pd.BIDDER_DATE!=null">
+			and  BIDDER_DATE=#{pd.BIDDER_DATE} 
+		</if>
+		<if test="pd.IS_PHPNED!=null">
+			and  IS_PHPNED=#{pd.IS_PHPNED} 
+		</if>
+		<if test="pd.COMPLETE_DATE!=null">
+			and  COMPLETE_DATE=#{pd.COMPLETE_DATE} 
+		</if>
+		<if test="pd.TOTAL_BIDDER!=null">
+			and  TOTAL_BIDDER=#{pd.TOTAL_BIDDER} 
+		</if>
+		<if test="pd.COM_QUALIFICATION!=null">
+			and  COM_QUALIFICATION=#{pd.COM_QUALIFICATION} 
+		</if>
+		<if test="pd.COLLECT_COUNT!=null">
+			and  COLLECT_COUNT=#{pd.COLLECT_COUNT} 
+		</if>
+		<if test="pd.IS_SIGNED!=null">
+			and  IS_SIGNED=#{pd.IS_SIGNED} 
+		</if>
+		<if test="pd.SIGNE_DATE!=null">
+			and  SIGNE_DATE=#{pd.SIGNE_DATE} 
+		</if>
+	</select>  
+	<select id="querybyid" parameterType="page" resultType="pd">
+	   SELECT ppro.*,A.NAME AS HYNAME,B.NAME AS JDNAME,C.NAME AS JBNAME,ppro.CONTACTS AS XTNAME,SUS.REAL_NAME AS XMJL,SA.PARENTID,
+	   CASE ppro.STATUS WHEN '1' THEN '待审核'  WHEN '2' THEN '审核未通过'  WHEN '3' THEN '审核通过'  WHEN '4' THEN '已分配'  WHEN '5' THEN '待确认'  WHEN '6' THEN '交易完成' END AS PROJECT_STATUS 
+	   FROM ppp_project ppro 
+	   LEFT JOIN sys_dictionaries A ON ppro.INDUSTRY=A.BIANMA 
+	   LEFT JOIN sys_dictionaries B ON B.BIANMA=ppro.STAGE 
+	   LEFT JOIN sys_dictionaries C ON C.BIANMA=ppro.LEVEL  
+	   LEFT JOIN APP_USER SUS ON SUS.ID=ppro.MANAGER  
+	   LEFT JOIN SYS_AREA SA ON SA.AREACODE=ppro.CITY
+		where ppro.ISDEL=1 and ppro.ID=#{ID}
+	</select> 
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		INSERT INTO PPP_PROJECT(
+		<if test="PROJECT_NAME != null">
+			PROJECT_NAME,
+		</if>
+		<if test="RELEASE_TIME != null">
+			RELEASE_TIME,
+		</if>
+		<if test="CITY != null">
+			CITY,
+		</if>
+		<if test="ADDR != null">
+			ADDR,
+		</if>
+		<if test="INDUSTRY != null">
+			INDUSTRY,
+		</if>
+		<if test="TOTAL_INVESTMENT != null">
+			TOTAL_INVESTMENT,	
+		</if>
+		<if test="STAGE != null">	
+			STAGE,
+		</if>
+		<if test="START_DATE != null">
+			START_DATE,
+		</if>
+		<if test="DUE_DATE != null">
+			DUE_DATE,
+		</if>
+		<if test="LAUNCH_DATE != null">
+			LAUNCH_DATE,
+		</if>
+		<if test="LEVEL != null">
+			LEVEL,
+		</if>
+		<if test="CONTACTS != null">
+			CONTACTS,
+		</if>
+		<if test="REWARD_WIT != null">
+			REWARD_WIT,
+		</if>
+		<if test="PHONE != null">
+			PHONE,
+		</if>
+		<if test="CONTENT != null">
+			CONTENT,
+		</if>
+		<if test="RANGE != null">
+			`RANGE`,
+		</if>
+		<if test="TERM != null">
+			TERM,
+		</if>
+		<if test="MODE != null">
+			`MODE`,
+		</if>
+		<if test="PURCHASE != null">
+			PURCHASE,
+		</if>
+		<if test="STATUS != null">
+			`STATUS`,
+		</if>
+		<if test="CREATE_BY != null">
+			CREATE_BY,
+		</if>
+		<if test="CREATE_DATE != null">
+			CREATE_DATE,
+		</if>
+		<if test="DESCRIPTION != null">
+			DESCRIPTION,
+		</if>
+		<if test="NO_PASS_REASON != null">
+			NO_PASS_REASON,
+		</if>
+		<if test="MANAGER != null">
+			MANAGER,
+		</if>
+		<if test="USER_ID != null">
+			USER_ID,
+		</if>
+		<if test="AUDIT_BY != null">
+			AUDIT_BY,
+		</if>
+		<if test="AUDIT_DATE != null">
+			AUDIT_DATE,
+		</if>
+		<if test="BIDDER != null">
+			BIDDER,
+		</if>
+		<if test="BIDDER_DATE != null">
+			BIDDER_DATE,
+		</if>
+		<if test="IS_PHPNED != null">
+			IS_PHPNED,
+		</if>
+		<if test="COMPLETE_DATE != null">
+			COMPLETE_DATE,
+		</if>
+		<if test="TOTAL_BIDDER != null">
+			TOTAL_BIDDER,
+		</if>
+		<if test="COM_QUALIFICATION != null">
+			COM_QUALIFICATION,
+		</if>
+		<if test="COLLECT_COUNT != null">
+			COLLECT_COUNT,
+		</if>
+		<if test="GROUP_NAME != null">
+			GROUP_NAME,
+		</if>
+		<if test="IS_SIGNED != null">
+			IS_SIGNED,
+		</if>
+		<if test="SIGNE_DATE != null">
+			SIGNE_DATE,
+		</if>
+		<if test="PRO_NO != null">
+			PRO_NO,
+		</if>
+		<if test="STAR_LEVEL != null">
+			STAR_LEVEL,
+		</if>
+			ID
+		) values (
+		<if test="PROJECT_NAME != null">
+			#{PROJECT_NAME},
+		</if>
+		<if test="RELEASE_TIME != null">
+			#{RELEASE_TIME},
+		</if>
+		<if test="CITY != null">
+			#{CITY},
+		</if>
+		<if test="ADDR != null">
+			#{ADDR},
+		</if>
+		<if test="INDUSTRY != null">
+			#{INDUSTRY},
+		</if>
+		<if test="TOTAL_INVESTMENT != null">
+			#{TOTAL_INVESTMENT},	
+		</if>
+		<if test="STAGE != null">	
+			#{STAGE},
+		</if>
+		<if test="START_DATE != null">
+			#{START_DATE},
+		</if>
+		<if test="DUE_DATE != null">
+			#{DUE_DATE},
+		</if>
+		<if test="LAUNCH_DATE != null">
+			#{LAUNCH_DATE},
+		</if>
+		<if test="LEVEL != null">
+			#{LEVEL},
+		</if>
+		<if test="CONTACTS != null">
+			#{CONTACTS},
+		</if>
+		<if test="REWARD_WIT != null">
+			#{REWARD_WIT},
+		</if>
+		<if test="PHONE != null">
+			#{PHONE},
+		</if>
+		<if test="CONTENT != null">
+			#{CONTENT},
+		</if>
+		<if test="RANGE != null">
+			#{RANGE},
+		</if>
+		<if test="TERM != null">
+			#{TERM},
+		</if>
+		<if test="MODE != null">
+			#{MODE},
+		</if>
+		<if test="PURCHASE != null">
+			#{PURCHASE},
+		</if>
+		<if test="STATUS != null">
+			#{STATUS},
+		</if>
+		<if test="CREATE_BY != null">
+			#{CREATE_BY},
+		</if>
+		<if test="CREATE_DATE != null">
+			#{CREATE_DATE},
+		</if>
+		<if test="DESCRIPTION != null">
+			#{DESCRIPTION},
+		</if>
+		<if test="NO_PASS_REASON != null">
+			#{NO_PASS_REASON},
+		</if>
+		<if test="MANAGER != null">
+			#{MANAGER},
+		</if>
+		<if test="USER_ID != null">
+			#{USER_ID},
+		</if>
+		<if test="AUDIT_BY != null">
+			#{AUDIT_BY},
+		</if>
+		<if test="AUDIT_DATE != null">
+			#{AUDIT_DATE},
+		</if>
+		<if test="BIDDER != null">
+			#{BIDDER},
+		</if>
+		<if test="BIDDER_DATE != null">
+			#{BIDDER_DATE},
+		</if>
+		<if test="IS_PHPNED != null">
+			#{IS_PHPNED},
+		</if>
+		<if test="COMPLETE_DATE != null">
+			#{COMPLETE_DATE},
+		</if>
+		<if test="TOTAL_BIDDER != null">
+			#{TOTAL_BIDDER},
+		</if>
+		<if test="COM_QUALIFICATION != null">
+			#{COM_QUALIFICATION},
+		</if>
+		<if test="COLLECT_COUNT != null">
+			#{COLLECT_COUNT},
+		</if>
+		<if test="GROUP_NAME != null">
+			#{GROUP_NAME},
+		</if>
+		<if test="IS_SIGNED != null">
+			#{IS_SIGNED},
+		</if>
+		<if test="SIGNE_DATE != null">
+			#{SIGNE_DATE},
+		</if>
+		<if test="PRO_NO != null">
+			#{PRO_NO},
+		</if>
+		<if test="STAR_LEVEL != null">
+			#{STAR_LEVEL},
+		</if>
+			#{ID}
+		) 
+	</insert>
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" >
+		update  PPP_PROJECT set 
+		<if test="PROJECT_NAME !=null">
+		     PROJECT_NAME= #{PROJECT_NAME},
+		</if>
+		<if test="RELEASE_TIME !=null">	
+			RELEASE_TIME=#{RELEASE_TIME},
+		</if> 
+		<if test="CITY !=null">	
+			CITY=#{CITY},
+		</if>
+		<if test="ADDR !=null">	
+			ADDR=#{ADDR},
+		</if>
+		<if test="INDUSTRY !=null">	
+			INDUSTRY=#{INDUSTRY},
+		</if>
+		<if test="TOTAL_INVESTMENT !=null">	
+			TOTAL_INVESTMENT=#{TOTAL_INVESTMENT},
+		</if>
+		<if test="STAGE !=null">	
+			STAGE=#{STAGE},
+		</if>
+		<if test="START_DATE !=null">
+			START_DATE=#{START_DATE},
+		</if>
+		<if test="DUE_DATE !=null">	
+			DUE_DATE=#{DUE_DATE},
+		</if>
+		<if test="LAUNCH_DATE !=null">	
+			LAUNCH_DATE=#{LAUNCH_DATE},
+		</if>
+		<if test="LEVEL !=null">
+			LEVEL=#{LEVEL},
+		</if>
+		<if test="CONTACTS !=null">	
+			CONTACTS=#{CONTACTS},
+		</if>
+		<if test="REWARD_WIT !=null">
+			REWARD_WIT=#{REWARD_WIT},
+		</if>
+		<if test="PHONE !=null">
+			PHONE=#{PHONE},
+		</if>
+		<if test="CONTENT !=null">
+			CONTENT=#{CONTENT},
+		</if>
+		<if test="RANGE !=null">
+			`RANGE`=#{RANGE},
+		</if>
+		<if test="TERM !=null">
+			TERM=#{TERM},
+		</if>
+		<if test="MODE !=null">
+			`MODE`=#{MODE},
+		</if> 
+		<if test="PURCHASE !=null">
+			PURCHASE=#{PURCHASE},
+		</if> 
+		<if test="STATUS !=null">
+			 `STATUS`=#{STATUS},
+		</if> 
+		<if test="MODIFY_BY !=null">
+			MODIFY_BY=#{MODIFY_BY}, 
+		</if> 
+		<if test="MODIFY_DATE !=null">
+			 MODIFY_DATE=#{MODIFY_DATE},
+		</if> 
+		<if test="DESCRIPTION !=null">
+			 DESCRIPTION=#{DESCRIPTION},
+		</if>
+		<if test="NO_PASS_REASON !=null">
+			 NO_PASS_REASON=#{NO_PASS_REASON},
+		</if>
+		<if test="MANAGER != null">
+			MANAGER=#{MANAGER},
+		</if>
+		<if test="USER_ID != null">
+			USER_ID=#{USER_ID},
+		</if>
+		<if test="AUDIT_BY != null">
+			AUDIT_BY=#{AUDIT_BY},
+		</if>
+		<if test="AUDIT_DATE != null">
+			AUDIT_DATE=#{AUDIT_DATE},
+		</if>
+		<if test="BIDDER != null">
+			BIDDER=#{BIDDER},
+		</if>
+		<if test="BIDDER_DATE != null">
+			BIDDER_DATE=#{BIDDER_DATE},
+		</if>
+		<if test="IS_PHPNED != null">
+			IS_PHPNED=#{IS_PHPNED},
+		</if>
+		<if test="COMPLETE_DATE != null">
+			COMPLETE_DATE=#{COMPLETE_DATE},
+		</if>
+		<if test="TOTAL_BIDDER != null">
+			TOTAL_BIDDER=#{TOTAL_BIDDER},
+		</if>
+		<if test="COM_QUALIFICATION != null">
+			COM_QUALIFICATION=#{COM_QUALIFICATION},
+		</if>
+		<if test="COLLECT_COUNT != null">
+			COLLECT_COUNT=#{COLLECT_COUNT},
+		</if>
+		<if test="GROUP_NAME != null">
+			GROUP_NAME=#{GROUP_NAME},
+		</if>
+		<if test="IS_SIGNED != null">
+			IS_SIGNED=#{IS_SIGNED},
+		</if>
+		<if test="SIGNE_DATE != null">
+			SIGNE_DATE=#{SIGNE_DATE},
+		</if>
+		<if test="BID_WINNER_ID != null">
+			BID_WINNER_ID=#{BID_WINNER_ID},
+		</if>
+		<if test="PRO_NO != null">
+			PRO_NO=#{PRO_NO},
+		</if>
+		<if test="STAR_LEVEL != null">
+			STAR_LEVEL=#{STAR_LEVEL},
+		</if>
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	<!-- 新增-->
+	<insert id="insetsave" parameterType="pd">
+		INSERT INTO PPP_SCHEDULE( ID,PROJECT_ID,SCHEDULE,DATE,OPER_BY,DESCRIPTION)  
+		values ( #{ID},#{PROJECT_ID},#{SCHEDULE},#{DATE},#{OPER_BY},#{DESCRIPTION})
+	</insert>
+	
+	
+	<!-- 删除ppp项目 -->
+	<update id="delete" parameterType="pd">
+	 update  PPP_PROJECT  set ISDEL=2 where ID = #{ID} 
+	</update>
+	
+	<update id="updateSigned" parameterType="pd">
+		update  PPP_PROJECT set IS_SIGNED=#{IS_SIGNED},SIGNE_DATE=#{SIGNE_DATE} where ID = #{PROJECT_ID}
+	</update>
+	
+	<update id="updateStatus" parameterType="pd" flushCache="false">
+		update  PPP_PROJECT set STATUS=#{STATUS},
+		<if test="NO_PASS_REASON != null and NO_PASS_REASON != ''">
+			NO_PASS_REASON=#{NO_PASS_REASON},
+		</if>	
+		<if test="COMPLETE_DATE != null and COMPLETE_DATE != ''">
+			COMPLETE_DATE=#{COMPLETE_DATE},
+		</if>
+		 ID = #{ID}	
+		 where ID = #{ID}
+	</update>
+	
+	
+	<select id="querPro_no" parameterType="String" resultType="pd">
+		SELECT MAX(PRO_NO) as PRO_NO FROM ppp_project WHERE PRO_NO LIKE CONCAT(CONCAT('%', #{no}),'%')
+	</select>
+	
+	<update id="updatedelhd" parameterType="pd" flushCache="false">
+		update ppp_project set ISSYSLOOK='1'
+	</update>
+</mapper>

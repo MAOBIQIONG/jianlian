@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FeedBackMapper">
+
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		 select f.ID,f.CONTENT,f.EMAIL,f.IMG_PATH,
+		 DATE_FORMAT(f.CREATE_DATE,'%Y-%m-%d %H:%i:%s') as CREATE_DATE,
+		 a.REAL_NAME from feedback f left join app_user a on f.USER_ID=a.ID where 1=1   
+		<if test="pd.REAL_NAME !=null"> 
+		    and a.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if> 
+		<if test="pd.START_DATE !=null">	
+			and f.CREATE_DATE &gt;= #{pd.START_DATE}
+		</if> 
+		<if test="pd.END_DATE !=null">	
+			and f.CREATE_DATE &lt;= #{pd.END_DATE}
+		</if>  
+	</select>
+	
+	 <!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		select count(*) counts from feedback f left join app_user a on f.USER_ID=a.ID where 1=1   
+		<if test="pd.REAL_NAME !=null"> 
+		    and a.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if> 
+		<if test="pd.START_DATE !=null">	
+			and f.CREATE_DATE &gt;= #{pd.START_DATE}
+		</if> 
+		<if test="pd.END_DATE !=null">	
+			and f.CREATE_DATE &lt;= #{pd.END_DATE}
+		</if>  
+	</select> 
+	
+	<!-- 通过ID获取数据 -->
+	<select id="queryById" parameterType="pd" resultType="pd">
+		select * from feedback where ID = #{ID} 
+	</select>
+	
+	<update id="updatedelhd" parameterType="pd" flushCache="false">
+		update  feedback set  ISSYSLOOK='1'
+	</update>
+</mapper>

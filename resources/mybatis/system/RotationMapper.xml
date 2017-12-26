@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RotationMapper">
+	<!-- 查询所有的栏目编号 -->
+	<select id="queryBybianhao" parameterType="pd" resultType="pd" useCache="false">
+	   SELECT * FROM MEDIA_TITLE_CATEGORY WHERE TYPE='01'
+	</select>
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT R.*,S.NAME AS NAME,case R.IS_SHOW when '1' then '显示' when '2' then '不显示'end AS SHOW_NAME,MTC.TITLE_CATEGORY_NAME AS TITLE_NAME FROM MEDIA_TITLE_CATEGORY MTC  Right JOIN rotation R ON MTC.ID=R.COLUMN_ID LEFT JOIN SYS_USER S ON R.CREATE_BY=S.ID  WHERE 1=1 and R.ISDEL=1
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.TITLE !=null">
+			    and TITLE LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%') 
+			</if>
+			<if test="pd.IMG_PATH !=null">
+			    and IMG_PATH = #{pd.IMG_PATH}
+			</if>
+			<if test="pd.IS_SHOW !=null">	
+				and IS_SHOW= #{pd.IS_SHOW}
+			</if>
+			<if test="pd.LINK_URL !=null">	
+				and LINK_URL= #{pd.LINK_URL}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY= #{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE= #{pd.CREATE_DATE}
+			</if>
+			<if test="pd.COLUMN_ID !=null">	
+				and COLUMN_ID= #{pd.COLUMN_ID}
+			</if>
+	</select>
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM  MEDIA_TITLE_CATEGORY MTC  Right JOIN rotation R ON MTC.ID=R.COLUMN_ID LEFT JOIN SYS_USER S ON R.CREATE_BY=S.ID WHERE 1=1  and R.ISDEL=1
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.TITLE !=null">
+			    and TITLE LIKE CONCAT(CONCAT('%', #{pd.TITLE}),'%') 
+			</if>
+			<if test="pd.IMG_PATH !=null">
+			    and IMG_PATH = #{pd.IMG_PATH}
+			</if>
+			<if test="pd.IS_SHOW !=null">	
+				and IS_SHOW= #{pd.IS_SHOW}
+			</if>
+			<if test="pd.LINK_URL !=null">	
+				and LINK_URL= #{pd.LINK_URL}
+			</if>
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY= #{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE= #{pd.CREATE_DATE}
+			</if>
+			<if test="pd.COLUMN_ID !=null">	
+				and COLUMN_ID= #{pd.COLUMN_ID}
+			</if>
+	</select>
+	<!-- 通过id获取所有数据 -->
+	<select id="queryrotationid" parameterType="pd" resultType="pd" useCache="false">
+	    select * from  rotation where ID=#{ID}
+	</select>
+	<!-- 添加 -->
+	<insert id="addrotation" parameterType="pd">
+		insert into rotation(ID,TITLE,IMG_PATH,IS_SHOW,LINK_URL,CREATE_BY,CREATE_DATE,COLUMN_ID)
+		values(#{ID},#{TITLE},#{IMG_PATH},#{IS_SHOW},#{LINK_URL},#{CREATE_BY},#{CREATE_DATE},#{COLUMN_ID})  
+    </insert>
+    <!-- 修改 -->
+	<update id="uprotation" parameterType="pd" flushCache="false">
+		update  rotation set 
+		<if test="TITLE !=null">
+			TITLE=#{TITLE},
+		</if>
+		<if test="IMG_PATH !=null">
+			IMG_PATH=#{IMG_PATH},
+		</if>
+		<if test="IS_SHOW !=null">	
+			IS_SHOW=#{IS_SHOW},
+		</if>
+		<if test="LINK_URL !=null">	
+			LINK_URL=#{LINK_URL},
+		</if>
+		<if test="CREATE_BY !=null">	
+			CREATE_BY=#{CREATE_BY},
+		</if>
+		<if test="CREATE_DATE !=null">	
+			CREATE_DATE=#{CREATE_DATE},	
+		</if>
+		<if test="COLUMN_ID !=null">
+			COLUMN_ID=#{COLUMN_ID},
+		</if>
+		ID = #{ID}
+			where ID = #{ID}
+	</update>
+	 <!-- 批量删除 -->
+    <!-- <delete id="delrotation">
+    	delete from rotation where ID in
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </delete> -->
+    <update id="delrotation" parameterType="pd" flushCache="false">
+		update rotation set ISDEL='2'
+		where ID in
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+	</update>
+    <!-- 根据图片ID进行查找 -->
+	<select id="queryrotationname" parameterType="pd" resultType="pd" useCache="false">
+	select * from rotation R LEFT JOIN SYS_USER S ON R.CREATE_BY=S.ID WHERE 
+	     <if test="NAME !=null">
+			NAME=#{NAME}
+		</if> 
+	</select>
+	<!-- 关闭/显示 -->
+     <update id="upis_show" parameterType="pd" flushCache="false">
+		update rotation set IS_SHOW=${IS_SHOW}
+		where ID=#{ID}
+	</update>
+	<!-- 删除 -->
+    <!-- <delete id="delrotationByid" parameterType="pd">
+    delete from rotation where ID=#{ID}
+    </delete> --> 
+     <update id="delrotationByid" parameterType="pd" flushCache="false">
+		update rotation set ISDEL='2'
+		where ID=#{ID}
+	</update>
+</mapper>

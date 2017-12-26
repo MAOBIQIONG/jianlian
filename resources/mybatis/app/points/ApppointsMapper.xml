@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ApppointsMapper">
+  <!-- 总积分获取-->
+  <select id="querytotal" parameterType="pd" resultType="pd">
+    SELECT TOTAL_POINTS FROM APP_USER WHERE ID=#{ID} AND ISDEL=1
+  </select>
+  
+  <!-- 积分获取明细列表 -->
+  <select id="queryDetailed" parameterType="pd" resultType="pd">
+    SELECT * FROM POINTS WHERE USER_ID=#{ID} AND ISDEL=1
+    ORDER BY DATE DESC 
+    <if test="pageSize!=null and pageSize!=null and start!=null and start!=null">
+		limit #{start},#{pageSize}
+	</if>
+   <!-- <if test="totalSize!=null and totalSize!=null">
+		limit 0,#{totalSize}
+   </if> -->  
+  </select>
+  
+  <!-- 积分列表总 -->
+  <select id="queryDetailedjifenzong" parameterType="pd" resultType="pd">
+    SELECT COUNT(*) AS jifenzong FROM POINTS WHERE USER_ID=#{ID} AND ISDEL=1
+    ORDER BY DATE DESC 
+  </select>
+</mapper>

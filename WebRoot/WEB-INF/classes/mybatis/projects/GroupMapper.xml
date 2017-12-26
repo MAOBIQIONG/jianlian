@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GroupMapper">
+	<!-- 新增群组 -->
+	<insert id="save" parameterType="pd">
+	    insert into jl_chat_group(
+			<if test="TID != null">
+				TID,  
+			</if>
+			<if test="TNAME != null">
+				TNAME,  
+			</if>
+			<if test="OWNER != null">
+				OWNER,
+			</if>
+			<if test="NUMBER != null">
+				NUMBER,
+			</if>
+			<if test="ANNOUNCEMENT != null">
+				ANNOUNCEMENT,
+			</if>
+			<if test="INTRO != null">
+				INTRO,
+			</if>
+			<if test="MSG != null">
+				MSG,
+			</if>
+			<if test="MAGREE != null">
+				MAGREE,
+			</if>
+			<if test="JOINMODE != null">
+				JOINMODE,
+			</if>
+			<if test="CUSTOM != null">
+				CUSTOM,
+			</if>
+			<if test="ICON != null">
+				ICON,
+			</if>
+			<if test="BEINVITEMODE != null">
+				BEINVITEMODE,
+			</if>
+			<if test="PRO_ID != null">
+				PRO_ID,
+			</if>
+			<if test="CREATE_BY != null">
+				CREATE_BY,
+			</if>
+			    CREATE_DATE, 
+				ID
+		) values (
+			<if test="TID != null">
+				#{TID},  
+			</if>
+			<if test="TNAME != null">
+				#{TNAME},  
+			</if>
+			<if test="OWNER != null">
+				#{OWNER},
+			</if>
+			<if test="NUMBER != null">
+				#{NUMBER},
+			</if>
+			<if test="ANNOUNCEMENT != null">
+				#{ANNOUNCEMENT},
+			</if>
+			<if test="INTRO != null">
+				#{INTRO},
+			</if>
+			<if test="MSG != null">
+				#{MSG},
+			</if>
+			<if test="MAGREE != null">
+				#{MAGREE},
+			</if>
+			<if test="JOINMODE != null">
+				#{JOINMODE},
+			</if>
+			<if test="CUSTOM != null">
+				#{CUSTOM},
+			</if>
+			<if test="ICON != null">
+				#{ICON},
+			</if>
+			<if test="BEINVITEMODE != null">
+				#{BEINVITEMODE},
+			</if>
+			<if test="PRO_ID != null">
+				#{PRO_ID},
+			</if>
+			<if test="CREATE_BY != null">
+				#{CREATE_BY},
+			</if>
+			    NOW(), 
+				#{ID}
+		) 
+	</insert>
+	
+	<!-- 拉人入群 -->
+	<insert id="pull" parameterType="pd">
+	    insert into jl_group_user(
+			<if test="GROUPID != null">
+				GROUPID,  
+			</if>
+			<if test="USER_ID != null">
+				USER_ID,  
+			</if>
+			    CREATE_DATE,
+				ID
+		) values (
+			<if test="GROUPID != null">
+				#{GROUPID},  
+			</if>
+			<if test="USER_ID != null">
+				#{USER_ID},  
+			</if>
+			    NOW(),
+				#{ID}
+		) 
+	</insert>
+	
+	<!-- 踢人出群 -->
+	<update id="kick" parameterType="pd" flushCache="false">
+	  update jl_group_user set ISDEL=2 where USER_ID = #{USER_ID} AND GROUPID = #{GROUPID}
+	</update>
+	
+	<!-- 解散群组 -->
+	<update id="removeGroup" parameterType="pd" flushCache="false">
+	  update jl_chat_group set ISDEL=2 where ID = #{ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd"> 
+		SELECT SU.ID AS SID,AU.ID AS AID FROM sys_user SU 
+		LEFT JOIN app_user AU ON SU.USERNAME=AU.CARD_NO
+		where SU.ID=#{SID}
+	</select>
+	
+	<!-- 根据当前项目编号查询群信息 -->
+	<select id="findByGrouptId" parameterType="pd" resultType="pd"> 
+		SELECT * FROM jl_chat_group 
+		WHERE PRO_ID =#{PRO_ID} and ISDEL=1
+	</select>
+	
+	<!-- 删除会话用户 -->
+	<update id="removeCatGroupuser" parameterType="pd" flushCache="false">
+	  update jl_group_user set ISDEL=2 where GROUPID = #{ID}
+	</update>
+</mapper>

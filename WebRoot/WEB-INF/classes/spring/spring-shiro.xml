@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/cache
+           http://www.springframework.org/schema/cache/spring-cache.xsd">
+	<!-- 启用注解 -->
+	<context:annotation-config />
+
+	<!-- ================ Shiro start ================ -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="ShiroRealm" />
+	</bean>
+
+
+	<!-- Shiro Filter -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+
+		<property name="loginUrl" value="/login_toLogin" />
+
+		<property name="successUrl" value="/main/index" />
+
+		<property name="unauthorizedUrl" value="/noacess" />
+
+		<property name="filterChainDefinitions">
+			<value>
+				/index/** = anon
+				/plugins/** = anon
+				/static/** = anon
+				/H-ui/** = anon
+				/ueditor/** = anon
+				/code = anon
+				/login** = anon
+				/registe = anon
+				/web/** = anon
+				/sendValideSm = anon
+				/app**/** = anon
+				/quartz**/** = anon
+				/websocket=anon
+				/** = authc
+			</value>
+		</property>
+	</bean>
+	<!-- ================ Shiro end ================ -->
+
+
+</beans>

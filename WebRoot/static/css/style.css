@@ -1,0 +1,15 @@
+.table td {
+	border: none;
+}
+
+input.error {
+	border-bottom: 1px solid red;
+	color: red;
+}
+
+.nav li i{
+	transition: all 0.35s ease 0s;
+}
+.nav li:hover i{
+	transform:rotate(360deg);
+}

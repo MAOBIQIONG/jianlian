@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppOrdersMapper"> 
+	
+	<select id="listPage" parameterType="page" resultType="pd"> 
+		SELECT * FROM ORDERS WHERE  1=1 AND ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if> 
+		<if test="pd.USER_ID !=null">
+		     AND USER_ID= #{pd.USER_ID}
+		</if>
+		<if test="pd.PRICE !=null">
+		    AND PRICE= #{pd.PRICE}
+		</if>
+		<if test="pd.STATUS !=null">
+		    AND STATUS= #{pd.STATUS}
+		</if>
+		<if test="pd.EVENT !=null">
+		    AND EVENT= #{pd.EVENT}
+		</if> 
+		<if test="pd.DATE !=null">
+		   AND DATE=#{pd.DATE}
+		</if> 
+	</select>  
+	
+	<select id="findCount" parameterType="page" resultType="pd">
+			SELECT COUNT(*) counts FROM ORDERS WHERE  1=1 AND ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if> 
+		<if test="pd.USER_ID !=null">
+		     AND USER_ID= #{pd.USER_ID}
+		</if>
+		<if test="pd.PRICE !=null">
+		    AND PRICE= #{pd.PRICE}
+		</if>
+		<if test="pd.STATUS !=null">
+		    AND STATUS= #{pd.STATUS}
+		</if>
+		<if test="pd.EVENT !=null">
+		    AND EVENT= #{pd.EVENT}
+		</if> 
+		<if test="pd.DATE !=null">
+		   AND DATE=#{pd.DATE}
+		</if> 
+	</select>   
+	
+	<!-- 根据id查询 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		SELECT * FROM ORDERS WHERE ID=#{ID} AND ISDEL=1
+	</select> 
+	
+	<!-- 根据User_Id查询 -->
+	<select id="findByUId" parameterType="pd" resultType="pd">
+		SELECT O.* FROM ORDERS O WHERE O.USER_ID=#{userid} AND O.ISDEL=1
+		ORDER BY O.DATE DESC 
+		<if test="pageSize!=null and pageSize!=null and start!=null and start!=null">
+			limit #{start},#{pageSize}
+		</if>
+	   <!-- <if test="totalSize!=null and totalSize!=null">
+			limit 0,#{totalSize}
+	   </if>  --> 
+	</select> 
+	
+	<!-- 支付列表zong -->
+	<select id="findByUIdzong" parameterType="pd" resultType="pd">
+		SELECT COUNT(*) AS zfzong FROM ORDERS O WHERE O.USER_ID=#{userid} AND O.ISDEL=1
+		ORDER BY O.DATE DESC 
+	</select> 
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		SELECT * FROM ORDERS WHERE ISDEL=1
+	</select> 
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		INSERT INTO ORDERS(ID,USER_ID,PRICE,STATUS,EVENT,DATE,TYPE,OBJECT_ID
+		) values (
+			#{ID},#{USER_ID},#{PRICE},#{STATUS},#{EVENT},#{DATE},#{TYPE},#{OBJECT_ID}
+		)
+	</insert> 
+	 
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		UPDATE ORDERS SET 
+		<if test="USER_ID !=null">
+		     USER_ID= #{USER_ID},
+		</if>
+		<if test="PRICE !=null">
+		     PRICE= #{PRICE},
+		</if>
+		<if test="STATUS !=null">
+		     STATUS= #{STATUS},
+		</if>
+		<if test="TYPE !=null">
+		     TYPE= #{TYPE},
+		</if> 
+		<if test="EVENT !=null">
+		    EVENT=#{EVENT},
+		</if> 
+		<if test="DATE !=null">
+		    DATE=#{DATE},
+		</if> 
+		<if test="OBJECT_ID !=null">
+		    OBJECT_ID=#{OBJECT_ID},
+		</if> 
+		<if test="PAY_TYPE !=null">
+		    PAY_TYPE=#{PAY_TYPE},
+		</if> 
+		ID = #{ID}
+		WHERE ID = #{ID}
+	</update>  
+	
+	<!-- 修改 -->
+	<update id="bindOrderNo" parameterType="pd">
+		UPDATE ORDERS SET 
+		<if test="ORDER_NO !=null">
+		     ORDER_NO= #{ORDER_NO},
+		</if> 
+		ID = #{ID}
+		WHERE ID = #{ID}
+	</update>  
+	 
+	 
+	<!-- 删除用户 -->
+	<!-- <delete id="delete" parameterType="pd">
+		DELETE FROM ORDERS WHERE ID = #{ID} 
+	</delete> -->
+	<update id="delete" parameterType="pd">
+		UPDATE ORDERS SET  ISDEL='2' WHERE ID = #{ID}
+	</update>  
+	
+	<select id="queryCounts" parameterType="pd" resultType="pd"> 
+		SELECT count(*) counts FROM ORDERS WHERE STATUS &lt;'03' and USER_ID=#{userid} AND ISDEL=1
+	</select> 
+	
+	<!--根据订单号查询会员将要升级的等级-->
+	<select id="queryToLevel" parameterType="pd" resultType="pd"> 
+		SELECT * FROM JL_UPGRADE WHERE ORDER_ID=#{ID}
+	</select>  
+</mapper>

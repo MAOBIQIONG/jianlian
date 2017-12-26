@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProjectMapper">
+    <sql id="Project_List">
+		ID,PROJECT_NAME,	USER_ID,	ADDR,	DUE_DATE,	PROJECT_CONTENT,	PROJECT_TYPE_ID,	RELEASE_DATE,	
+		PROJECT_LEVEL,	STATUS,	BID_WINNER_ID,	BID_DATE,	BID_PRICE,NO_PASS_REASON,AUDIT_BY,AUDIT_DATE,MODIFY_BY,MODIFY_DATE,
+		PROJECT_STAGE_ID,BID_REQUIREMENTS,START_PRICE,COLLECT_COUNT,PROJECT_MANAGER_ID,IS_HOT,DESCRIPTION, BUILD_LAYERS,
+		BUILD_AREA,FLOOR_AREA,AVAILABLE_MATERIALS,RESOURCE
+	</sql> 
+
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select * from project where ISDEL=1;
+	</select> 
+	
+	<select id="listPageByStatus" parameterType="page" resultType="pd">
+	   SELECT P.*,CASE P.STATUS  WHEN '1' THEN '待审核'  WHEN '2' THEN '审核未通过'  WHEN '3' THEN '审核通过'  WHEN '4' THEN '已分配'  WHEN '5' THEN '待确认'  WHEN '6' THEN '交易完成' END AS PROJECT_STATUS,
+	   U.REAL_NAME,B.NAME AS TYPE_NAME, C.NAME AS LEVEL_NAME,D.NAME AS STAGE_NAME,E.NAME AS BID_NAME,A.REAL_NAME AS WINNER_NAME,S.REAL_NAME AS MANAGER_NAME,
+     	(CASE WHEN  SU.NAME IS NOT NULL THEN SU.NAME WHEN  SU.NAME IS NULL THEN U.REAL_NAME END ) AS CREATE_NAME,F.NAME AS FNAME FROM PROJECT P 
+		LEFT JOIN APP_USER U ON P.USER_ID=U.ID LEFT JOIN JL_XM_LX B ON B.ID=P.PROJECT_TYPE_ID LEFT JOIN APP_USER A ON P.BID_WINNER_ID=A.ID 
+		LEFT JOIN sys_dictionaries D ON D.BIANMA=P.PROJECT_STAGE_ID LEFT JOIN sys_dictionaries E ON E.BIANMA=P.BID_REQUIREMENTS LEFT JOIN APP_USER S ON S.ID=P.PROJECT_MANAGER_ID
+		LEFT JOIN sys_dictionaries C ON C.BIANMA=P.PROJECT_LEVEL LEFT JOIN SYS_USER SU ON P.CREATE_BY=SU.ID
+		LEFT JOIN sys_dictionaries F ON F.ZD_ID=P.PROJECT_TYPE_ID
+		where P.ISDEL=1 and P.STATUS &gt;=#{pd.STATUS}
+		<if test="pd.PROJECT_NAME !=null">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+	</select> 
+	
+	 <!-- 查询总数 -->
+	<select id="findCountByStatus" parameterType="page" resultType="pd">
+	    SELECT count(*) counts  FROM PROJECT P 
+		LEFT JOIN APP_USER U ON P.USER_ID=U.ID LEFT JOIN JL_XM_LX B ON B.ID=P.PROJECT_TYPE_ID LEFT JOIN APP_USER A ON P.BID_WINNER_ID=A.ID 
+		LEFT JOIN sys_dictionaries D ON D.BIANMA=P.PROJECT_STAGE_ID LEFT JOIN sys_dictionaries E ON E.BIANMA=P.BID_REQUIREMENTS LEFT JOIN APP_USER S ON S.ID=P.PROJECT_MANAGER_ID
+		LEFT JOIN sys_dictionaries C ON C.BIANMA=P.PROJECT_LEVEL LEFT JOIN SYS_USER SU ON P.CREATE_BY=SU.ID
+		where P.ISDEL=1 and P.STATUS &gt;=#{pd.STATUS}
+		<if test="pd.PROJECT_NAME !=null">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+	</select>
+	
+	<select id="listPage" parameterType="page" resultType="pd">
+		SELECT P.*,CASE P.STATUS  WHEN '1' THEN '待审核'  WHEN '2' THEN '审核未通过'  WHEN '3' THEN '审核通过'  WHEN '4' THEN '已分配'  WHEN '5' THEN '待确认'  WHEN '6' THEN '交易完成' END AS PROJECT_STATUS,
+		U.REAL_NAME,B.NAME AS TYPE_NAME, C.NAME AS LEVEL_NAME,D.NAME AS STAGE_NAME,E.NAME AS BID_NAME,A.REAL_NAME AS WINNER_NAME,S.REAL_NAME AS MANAGER_NAME,
+    (CASE WHEN  SU.NAME IS NOT NULL THEN SU.NAME WHEN  SU.NAME IS NULL THEN U.REAL_NAME END ) AS CREATE_NAME,F.NAME AS FNAME   FROM PROJECT P 
+		LEFT JOIN APP_USER U ON P.USER_ID=U.ID LEFT JOIN JL_XM_LX B ON B.ID=P.PROJECT_TYPE_ID LEFT JOIN APP_USER A ON P.BID_WINNER_ID=A.ID                          
+		LEFT JOIN sys_dictionaries D ON D.BIANMA=P.PROJECT_STAGE_ID LEFT JOIN sys_dictionaries E ON E.BIANMA=P.BID_REQUIREMENTS LEFT JOIN APP_USER S ON S.ID=P.PROJECT_MANAGER_ID
+		LEFT JOIN sys_dictionaries C ON C.BIANMA=P.PROJECT_LEVEL LEFT JOIN SYS_USER SU ON P.CREATE_BY=SU.ID  
+		LEFT JOIN sys_dictionaries F ON F.ZD_ID=P.PROJECT_TYPE_ID
+		WHERE P.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.PROJECT_NAME !=null">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+		<if test="pd.USER_ID !=null">	
+			and USER_ID=#{pd.USER_ID}
+		</if> 
+		<if test="pd.ADDR !=null">	
+			and ADDR=#{pd.ADDR}
+		</if>
+		<if test="pd.DUE_DATE !=null">	
+			and DUE_DATE=#{pd.DUE_DATE}
+		</if>
+		<if test="pd.PROJECT_CONTENT !=null">	
+			and PROJECT_CONTENT=#{pd.PROJECT_CONTENT}
+		</if>
+		<if test="pd.PROJECT_TYPE_ID !=null">	
+			and PROJECT_TYPE_ID=#{pd.PROJECT_TYPE_ID}
+		</if>
+		<if test="pd.RELEASE_DATE !=null">	
+			and RELEASE_DATE=#{pd.RELEASE_DATE}
+		</if>
+		<if test="pd.PROJECT_LEVEL !=null">
+			and PROJECT_LEVEL=#{pd.PROJECT_LEVEL}
+		</if>
+		<if test="pd.STATUS !=null">	
+			and STATUS=#{pd.STATUS}
+		</if>
+		<if test="pd.BID_WINNER_ID !=null">	
+			and BID_WINNER_ID=#{pd.BID_WINNER_ID}
+		</if>
+		<if test="pd.BID_DATE !=null">
+			and BID_DATE=#{pd.BID_DATE}
+		</if>
+		<if test="pd.BID_PRICE !=null">	
+			and BID_PRICE=#{pd.BID_PRICE}
+		</if>
+		<if test="pd.NO_PASS_REASON !=null">
+			and NO_PASS_REASON=#{pd.NO_PASS_REASON}
+		</if>
+		<if test="pd.AUDIT_BY !=null">
+			and AUDIT_BY=#{pd.AUDIT_BY}
+		</if>
+		<if test="pd.AUDIT_DATE !=null">
+			and AUDIT_DATE=#{pd.AUDIT_DATE}
+		</if>
+		<if test="pd.MODIFY_BY !=null">
+			and MODIFY_BY=#{pd.MODIFY_BY}
+		</if>
+		<if test="pd.MODIFY_DATE !=null">
+			and MODIFY_DATE=#{pd.MODIFY_DATE} 
+		</if>
+		<if test="pd.PROJECT_STAGE_ID !=null">
+			and PROJECT_STAGE_ID=#{pd.PROJECT_STAGE_ID} 
+		</if>
+		<if test="pd.BID_REQUIREMENTS !=null">
+			and BID_REQUIREMENTS=#{pd.BID_REQUIREMENTS} 
+		</if>
+		<if test="pd.START_PRICE !=null">
+			and START_PRICE=#{pd.START_PRICE} 
+		</if>
+		<if test="pd.COLLECT_COUNT !=null">
+			and COLLECT_COUNT=#{pd.COLLECT_COUNT} 
+		</if>
+		<if test="pd.PROJECT_MANAGER_ID !=null">
+			and PROJECT_MANAGER_ID=#{pd.PROJECT_MANAGER_ID} 
+		</if> 
+		<if test="pd.IS_HOT !=null">
+			and IS_HOT=#{pd.IS_HOT} 
+		</if> 
+		<if test="pd.DESCRIPTION !=null">
+			and DESCRIPTION=#{pd.DESCRIPTION} 
+		</if> 
+		<if test="pd.BUILD_LAYERS !=null">
+			and BUILD_LAYERS=#{pd.BUILD_LAYERS} 
+		</if> 
+		<if test="pd.BUILD_AREA !=null">
+			and BUILD_AREA=#{pd.BUILD_AREA} 
+		</if> 
+		<if test="pd.FLOOR_AREA !=null">
+			and FLOOR_AREA=#{pd.FLOOR_AREA} 
+		</if> 
+		<if test="pd.AVAILABLE_MATERIALS!=null">
+			and AVAILABLE_MATERIALS=#{pd.AVAILABLE_MATERIALS} 
+		</if> 
+		<if test="pd.RESOURCE!=null">
+			and  RESOURCE=#{pd.RESOURCE} 
+		</if>  
+	</select>  
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into project(
+			<if test="PROJECT_NAME != null">
+			PROJECT_NAME,
+		</if>
+		<if test="USER_ID != null">
+			USER_ID,
+		</if>
+		<if test="ADDR != null">
+			ADDR,
+		</if>
+		<if test="DUE_DATE != null">
+			DUE_DATE,
+		</if>
+		<if test="PROJECT_CONTENT != null">
+			PROJECT_CONTENT,
+		</if>
+		<if test="PROJECT_TYPE_ID != null">
+			PROJECT_TYPE_ID,	
+		</if>
+		<if test="RELEASE_DATE != null">	
+			RELEASE_DATE,
+		</if>
+		<if test="PROJECT_LEVEL != null">
+			PROJECT_LEVEL,
+		</if>
+		<if test="STATUS != null">
+			STATUS,
+		</if>
+		<if test="BID_REQUIREMENTS != null">
+			BID_REQUIREMENTS,
+		</if>
+		<if test="START_PRICE != null">
+			START_PRICE,
+		</if>
+		<if test="MODIFY_BY != null">
+			MODIFY_BY,
+		</if>
+		<if test="MODIFY_DATE != null">
+			MODIFY_DATE,
+		</if>
+		<if test="PROJECT_STAGE_ID != null">
+			PROJECT_STAGE_ID,
+		</if>
+		<if test="BUILD_LAYERS != null">
+			BUILD_LAYERS,
+		</if>
+		<if test="BUILD_AREA != null">
+			BUILD_AREA,
+		</if>
+		<if test="FLOOR_AREA != null">
+			FLOOR_AREA,
+		</if>
+		<if test="AVAILABLE_MATERIALS != null">
+			AVAILABLE_MATERIALS,
+		</if>
+		<if test="RESOURCE != null">
+			RESOURCE,
+		</if>
+		<if test="DESCRIPTION != null">
+			DESCRIPTION,
+		</if>
+		<if test="CITY != null">
+			CITY,
+		</if>
+		<if test="CREATE_BY != null">
+			CREATE_BY,
+		</if>
+		<if test="START_DATE != null">
+			START_DATE,
+		</if>
+		<if test="CREATE_DATE != null">
+			CREATE_DATE,
+		</if>
+		<if test="PART_COUNT != null">
+			PART_COUNT,  
+		</if>
+		<if test="IS_RESOURCE != null">
+			IS_RESOURCE,  
+		</if>
+		<if test="DISTINGUISH != null">
+			DISTINGUISH,  
+		</if>
+		<if test="CATEGORY_ID != null">
+			CATEGORY_ID,  
+		</if>
+		<if test="PRO_NO != null">
+			PRO_NO,  
+		</if>
+			ID
+		) values (
+		<if test="PROJECT_NAME != null">
+			#{PROJECT_NAME},
+		</if>
+		<if test="USER_ID != null">
+			#{USER_ID},
+		</if>
+		<if test="ADDR != null">
+			#{ADDR},
+		</if>
+		<if test="DUE_DATE != null">
+			#{DUE_DATE},
+		</if>
+		<if test="PROJECT_CONTENT != null">
+			#{PROJECT_CONTENT},
+		</if>
+		<if test="PROJECT_TYPE_ID != null">
+			#{PROJECT_TYPE_ID},	
+		</if>
+		<if test="RELEASE_DATE != null">	
+			#{RELEASE_DATE},
+		</if>
+		<if test="PROJECT_LEVEL != null">
+			#{PROJECT_LEVEL},
+		</if>
+		<if test="STATUS != null">
+			#{STATUS},
+		</if>
+		<if test="BID_REQUIREMENTS != null">
+			#{BID_REQUIREMENTS},
+		</if>
+		<if test="START_PRICE != null">
+			#{START_PRICE},
+		</if>
+		<if test="MODIFY_BY != null">
+			#{MODIFY_BY},
+		</if>
+		<if test="MODIFY_DATE != null">
+			#{MODIFY_DATE},
+		</if>
+		<if test="PROJECT_STAGE_ID != null">
+			#{PROJECT_STAGE_ID},
+		</if>
+		<if test="BUILD_LAYERS != null">
+			#{BUILD_LAYERS},
+		</if>
+		<if test="BUILD_AREA != null">
+			#{BUILD_AREA},
+		</if>
+		<if test="FLOOR_AREA != null">
+			#{FLOOR_AREA},
+		</if>
+		<if test="AVAILABLE_MATERIALS != null">
+			#{AVAILABLE_MATERIALS},
+		</if>
+		<if test="RESOURCE != null">
+			#{RESOURCE},
+		</if>
+		<if test="DESCRIPTION != null">
+			#{DESCRIPTION},
+		</if>
+		<if test="CITY != null">
+			#{CITY},
+		</if>
+		<if test="CREATE_BY != null">
+			#{CREATE_BY},
+		</if>
+		<if test="START_DATE != null">
+			#{START_DATE},
+		</if>
+		<if test="CREATE_DATE != null">
+			#{CREATE_DATE},
+		</if>
+		<if test="PART_COUNT != null">
+			#{PART_COUNT},  
+		</if>
+		<if test="IS_RESOURCE != null">
+			#{IS_RESOURCE},  
+		</if>
+		<if test="DISTINGUISH != null">
+			#{DISTINGUISH},  
+		</if>
+		<if test="CATEGORY_ID != null">
+			#{CATEGORY_ID},  
+		</if>
+		<if test="PRO_NO != null">
+			#{PRO_NO},  
+		</if>
+			#{ID}
+		) 
+	</insert>
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  project set 
+		<if test="PROJECT_NAME !=null">
+		     PROJECT_NAME= #{PROJECT_NAME},
+		</if>
+		<if test="USER_ID !=null">	
+			USER_ID=#{USER_ID},
+		</if> 
+		<if test="ADDR !=null">	
+			ADDR=#{ADDR},
+		</if>
+		<if test="DUE_DATE !=null">	
+			DUE_DATE=#{DUE_DATE},
+		</if>
+		<if test="PROJECT_CONTENT !=null">	
+			PROJECT_CONTENT=#{PROJECT_CONTENT},
+		</if>
+		<if test="PROJECT_TYPE_ID !=null">	
+			PROJECT_TYPE_ID=#{PROJECT_TYPE_ID},
+		</if>
+		<if test="RELEASE_DATE !=null">	
+			RELEASE_DATE=#{RELEASE_DATE},
+		</if>
+		<if test="PROJECT_LEVEL !=null">
+			PROJECT_LEVEL=#{PROJECT_LEVEL},
+		</if>
+		<if test="STATUS !=null">	
+			STATUS=#{STATUS},
+		</if>
+		<if test="BID_WINNER_ID !=null">	
+			BID_WINNER_ID=#{BID_WINNER_ID},
+		</if>
+		<if test="BID_DATE !=null">
+			BID_DATE=#{BID_DATE},
+		</if>
+		<if test="BID_PRICE !=null">	
+			BID_PRICE=#{BID_PRICE},
+		</if>
+		<if test="NO_PASS_REASON !=null">
+			NO_PASS_REASON=#{NO_PASS_REASON},
+		</if>
+		<if test="PROJECT_STAGE_ID !=null">
+			PROJECT_STAGE_ID=#{PROJECT_STAGE_ID} ,
+		</if>
+		<if test="BID_REQUIREMENTS !=null">
+			BID_REQUIREMENTS=#{BID_REQUIREMENTS} ,
+		</if>
+		<if test="START_PRICE !=null">
+			START_PRICE=#{START_PRICE} ,
+		</if>
+		<if test="COLLECT_COUNT !=null">
+			COLLECT_COUNT=#{COLLECT_COUNT} ,
+		</if>
+		<if test="PROJECT_MANAGER_ID !=null">
+			PROJECT_MANAGER_ID=#{PROJECT_MANAGER_ID} ,
+		</if> 
+		<if test="IS_HOT !=null">
+			IS_HOT=#{IS_HOT} ,
+		</if> 
+		<if test="DESCRIPTION !=null">
+			 DESCRIPTION=#{DESCRIPTION} ,
+		</if> 
+		<if test="BUILD_LAYERS !=null">
+			BUILD_LAYERS=#{BUILD_LAYERS}, 
+		</if> 
+		<if test="BUILD_AREA !=null">
+			 BUILD_AREA=#{BUILD_AREA} ,
+		</if> 
+		<if test="FLOOR_AREA !=null">
+			 FLOOR_AREA=#{FLOOR_AREA}, 
+		</if> 
+		<if test="AVAILABLE_MATERIALS!=null">
+			AVAILABLE_MATERIALS=#{AVAILABLE_MATERIALS} ,
+		</if> 
+		<if test="RESOURCE!=null">
+			RESOURCE=#{RESOURCE}, 
+		</if>
+		<if test="AUDIT_BY !=null">
+			AUDIT_BY=#{AUDIT_BY},
+		</if>
+		<if test="AUDIT_DATE !=null">
+			 AUDIT_DATE=#{AUDIT_DATE},
+		</if>
+		<if test="MODIFY_BY !=null">
+			MODIFY_BY=#{MODIFY_BY},
+		</if>
+		<if test="MODIFY_DATE !=null">
+			MODIFY_DATE=#{MODIFY_DATE},
+		</if> 
+		<if test="CITY !=null">
+			CITY=#{CITY},
+		</if> 
+		<if test="CREATE_BY !=null">
+			CREATE_BY=#{CREATE_BY},
+		</if> 
+		<if test="START_DATE !=null">
+			START_DATE=#{START_DATE},
+		</if>  
+		<if test="GROUP_NAME !=null">
+			GROUP_NAME=#{GROUP_NAME},
+		</if>  
+		<if test="PART_COUNT !=null">
+			PART_COUNT=#{PART_COUNT},
+		</if>  
+		<if test="CATEGORY_ID !=null">
+			CATEGORY_ID=#{CATEGORY_ID},
+		</if>  
+		<if test="PRO_NO != null">
+			PRO_NO=#{PRO_NO},  
+		</if> 
+		<if test="STAR_LEVEL != null and STAR_LEVEL != ''">
+			STAR_LEVEL=#{STAR_LEVEL},  
+		</if> 
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd"> 
+		SELECT PJ.*,AU.REAL_NAME,CP.COMPANY_NAME,SU.NAME AS CREATE_NAME,X.NAME AS TYPE_NAME,X.PID AS TYPE_PID,SA.AREANAME,SA.AREACODE,SA.PARENTID FROM PROJECT PJ LEFT JOIN APP_USER AU ON PJ.USER_ID=AU.ID 
+		LEFT JOIN COMPANY CP ON AU.COMPANY_ID=CP.ID LEFT JOIN SYS_USER SU ON SU.ID=PJ.CREATE_BY LEFT JOIN JL_XM_LX X ON X.ID=PJ.PROJECT_TYPE_ID LEFT JOIN  SYS_AREA SA ON SA.AREANAME=PJ.CITY WHERE PJ.ID=#{ID} AND PJ.ISDEL=1  
+	</select>
+	
+	<!-- 删除用户 -->
+	<update id="delete" parameterType="pd">
+	 update  project  set ISDEL=2 where ID = #{ID} 
+		<!-- delete from project where ID = #{ID}  --> 
+	</update>
+	
+	<update id="updateStatus" parameterType="pd" flushCache="false">
+		update  project set STATUS=#{STATUS}
+		<if test="NO_PASS_REASON != null || NO_PASS_REASON != ''">
+			,NO_PASS_REASON=#{NO_PASS_REASON}
+		</if>	
+		<if test="COMPLETE_DATE != null || COMPLETE_DATE != ''">
+			,COMPLETE_DATE=#{COMPLETE_DATE}
+		</if>	
+		 where ID = #{ID}
+	</update>
+	
+	<update id="updateSigned" parameterType="pd">
+		update  project set IS_SIGNED=#{IS_SIGNED},SIGNE_DATE=#{SIGNE_DATE} where ID = #{PROJECT_ID}
+	</update>
+	
+	<update id="uploadCover" parameterType="pd">
+		update  project set
+		<if test="COVER_PATH != null || COVER_PATH != ''">
+			COVER_PATH=#{COVER_PATH},
+		</if>	
+		ID = #{PRO_ID}
+		 where ID = #{PRO_ID}
+	</update>
+	
+	<!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM PROJECT P 
+		LEFT JOIN APP_USER U ON P.USER_ID=U.ID LEFT JOIN JL_XM_LX B ON B.ID=P.PROJECT_TYPE_ID LEFT JOIN APP_USER A ON P.BID_WINNER_ID=A.ID 
+		LEFT JOIN sys_dictionaries D ON D.BIANMA=P.PROJECT_STAGE_ID LEFT JOIN sys_dictionaries E ON E.BIANMA=P.BID_REQUIREMENTS LEFT JOIN APP_USER S ON S.ID=P.PROJECT_MANAGER_ID
+		LEFT JOIN sys_dictionaries C ON C.BIANMA=P.PROJECT_LEVEL  LEFT JOIN SYS_USER SU ON P.CREATE_BY=SU.ID  
+		WHERE 1=1 and P.ISDEL=1
+	   <if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.PROJECT_NAME !=null">
+		    and PROJECT_NAME LIKE CONCAT(CONCAT('%', #{pd.PROJECT_NAME}),'%')
+		</if>
+		<if test="pd.USER_ID !=null">	
+			and USER_ID=#{pd.USER_ID}
+		</if> 
+		<if test="pd.ADDR !=null">	
+			and ADDR=#{pd.ADDR}
+		</if>
+		<if test="pd.DUE_DATE !=null">	
+			and DUE_DATE=#{pd.DUE_DATE}
+		</if>
+		<if test="pd.PROJECT_CONTENT !=null">	
+			and PROJECT_CONTENT=#{pd.PROJECT_CONTENT}
+		</if>
+		<if test="pd.PROJECT_TYPE_ID !=null">	
+			and PROJECT_TYPE_ID=#{pd.PROJECT_TYPE_ID}
+		</if>
+		<if test="pd.RELEASE_DATE !=null">	
+			and RELEASE_DATE=#{pd.RELEASE_DATE}
+		</if>
+		<if test="pd.PROJECT_LEVEL !=null">
+			and PROJECT_LEVEL=#{pd.PROJECT_LEVEL}
+		</if>
+		<if test="pd.STATUS!=null">	
+			and STATUS=#{pd.STATUS}
+		</if>
+		<if test="pd.BID_WINNER_ID !=null">	
+			and BID_WINNER_ID=#{pd.BID_WINNER_ID}
+		</if>
+		<if test="pd.BID_DATE !=null">
+			and BID_DATE=#{pd.BID_DATE}
+		</if>
+		<if test="pd.BID_PRICE !=null">	
+			and BID_PRICE=#{pd.BID_PRICE}
+		</if>
+		<if test="pd.NO_PASS_REASON !=null">
+			and NO_PASS_REASON=#{pd.NO_PASS_REASON}
+		</if>
+		<if test="pd.AUDIT_BY !=null">
+			and AUDIT_BY=#{pd.AUDIT_BY}
+		</if>
+		<if test="pd.AUDIT_DATE !=null">
+			and AUDIT_DATE=#{pd.AUDIT_DATE}
+		</if>
+		<if test="pd.MODIFY_BY !=null">
+			and MODIFY_BY=#{pd.MODIFY_BY}
+		</if>
+		<if test="pd.MODIFY_DATE !=null">
+			and MODIFY_DATE=#{pd.MODIFY_DATE} 
+		</if>
+		<if test="pd.PROJECT_STAGE_ID !=null">
+			and PROJECT_STAGE_ID=#{pd.PROJECT_STAGE_ID} 
+		</if>
+		<if test="pd.BID_REQUIREMENTS !=null">
+			and BID_REQUIREMENTS=#{pd.BID_REQUIREMENTS} 
+		</if>
+		<if test="pd.START_PRICE !=null">
+			and START_PRICE=#{pd.START_PRICE} 
+		</if>
+		<if test="pd.COLLECT_COUNT !=null">
+			and COLLECT_COUNT=#{pd.COLLECT_COUNT} 
+		</if>
+		<if test="pd.PROJECT_MANAGER_ID !=null">
+			and PROJECT_MANAGER_ID=#{pd.PROJECT_MANAGER_ID} 
+		</if> 
+		<if test="pd.IS_HOT !=null">
+			and IS_HOT=#{pd.IS_HOT} 
+		</if> 
+		<if test="pd.DESCRIPTION !=null">
+			and DESCRIPTION=#{pd.DESCRIPTION} 
+		</if> 
+		<if test="pd.BUILD_LAYERS !=null">
+			and BUILD_LAYERS=#{pd.BUILD_LAYERS} 
+		</if> 
+		<if test="pd.BUILD_AREA !=null">
+			and BUILD_AREA=#{pd.BUILD_AREA} 
+		</if> 
+		<if test="pd.FLOOR_AREA !=null">
+			and FLOOR_AREA=#{pd.FLOOR_AREA} 
+		</if> 
+		<if test="pd.AVAILABLE_MATERIALS!=null">
+			and AVAILABLE_MATERIALS=#{pd.AVAILABLE_MATERIALS} 
+		</if> 
+		<if test="pd.RESOURCE!=null">
+			and  RESOURCE=#{pd.RESOURCE} 
+		</if> 
+	</select>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findBidderByPid" parameterType="pd" resultType="pd" >
+		SELECT A.* FROM APP_USER A LEFT JOIN project_bidder B ON A.ID=B.USER_ID WHERE B.PROJECT_ID=#{ID}
+	</select>
+	
+	<!-- 新增材料 -->
+	<insert id="saveproject_category" parameterType="pd">
+		INSERT INTO PROJECT_CATEGORY(ID,PROJECT_ID,CATEGORY_ID,DATE) 
+		VALUES (#{ID},#{PROJECT_ID},#{CATEGORY_ID},#{DATE}) 
+	</insert>
+	
+	<!-- 获取 -->
+	<select id="querycategory" parameterType="pd" resultType="pd">
+		SELECT * FROM CATEGORY where PID =#{PID}
+	</select> 
+	<!-- 删除 -->
+	<update id="deletePROJECT_CATEGORY" parameterType="pd" flushCache="false">
+	  update  PROJECT_CATEGORY  set ISDEL=2 where PROJECT_ID = #{PROJECT_ID} 
+		<!-- delete from PROJECT_CATEGORY where PROJECT_ID = #{PROJECT_ID}  -->
+	</update>
+	
+	<!-- 根据状态统计记录数-->
+	<select id="queryMsgByStatus" parameterType="pd" resultType="pd" >
+		select count(*) project_counts from  project  where status=#{status}
+	</select> 
+
+	<!-- 根据项目Id查询材料-->
+	<select id="queryCateByPid" parameterType="pd" resultType="pd" >
+		SELECT * FROM project_category  WHERE PROJECT_ID=#{PROJECT_ID}
+	</select> 
+	
+	<!-- 我要加入小组 -->
+	<insert id="addXz" parameterType="pd">
+		INSERT INTO JL_XZ_CY(ID,PRO_ID,USER_ID,DATE,IS_ADMIN,IS_APPUSER) VALUES(#{ID},#{PRO_ID},#{USER_ID},#{DATE},#{IS_ADMIN},#{IS_APPUSER}) 
+	</insert>  
+	
+	<!--查询-->
+	<select id="queryMaxProNo" parameterType="pd" resultType="pd">
+		SELECT MAX(PRO_NO) as PRO_NO FROM PROJECT WHERE 1=1
+		<if test="IS_RESOURCE !=null and IS_RESOURCE !=''">
+		   and IS_RESOURCE = #{IS_RESOURCE}
+		</if>  
+		<if test="DISTINGUISH !=null and DISTINGUISH !=''">
+		   and DISTINGUISH = #{DISTINGUISH}
+		</if>  
+		<if test="PRO_NO !=null and PRO_NO !=''">
+		   and PRO_NO LIKE CONCAT(CONCAT('%', #{pro_no}),'%')
+		</if>  
+	</select>  
+	
+	<!--查询行业名称-->
+	<select id="queryNameById" parameterType="pd" resultType="pd">
+		 SELECT NAME FROM CATEGORY WHERE ID =#{CATEGORY_ID} AND ISDEL=1 
+	</select>   
+	
+	<!-- 获取 -->
+	<select id="querycategorybyid" parameterType="pd" resultType="pd">
+		SELECT * FROM CATEGORY where ID =#{CATEGORY_ID}
+	</select> 
+	
+	<select id="doexlelist" parameterType="pd" resultType="pd">
+	 	SELECT P.*,CASE P.STATUS  WHEN '1' THEN '待审核'  WHEN '2' THEN '审核未通过'  WHEN '3' THEN '审核通过'  WHEN '4' THEN '已分配'  WHEN '5' THEN '待确认'  WHEN '6' THEN '交易完成' END AS PROJECT_STATUS,
+	   U.REAL_NAME,B.NAME AS TYPE_NAME, C.NAME AS LEVEL_NAME,D.NAME AS STAGE_NAME,E.NAME AS BID_NAME,A.REAL_NAME AS WINNER_NAME,S.REAL_NAME AS MANAGER_NAME,
+     	(CASE WHEN  SU.NAME IS NOT NULL THEN SU.NAME WHEN  SU.NAME IS NULL THEN U.REAL_NAME END ) AS CREATE_NAME,F.NAME AS FNAME FROM PROJECT P 
+		LEFT JOIN APP_USER U ON P.USER_ID=U.ID LEFT JOIN JL_XM_LX B ON B.ID=P.PROJECT_TYPE_ID LEFT JOIN APP_USER A ON P.BID_WINNER_ID=A.ID 
+		LEFT JOIN sys_dictionaries D ON D.BIANMA=P.PROJECT_STAGE_ID LEFT JOIN sys_dictionaries E ON E.BIANMA=P.BID_REQUIREMENTS LEFT JOIN APP_USER S ON S.ID=P.PROJECT_MANAGER_ID
+		LEFT JOIN sys_dictionaries C ON C.BIANMA=P.PROJECT_LEVEL LEFT JOIN SYS_USER SU ON P.CREATE_BY=SU.ID
+		LEFT JOIN sys_dictionaries F ON F.ZD_ID=P.PROJECT_TYPE_ID
+		where P.ISDEL=1 
+	</select>
+	
+	<update id="updatedelhd" parameterType="pd" flushCache="false">
+		update  project set  ISSYSLOOK='1'
+	</update>
+</mapper>

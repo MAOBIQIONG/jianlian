@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppHonorMapper">  
+		
+	<select id="queryById" resultType="pd">
+	   SELECT * FROM HONOR WHERE ID=#{ID} AND ISDEL=1
+	</select>
+	
+	 <!-- 添加用户信息 -->
+	<insert id="save" parameterType="pd" flushCache="false">
+	INSERT INTO  HONOR (
+			ID,
+			NAME,
+			COMPANY_NAME,
+			POSITION,
+			SEX,
+			AGE,
+			IMG_PATH,
+			CREATE_BY,
+			CREATE_DATE 
+		) VALUES (
+			#{ID},
+			#{NAME},
+			#{COMPANY_NAME},
+			#{POSITION},
+			#{SEX},
+			#{AGE},
+			#{IMG_PATH}, 
+			#{CREATE_BY},
+			#{CREATE_DATE} 
+		)
+	</insert> 
+	 
+     <!-- 删除 -->
+    <!-- <delete id="delete">
+    	DELETE FROM HONOR WHERE  ID=#{ID}
+    </delete> -->
+    <update id="delete" parameterType="pd">
+		UPDATE HONOR SET  
+		ISDEL='2' WHERE  ID=#{ID}
+    </update>
+     
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		UPDATE HONOR SET
+		<if test="NAME !=null and NAME !='' ">
+			NAME=#{NAME},	
+		</if>
+		<if test="COMPANY_NAME !=null and COMPANY_NAME !='' ">
+			COMPANY_NAME=#{COMPANY_NAME},	
+		</if>
+		<if test="POSITION !=null and POSITION !='' ">
+			POSITION=#{POSITION},	
+		</if>  
+		<if test="SEX !=null and SEX !='' ">
+			SEX=#{SEX},	
+		</if>
+		<if test="AGE !=null and AGE !='' ">
+			AGE=#{AGE},	
+		</if>
+		<if test="IMG_PATH !=null and IMG_PATH !='' ">
+			IMG_PATH=#{IMG_PATH},
+		</if> 
+		<if test="CREATE_DATE !=null and CREATE_DATE !='' ">
+			CREATE_DATE=#{CREATE_DATE},
+		</if>
+		<if test="CREATE_BY !=null and CREATE_BY !='' ">
+			CREATE_BY=#{CREATE_BY},
+		</if> 
+		ID = #{ID}
+			WHERE ID = #{ID}
+	</update> 
+	
+</mapper>

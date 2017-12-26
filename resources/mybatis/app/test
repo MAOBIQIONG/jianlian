@@ -1,0 +1,67 @@
+ "result": "01",
+    "data": {
+        "NAME": "孙大圣的爸爸",
+        "APPTOKEN": "5db653d776504ea4b269b302ac9b7a78",
+        "USER_ID": "0b13ab58e898440e9e2965fba30c4550",
+        "BABY_LIST": [
+            {
+                "BABY_ID": "0874389d9d1543a4894e21a6f90e9b41",
+                "NAME": "孙大圣",
+                "USER_ID": "0b13ab58e898440e9e2965fba30c4550",
+                "SEX": "1",
+                "PICTURE_LIST": [
+                    {
+                        "BABY_ID": "0874389d9d1543a4894e21a6f90e9b41",
+                        "PATH": "20151126/3a39deca37ae4e58a081ea7d30504e2a.jpeg",
+                        "PICTURE_ID": "ded9a609b7ca4abd9d1ae683dbafadcb"
+                    },
+                    {
+                        "BABY_ID": "0874389d9d1543a4894e21a6f90e9b41",
+                        "PATH": "20151126/f84127740399483680ede34bfdbce56d.jpeg",
+                        "PICTURE_ID": "c582a5dccd254447ba7a63992f1e97aa"
+                    },
+                    {
+                        "BABY_ID": "0874389d9d1543a4894e21a6f90e9b41",
+                        "PATH": "20151126/6b78748427464c81895599a00e76a1ac.jpeg",
+                        "PICTURE_ID": "af00db3c024845fd99fd8251b301108b"
+                    },
+                    {
+                        "BABY_ID": "0874389d9d1543a4894e21a6f90e9b41",
+                        "PATH": "20151129/a07a76907b4a4ff6a822896e34b30fe3.jpeg",
+                        "PICTURE_ID": "945fb68f5602443a89eb6d593e5e2c61"
+                    }
+                ],
+                "CLAZZ_ID": "3a33978580644c38b9e60ae4a55e780b",
+                "PORTRAIT_URI": "20151127/72fb6cdef7fa45329e6882c9b01f23f4.jpg",
+                "NICKNAME": ""
+            },
+            {
+                "CLAZZ_NAME": "小一班",
+                "BABY_ID": "e3df28f07a084dba934cf97728a8e818",
+                "NAME": "孙大圣",
+                "USER_ID": "0b13ab58e898440e9e2965fba30c4550",
+                "SEX": "1",
+                "SCHOOL_NAME": "园西幼儿园",
+                "PICTURE_LIST": [
+                    
+                ],
+                "SCHOOL_ID": "a7a5cbb9466e475e8b866fdf917d5a1d",
+                "CLAZZ_ID": "9f5fd26c9ecf4741889601bb560d15b6",
+                "PORTRAIT_URI": "front/boy.png",
+                "NICKNAME": "大圣"
+            }
+        ],
+        "CLAZZ_LIST": [
+            {
+                "CLAZZ_NAME": "小一班",
+                "SCHOOL_NAME": "园西幼儿园",
+                "SCHOOL_ID": "a7a5cbb9466e475e8b866fdf917d5a1d",
+                "CLAZZ_ID": "9f5fd26c9ecf4741889601bb560d15b6"
+            }
+        ],
+        "IS_REMIND": "1",
+        "STATUS": "1",
+        "IMTOKEN": "w4Vff+77AY6R0p4iZ+YZEp23242sX88K/aPrGJDo14czCOME6dixEPgeD7ejFoLEx49oVY+PwdvdJgAwBQTis/JVRwIpO+Pa85Gk8mZzO7A/g1sIMxNpTe8fGxil4XguoeNjQaaDLI8=",
+        "IS_MUTE": "0"
+    }
+}

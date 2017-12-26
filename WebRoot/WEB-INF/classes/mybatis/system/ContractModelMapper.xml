@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ContractModelMapper">  
+	<!-- 列出二级角色信息 -->
+	<select id="listAllContractModel" resultType="pd">
+	     SELECT * FROM CONTRACT_MODEL;
+	</select>
+	 
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT * FROM CONTRACT_MODEL  WHERE 1=1
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.MODEL_NAME !=null">
+			    and MODEL_NAME  LIKE CONCAT(CONCAT('%', #{pd.MODEL_NAME}),'%') 
+			</if>
+			<if test="pd.MODEL_TYPE !=null">	
+				and MODEL_TYPE LIKE CONCAT(CONCAT('%', #{pd.MODEL_TYPE}),'%')
+			</if>
+			<if test="pd.FILE_NAME !=null">	
+				and FILE_NAME LIKE CONCAT(CONCAT('%', #{pd.FILE_NAME}),'%')
+			</if>
+			<if test="pd.FILE_PATH !=null">	
+				and FILE_PATH LIKE CONCAT(CONCAT('%', #{pd.FILE_PATH}),'%')
+			</if>
+			<if test="pd.MODEL_STATUS !=null">	
+				and MODEL_STATUS LIKE CONCAT(CONCAT('%', #{pd.MODEL_STATUS}),'%')
+			</if>
+			<if test="pd.AUDIT_BY !=null">	
+				and AUDIT_BY LIKE CONCAT(CONCAT('%', #{pd.AUDIT_BY}),'%')
+			</if>
+			<if test="pd.AUDIT_DATE !=null">	
+				and AUDIT_DATE LIKE CONCAT(CONCAT('%', #{pd.AUDIT_DATE}),'%')
+			</if>
+			<if test="pd.UPLOAD_BY !=null">	
+				and UPLOAD_BY LIKE CONCAT(CONCAT('%', #{pd.UPLOAD_BY}),'%')
+			</if>
+			<if test="pd.START_DATE !=null">	
+				and UPLOAD_DATE &gt;= #{pd.START_DATE}
+			</if> 
+			<if test="pd.END_DATE !=null">	
+				and UPLOAD_DATE &lt;= #{pd.END_DATE}
+			</if> 
+	</select> 
+	
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM CONTRACT_MODEL WHERE 1=1  
+			<if test="pd.ID !=null">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.MODEL_NAME !=null">
+			    and MODEL_NAME  LIKE CONCAT(CONCAT('%', #{pd.MODEL_NAME}),'%') 
+			</if>
+			<if test="pd.MODEL_TYPE !=null">	
+				and MODEL_TYPE LIKE CONCAT(CONCAT('%', #{pd.MODEL_TYPE}),'%')
+			</if>
+			<if test="pd.FILE_NAME !=null">	
+				and FILE_NAME LIKE CONCAT(CONCAT('%', #{pd.FILE_NAME}),'%')
+			</if>
+			<if test="pd.FILE_PATH !=null">	
+				and FILE_PATH LIKE CONCAT(CONCAT('%', #{pd.FILE_PATH}),'%')
+			</if>
+			<if test="pd.MODEL_STATUS !=null">	
+				and MODEL_STATUS LIKE CONCAT(CONCAT('%', #{pd.MODEL_STATUS}),'%')
+			</if>
+			<if test="pd.AUDIT_BY !=null">	
+				and AUDIT_BY LIKE CONCAT(CONCAT('%', #{pd.AUDIT_BY}),'%')
+			</if>
+			<if test="pd.AUDIT_DATE !=null">	
+				and AUDIT_DATE LIKE CONCAT(CONCAT('%', #{pd.AUDIT_DATE}),'%')
+			</if>
+			<if test="pd.UPLOAD_BY !=null">	
+				and UPLOAD_BY LIKE CONCAT(CONCAT('%', #{pd.UPLOAD_BY}),'%')
+			</if>
+			<if test="pd.START_DATE !=null">	
+				and UPLOAD_DATE &gt;= #{pd.START_DATE}
+			</if> 
+			<if test="pd.END_DATE !=null">	
+				and UPLOAD_DATE &lt;= #{pd.END_DATE}
+			</if> 
+	</select> 
+	
+	<select id="findById" parameterType="pd" resultType="pd">
+		 SELECT * FROM CONTRACT_MODEL WHERE ID = #{ID}
+	</select>
+	
+	<insert id="saveContractModel" parameterType="pd">
+		INSERT INTO CONTRACT_MODEL(ID, MODEL_NAME,MODEL_TYPE,FILE_NAME,FILE_PATH,MODEL_STATUS,AUDIT_BY,AUDIT_DATE,UPLOAD_BY,UPLOAD_DATE)
+		   VALUES (#{ID},#{MODEL_NAME},#{MODEL_TYPE},#{FILE_NAME},#{FILE_PATH},#{MODEL_STATUS},#{AUDIT_BY},#{AUDIT_DATE},#{UPLOAD_BY},#{UPLOAD_DATE} )
+	</insert>  
+	
+	<update id="updateContractModel" parameterType="pd">
+		UPDATE CONTRACT_MODEL  SET  
+			<if test="MODEL_NAME !=null">
+			     MODEL_NAME = #{MODEL_NAME}
+			</if>
+			<if test="MODEL_TYPE !=null">	
+				,MODEL_TYPE = #{MODEL_TYPE} 
+			</if>
+			<if test="FILE_NAME !=null">	
+				, FILE_NAME = #{FILE_NAME} 
+			</if>
+			<if test="FILE_PATH !=null">	
+				, FILE_PATH = #{FILE_PATH} 
+			</if>
+			<if test="MODEL_STATUS !=null">	
+				, MODEL_STATUS = #{MODEL_STATUS} 
+			</if>
+			<if test="AUDIT_BY !=null">	
+				, AUDIT_BY = #{AUDIT_BY} 
+			</if>
+			<if test="AUDIT_DATE !=null">	
+				, AUDIT_DATE = #{AUDIT_DATE}
+			</if>
+			<if test="UPLOAD_BY !=null">	
+				,UPLOAD_BY = #{UPLOAD_BY} 
+			</if>
+			<if test="UPLOAD_DATE !=null">	
+				, UPLOAD_DATE = #{UPLOAD_DATE}
+			</if> 
+			WHERE ID = #{ID}
+	</update> 
+	 
+	<delete id="deleteContractModelById" parameterType="pd">
+		DELETE FROM  CONTRACT_MODEL WHERE ID = #{ID}
+	</delete>
+	
+	 <!-- 批量删除 -->
+    <delete id="delMulty">
+    	DELETE FROM CONTRACT_MODEL WHERE ID IN
+		<foreach collection="array" item="des" open="(" close=")" separator=",">
+			#{des}
+		</foreach>
+    </delete>  
+</mapper>

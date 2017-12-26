@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OrderssMapper">
+
+	
+	<select id="listPageByStatus" parameterType="page" resultType="pd">
+	   SELECT JO.*,AU.REAL_NAME,AU.ID AS UID FROM jl_dp_order JO 
+	   LEFT JOIN jl_dp_order_detail JD on JO.ORDER_NO=JD.ORDER_NO 
+	   LEFT JOIN APP_USER AU ON AU.ID=JO.USER_ID
+		where 1=1
+		<if test="pd.SHOP_USERNAME !=null">
+		    and SHOP_USERNAME LIKE CONCAT(CONCAT('%', #{pd.SHOP_USERNAME}),'%')
+		</if>
+	</select> 
+	
+	 <!-- 查询总数 -->
+	<select id="findCountByStatus" parameterType="page" resultType="pd">
+	   SELECT count(*) counts FROM jl_dp_order JO 
+	   LEFT JOIN jl_dp_order_detail JD on JO.ORDER_NO=JD.ORDER_NO 
+	   LEFT JOIN APP_USER AU ON AU.ID=JO.USER_ID
+		where 1=1
+		<if test="pd.SHOP_USERNAME !=null">
+		    and SHOP_USERNAME LIKE CONCAT(CONCAT('%', #{pd.SHOP_USERNAME}),'%')
+		</if>
+	</select>
+	
+	
+	<select id="listPage" parameterType="page" resultType="pd">
+		SELECT JO.*,AU.REAL_NAME,AU.ID AS UID FROM jl_dp_order JO 
+	   LEFT JOIN jl_dp_order_detail JD on JO.ORDER_NO=JD.ORDER_NO 
+	   LEFT JOIN APP_USER AU ON AU.ID=JO.USER_ID
+		where 1=1 AND JO.USER_ID=#{pd.USERID}
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.USER_ID !=null">	
+			and USER_ID=#{pd.USER_ID}
+		</if> 
+		<if test="pd.SHOP_ID !=null">	
+			and SHOP_ID=#{pd.SHOP_ID}
+		</if> 
+		<if test="pd.SHOP_ADDRESS !=null">	
+			and SHOP_ADDRESS=#{pd.SHOP_ADDRESS}
+		</if>
+		<if test="pd.SHOP_PHONE !=null">	
+			and SHOP_PHONE=#{pd.SHOP_PHONE}
+		</if>
+		<if test="pd.SHOP_USERNAME !=null">
+		    and SHOP_USERNAME LIKE CONCAT(CONCAT('%', #{pd.SHOP_USERNAME}),'%')
+		</if>
+		<if test="pd.ORDER_NO !=null">	
+			and ORDER_NO=#{pd.ORDER_NO}
+		</if> 
+		<if test="pd.TYPE !=null">	
+			and TYPE=#{pd.TYPE}
+		</if>
+		<if test="pd.DELIVER_DATE !=null">	
+			and DELIVER_DATE=#{pd.DELIVER_DATE}
+		</if>
+		<if test="pd.FINISH_DATE !=null">	
+			and FINISH_DATE=#{pd.FINISH_DATE}
+		</if>
+		<if test="pd.ORDER_STATU !=null">	
+			and ORDER_STATU=#{pd.ORDER_STATU}
+		</if>
+		<if test="pd.EXPRESS_PRICE !=null">	
+			and EXPRESS_PRICE=#{pd.EXPRESS_PRICE}
+		</if>
+		<if test="pd.EXPRESS_NAME !=null">
+			and EXPRESS_NAME=#{pd.EXPRESS_NAME}
+		</if>
+		<if test="pd.EXPRESS_NO !=null">	
+			and EXPRESS_NO=#{pd.EXPRESS_NO}
+		</if>
+		<if test="pd.TOTAL_PRICE !=null">	
+			and TOTAL_PRICE=#{pd.TOTAL_PRICE}
+		</if>
+		<if test="pd.ISSEET !=null">
+			and ISSEET=#{pd.ISSEET}
+		</if>
+		<if test="pd.OPENID !=null">	
+			and OPENID=#{pd.OPENID}
+		</if>
+		<if test="pd.COMM !=null">
+			and COMM=#{pd.COMM}
+		</if>
+		<if test="pd.CREATE_DATE !=null">
+			and CREATE_DATE=#{pd.CREATE_DATE}
+		</if>
+	</select> 
+	
+	<!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM jl_dp_order JO 
+	   LEFT JOIN jl_dp_order_detail JD on JO.ORDER_NO=JD.ORDER_NO 
+	   LEFT JOIN APP_USER AU ON AU.ID=JO.USER_ID 
+		where 1=1 AND JO.USER_ID=#{pd.USERID}
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.USER_ID !=null">	
+			and USER_ID=#{pd.USER_ID}
+		</if> 
+		<if test="pd.SHOP_ID !=null">	
+			and SHOP_ID=#{pd.SHOP_ID}
+		</if> 
+		<if test="pd.SHOP_ADDRESS !=null">	
+			and SHOP_ADDRESS=#{pd.SHOP_ADDRESS}
+		</if>
+		<if test="pd.SHOP_PHONE !=null">	
+			and SHOP_PHONE=#{pd.SHOP_PHONE}
+		</if>
+		<if test="pd.SHOP_USERNAME !=null">
+		    and SHOP_USERNAME LIKE CONCAT(CONCAT('%', #{pd.SHOP_USERNAME}),'%')
+		</if>
+		<if test="pd.ORDER_NO !=null">	
+			and ORDER_NO=#{pd.ORDER_NO}
+		</if> 
+		<if test="pd.TYPE !=null">	
+			and TYPE=#{pd.TYPE}
+		</if>
+		<if test="pd.DELIVER_DATE !=null">	
+			and DELIVER_DATE=#{pd.DELIVER_DATE}
+		</if>
+		<if test="pd.FINISH_DATE !=null">	
+			and FINISH_DATE=#{pd.FINISH_DATE}
+		</if>
+		<if test="pd.ORDER_STATU !=null">	
+			and ORDER_STATU=#{pd.ORDER_STATU}
+		</if>
+		<if test="pd.EXPRESS_PRICE !=null">	
+			and EXPRESS_PRICE=#{pd.EXPRESS_PRICE}
+		</if>
+		<if test="pd.EXPRESS_NAME !=null">
+			and EXPRESS_NAME=#{pd.EXPRESS_NAME}
+		</if>
+		<if test="pd.EXPRESS_NO !=null">	
+			and EXPRESS_NO=#{pd.EXPRESS_NO}
+		</if>
+		<if test="pd.TOTAL_PRICE !=null">	
+			and TOTAL_PRICE=#{pd.TOTAL_PRICE}
+		</if>
+		<if test="pd.ISSEET !=null">
+			and ISSEET=#{pd.ISSEET}
+		</if>
+		<if test="pd.OPENID !=null">	
+			and OPENID=#{pd.OPENID}
+		</if>
+		<if test="pd.COMM !=null">
+			and COMM=#{pd.COMM}
+		</if>
+		<if test="pd.CREATE_DATE !=null">
+			and CREATE_DATE=#{pd.CREATE_DATE}
+		</if>
+	</select> 
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into jl_dp_order(
+		<if test="USER_ID != null">
+			USER_ID,
+		</if>
+		<if test="SHOP_ID != null">
+			SHOP_ID,
+		</if>
+		<if test="SHOP_ADDRESS != null">
+			SHOP_ADDRESS,
+		</if>
+		<if test="SHOP_PHONE != null">
+			SHOP_PHONE,
+		</if>
+		<if test="SHOP_USERNAME != null">
+			SHOP_USERNAME,
+		</if>
+		<if test="ORDER_NO != null">
+			ORDER_NO,	
+		</if>
+		<if test="TYPE != null">	
+			TYPE,
+		</if>
+		<if test="DELIVER_DATE != null">
+			DELIVER_DATE,
+		</if>
+		<if test="FINISH_DATE != null">
+			FINISH_DATE,
+		</if>
+		<if test="ORDER_STATU != null">
+			ORDER_STATU,
+		</if>
+		<if test="EXPRESS_PRICE != null">
+			EXPRESS_PRICE,
+		</if>
+		<if test="EXPRESS_NAME != null">
+			EXPRESS_NAME,
+		</if>
+		<if test="EXPRESS_NO != null">
+			EXPRESS_NO,
+		</if>
+		<if test="TOTAL_PRICE != null">
+			TOTAL_PRICE,
+		</if>
+		<if test="ISSEET != null">
+			ISSEET,
+		</if>
+		<if test="OPENID != null">
+			OPENID,
+		</if>
+		<if test="COMM != null">
+			COMM,
+		</if>
+		<if test="CREATE_DATE != null">
+			CREATE_DATE,
+		</if>
+			ID
+		) values (
+		<if test="USER_ID != null">
+			#{USER_ID},
+		</if>
+		<if test="SHOP_ID != null">
+			#{SHOP_ID},
+		</if>
+		<if test="SHOP_ADDRESS != null">
+			#{SHOP_ADDRESS},
+		</if>
+		<if test="SHOP_PHONE != null">
+			#{SHOP_PHONE},
+		</if>
+		<if test="SHOP_USERNAME != null">
+			#{SHOP_USERNAME},
+		</if>
+		<if test="ORDER_NO != null">
+			#{ORDER_NO},	
+		</if>
+		<if test="TYPE != null">	
+			#{TYPE},
+		</if>
+		<if test="DELIVER_DATE != null">
+			#{DELIVER_DATE},
+		</if>
+		<if test="FINISH_DATE != null">
+			#{FINISH_DATE},
+		</if>
+		<if test="ORDER_STATU != null">
+			#{ORDER_STATU},
+		</if>
+		<if test="EXPRESS_PRICE != null">
+			#{EXPRESS_PRICE},
+		</if>
+		<if test="EXPRESS_NAME != null">
+			#{EXPRESS_NAME},
+		</if>
+		<if test="EXPRESS_NO != null">
+			#{EXPRESS_NO},
+		</if>
+		<if test="TOTAL_PRICE != null">
+			#{TOTAL_PRICE},
+		</if>
+		<if test="ISSEET != null">
+			#{ISSEET},
+		</if>
+		<if test="OPENID != null">
+			#{OPENID},
+		</if>
+		<if test="COMM != null">
+			#{COMM},
+		</if>
+		<if test="CREATE_DATE != null">
+			#{CREATE_DATE},
+		</if>
+			#{ID}
+		) 
+	</insert>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  jl_dp_order set 
+		<if test="USER_ID != null">
+			USER_ID=#{USER_ID},
+		</if>
+		<if test="SHOP_ID != null">
+			SHOP_ID=#{SHOP_ID},
+		</if>
+		<if test="SHOP_ADDRESS != null">
+			SHOP_ADDRESS=#{SHOP_ADDRESS},
+		</if>
+		<if test="SHOP_PHONE != null">
+			SHOP_PHONE=#{SHOP_PHONE},
+		</if>
+		<if test="SHOP_USERNAME != null">
+			SHOP_USERNAME=#{SHOP_USERNAME},
+		</if>
+		<if test="ORDER_NO != null">
+			ORDER_NO=#{ORDER_NO},	
+		</if>
+		<if test="TYPE != null">	
+			TYPE=#{TYPE},
+		</if>
+		<if test="DELIVER_DATE != null">
+			DELIVER_DATE=#{DELIVER_DATE},
+		</if>
+		<if test="FINISH_DATE != null">
+			FINISH_DATE=#{FINISH_DATE},
+		</if>
+		<if test="ORDER_STATU != null">
+			ORDER_STATU=#{ORDER_STATU},
+		</if>
+		<if test="EXPRESS_PRICE != null">
+			EXPRESS_PRICE=#{EXPRESS_PRICE},
+		</if>
+		<if test="EXPRESS_NAME != null">
+			EXPRESS_NAME=#{EXPRESS_NAME},
+		</if>
+		<if test="EXPRESS_NO != null">
+			EXPRESS_NO=#{EXPRESS_NO},
+		</if>
+		<if test="TOTAL_PRICE != null">
+			TOTAL_PRICE=#{TOTAL_PRICE},
+		</if>
+		<if test="ISSEET != null">
+			ISSEET=#{ISSEET},
+		</if>
+		<if test="OPENID != null">
+			OPENID=#{OPENID},
+		</if>
+		<if test="COMM != null">
+			COMM=#{COMM},
+		</if>
+		<if test="CREATE_DATE != null">
+			CREATE_DATE=#{CREATE_DATE},
+		</if>
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	
+	<!-- 删除项目 -->
+	<update id="delete" parameterType="pd">
+	 <!-- update  jl_zf_xm  set ISDEL=2 where ID = #{ID}  -->
+	 	DELETE FROM jl_dp_order WHERE ID = #{ID}
+	</update>
+	
+	<!-- 根据编号查讯项目详情 -->
+	<select id="querybyid" parameterType="page" resultType="pd">
+	   SELECT JO.*,AU.REAL_NAME,AU.ID AS UID FROM jl_dp_order JO 
+	   LEFT JOIN jl_dp_order_detail JD on JO.ORDER_NO=JD.ORDER_NO 
+	   LEFT JOIN APP_USER AU ON AU.ID=JO.USER_ID
+		where JO.ID=#{ID}
+	</select> 
+	
+	<!-- 根据用户编号查询公司名称 -->
+	<select id="querybygsname" parameterType="pd" resultType="pd">
+	   SELECT JDS.ID as GSID,JDS.SHOP_NAME from jl_dp_shop JDS LEFT JOIN APP_USER AU ON JDS.USER_ID=AU.ID 
+	   WHERE JDS.USER_ID=#{USER_ID}
+	</select> 
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppCompanyMapper">
+
+	<insert id="adduserbycompanyid" parameterType="pd">
+		insert into company(ID,COMPANY_NAME,BUSINESS_LICENSE,ADDR,LOGO,DESCRIPTION,INTERNET_PATH,CATEGORY_ID,CREATE_BY,CREATE_DATE)
+		values(
+		#{ID},#{COMPANY_NAME},#{BUSINESS_LICENSE},#{ADDR},#{LOGO},#{DESCRIPTION},#{INTERNET_PATH},#{CGID},#{CREATE_BY},#{CREATE_DATE}
+		)  
+	</insert>
+	
+	<!--根据用户Id查询公司信息 -->
+	<select id="queryByUId" parameterType="pd" resultType="pd">
+		select C.* from company C left join app_user A on C.ID=A.COMPANY_ID where A.ID =#{userid} AND A.ISDEL=1 
+	</select> 
+	
+	<update id="editCompany" parameterType="pd" flushCache="false">
+		update  company set 
+		<if test="COMPANY_NAME !=null and COMPANY_NAME !='' ">
+			COMPANY_NAME=#{COMPANY_NAME}, 
+		</if>
+		<if test="BUSINESS_LICENSE !=null and BUSINESS_LICENSE !='' ">
+			BUSINESS_LICENSE=#{BUSINESS_LICENSE},  
+		</if>
+		<if test="ADDR !=null and ADDR !='' ">
+			ADDR=#{ADDR}, 
+		</if>
+		<if test="LOGO !=null and LOGO !='' ">
+			LOGO=#{LOGO},
+		</if>
+		<if test="DESCRIPTION !=null and DESCRIPTION !='' ">
+			DESCRIPTION=#{DESCRIPTION}, 
+		</if>
+	<!-- 	<if test="INTERNET_PATH !=null and INTERNET_PATH !='' ">
+			INTERNET_PATH=#{INTERNET_PATH}, 
+		</if> -->
+		<if test="CGID !=null and CGID !='' ">
+			CATEGORY_ID=#{CGID},
+		</if>
+			INTERNET_PATH=#{INTERNET_PATH},
+			ID = #{COMID}
+			where ID = #{COMID}
+	</update>
+	
+	<!-- 我的任职修改 -->
+	<update id="editPOSITION" parameterType="pd" flushCache="false">
+		update  APP_USER set
+		<if test="COMPANY_ID !=null and COMPANY_ID !='' ">
+			COMPANY_ID=#{COMPANY_ID},
+		</if> 
+			POSITION=#{POSITION}
+			where ID = #{UID}
+	</update>
+	
+</mapper>

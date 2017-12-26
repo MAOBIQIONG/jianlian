@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ActtpMapper">
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into activity(
+		<if test="BTN_IMG != null">
+			BTN_IMG,
+		</if>
+		<if test="YY_IMG != null">
+			YY_IMG,
+		</if>
+		<if test="DETAILS_IMG != null">
+			DETAILS_IMG,
+		</if>
+		<if test="ACT_IMG != null">
+			ACT_IMG,
+		</if>
+		<if test="MODIFY_DATE != null">
+			MODIFY_DATE,
+		</if>
+			ID
+		) values (
+		<if test="BTN_IMG != null">
+			#{BTN_IMG},
+		</if>
+		<if test="YY_IMG != null">
+			#{YY_IMG},
+		</if>
+		<if test="DETAILS_IMG != null">
+			#{DETAILS_IMG},
+		</if>
+		<if test="ACT_IMG != null">
+			#{ACT_IMG},
+		</if>
+		<if test="MODIFY_DATE != null">
+			#{MODIFY_DATE},
+		</if>
+			#{ID}
+		) 
+	</insert> 
+    
+     <!-- 删除图片 -->
+	 <delete id="del" parameterType="pd">
+		delete from JL_XM_TP where ID IN 
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+	 </delete>  
+    
+    <!--根据项目id查询项目的图片-->
+    <select id="queryByPid" parameterType="pd" resultType="pd">
+   		SELECT * FROM JL_XM_TP  WHERE PRO_ID=#{PRO_ID}
+	</select> 
+	
+	 <!--根据项目id查询图片最大排序数-->
+    <select id="queryMaxOrderby" parameterType="pd" resultType="pd">
+   		SELECT MAX(ORDER_BY) AS ORDER_BY FROM JL_XM_TP WHERE PRO_ID=#{PRO_ID}
+	</select>   
+	
+	<!-- 修改项目信息-->
+	<update id="edit" parameterType="pd">
+		update  activity set 
+		<if test="BTN_IMG !=null and BTN_IMG !='' ">
+		     BTN_IMG= #{BTN_IMG},
+		</if>
+		<if test="YY_IMG !=null and YY_IMG!='' ">	
+			YY_IMG=#{YY_IMG},
+		</if>  
+		<if test="DETAILS_IMG !=null and DETAILS_IMG!='' ">	
+			DETAILS_IMG=#{DETAILS_IMG},
+		</if>  
+		<if test="ACT_IMG !=null and ACT_IMG!='' ">	
+			ACT_IMG=#{ACT_IMG},
+		</if>
+		<if test="MODIFY_DATE !=null and MODIFY_DATE!='' ">	
+			MODIFY_DATE=#{MODIFY_DATE},
+		</if>
+		ID = #{ID} where ID = #{ID}
+	</update>   
+</mapper>

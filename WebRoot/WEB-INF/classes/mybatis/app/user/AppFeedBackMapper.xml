@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppFeedBackMapper">
+
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select * from feedback WHERE ISDEL=1
+	</select> 
+
+	<select id="listPage" parameterType="page" resultType="pd">
+		select * from feedback where 1=1  AND ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.USER_ID !=null">
+		    and USER_ID =#{pd.USER_ID}
+		</if>
+		<if test="pd.FEEDBACK_CONTENT !=null">	
+			and FEEDBACK_CONTENT=#{pd.FEEDBACK_CONTENT}
+		</if>  
+		<if test="pd.EMAIL !=null">	
+			and EMAIL=#{pd.EMAIL}
+		</if>
+		<if test="IMG_PATH !=null">	
+			and IMG_PATH=#{pd.IMG_PATH}
+		</if>
+		<if test="pd.FEEDBACK_DATE!=null">	
+			and FEEDBACK_DATE=#{pd.FEEDBACK_DATE}
+		</if>
+		<if test="pd.STATUS !=null">	
+			and STATUS=#{pd.STATUS}
+		</if>  
+	</select>
+	
+	 <!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		select count(*) counts from feedback where 1=1 AND ISDEL=1  
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.USER_ID !=null">
+		    and USER_ID =#{pd.USER_ID}
+		</if>
+		<if test="pd.FEEDBACK_CONTENT !=null">	
+			and FEEDBACK_CONTENT=#{pd.FEEDBACK_CONTENT}
+		</if>  
+		<if test="pd.EMAIL !=null">	
+			and EMAIL=#{pd.EMAIL}
+		</if>
+		<if test="IMG_PATH !=null">	
+			and IMG_PATH=#{pd.IMG_PATH}
+		</if>
+		<if test="pd.STATUS !=null">	
+			and STATUS=#{pd.STATUS}
+		</if>  
+		<if test="pd.FEEDBACK_DATE!=null">	
+			and FEEDBACK_DATE=#{pd.FEEDBACK_DATE}
+		</if> 
+	</select>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into feedback(
+			ID,USER_ID,	FEEDBACK_CONTENT,EMAIL,	IMG_PATH,	FEEDBACK_DATE,STATUS
+		) values (
+			#{ID},#{userid},#{FEEDBACK_CONTENT},#{EMAIL},#{IMG_PATH},#{FEEDBACK_DATE},#{STATUS}
+		)
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  feedback set 
+			USER_ID=#{USER_ID},	
+			FEEDBACK_CONTENT=#{FEEDBACK_CONTENT},
+			FEEDBACK_DATE=#{FEEDBACK_DATE},	
+			STATUS=#{STATUS},	
+			EMAIL=#{EMAIL},
+			<if test="IMG_PATH != null and IMG_PATH !=''">
+			IMG_PATH=#{IMG_PATH},  
+			</if>
+			ID = #{ID}
+			where ID = #{ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd" useCache="false">
+		select * from feedback where ID = #{ID} AND ISDEL=1
+	</select>
+	
+	<!-- 删除用户 -->
+	<!-- <delete id="delete" parameterType="pd" flushCache="false">
+		delete from feedback where ID = #{ID} 
+	</delete> -->
+	<update id="delete" parameterType="pd">
+		UPDATE feedback SET  
+		ISDEL='2' WHERE ID = #{ID} 
+    </update>
+</mapper>

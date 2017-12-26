@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppProjectScheduleMapper">
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select * from project_schedule WHERE ISDEL=1
+	</select>  
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into project_schedule(
+			ID,PROJECT_ID,	SCHEDULE,DATE,OPER_BY
+		) values (
+			#{ID},#{PROJECT_ID},#{SCHEDULE},#{DATE},#{OPER_BY}
+		)
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  project_schedule set 
+			PROJECT_ID=#{PROJECT_ID},
+			SCHEDULE=#{SCHEDULE},
+			DATE=#{DATE},
+			OPER_BY=#{OPER_BY}
+			where ID = #{ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd" useCache="false">
+		select * from project_schedule where ID = #{ID} AND ISDEL=1
+	</select>
+	
+	<!-- 删除用户 -->
+	<!-- <delete id="delete" parameterType="pd" flushCache="false">
+		delete from project_schedule where ID = #{ID} 
+	</delete> -->
+	<update id="delete" parameterType="pd" flushCache="false">
+		update  project_schedule set  
+		ISDEL='2'
+		where where ID = #{ID} 
+	</update>
+</mapper>

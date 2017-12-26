@@ -1,0 +1,93 @@
+body {
+	-webkit-animation: fadeIn 0.6s ease 0s 1 both;
+	background: #fff;
+}
+
+.wj_title {
+	background: #ecf0f1;
+	text-align: left;
+	color: #ffffff;
+	line-height: 36px;
+	border-left-top-radius: 5px;
+	border-right-top-radius: 5px;
+}
+
+.mui-content {
+	padding: 5px;
+	padding-left: 15px;
+	background-color: #ecf0f1;
+	border-radius: 5px;
+	border-left-top-radius: 5px;
+	border-right-top-radius: 5px;
+}
+
+.li {
+	line-height: 150%;
+	min-height: 20px;
+	padding: 5px;
+}
+
+
+.dc_div {
+	margin: 5px;
+	background: #ffffff;
+	opacity: 0.95;
+	padding-bottom: 5px;
+	border-radius: 5px;
+	text-align: left;
+	marign-top: 10px;
+	position: relative;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.description {
+	line-height: 1.5em;
+	padding: 5px;
+	background: #ffffff;
+	opacity: 9.5;
+	font-size: 1em;
+	border-radius: 5px;
+	text-align: left;
+	margin-left: 5px;
+	margin-right: 5px;
+	color: #34495e;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.dc_title {
+	padding: 10px 5px;
+	text-align: center;
+	color: #ffffff;
+	border-radius: 5px;
+	background: #27ae60;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 5px;
+	opacity: 0.9;
+}
+
+.dc_wt, .dc_wt_bt {
+	color: #16a085;
+}
+
+.dc_wt_bt {
+	font-weight: bold;
+	position: relative;
+	min-height: 22px;
+	margin-bottom:10px;
+}
+
+.dc_wt_bt .xh {
+	position: absolute;
+	left: 0px;
+	max-width:30px;
+	top: 0px;
+}
+
+.dc_wt_bt .title {
+	position: absolute;
+	left: 30px;
+	top: 0px;
+}

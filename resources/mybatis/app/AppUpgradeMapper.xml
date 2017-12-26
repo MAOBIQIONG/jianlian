@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AppUpgradeMapper">   
+	
+	<!-- 修改记录的状态 -->
+	<update id="editUpStatus" parameterType="pd" flushCache="false">
+		UPDATE JL_UPGRADE SET STATUS=#{STATUS},ISSYSLOOK=0 WHERE ORDER_ID=#{ORDER_ID}
+	</update> 
+	
+</mapper>

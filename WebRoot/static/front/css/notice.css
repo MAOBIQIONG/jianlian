@@ -1,0 +1,101 @@
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+body {
+	background: #FFFFFF;
+	background-size: cover;
+	background-repeat: no-repeat;
+	padding: 0px;
+	-webkit-animation: fadeIn 1s ease 0s 1 both;
+}
+.notice-head {
+	height: 148px;
+	background: url("/yzy_web/static/front/images/notice/notice_head.png");
+	-moz-background-size: 100% 100%;
+	-webkit-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	
+}
+
+.notice-foot {
+	background: url("/yzy_web/static/front/images/notice/notice_foot.png");
+	-moz-background-size: 100% 100%;
+	-webkit-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+}
+.notice-title {
+	text-align: center;
+	font-weight: bold;
+	min-height: 26px;
+	width: 100%;
+	margin-top: 70px;
+	color:#8e44ad;
+	font-size:1.3em;
+	//-webkit-animation: lightSpeedIn 1s ease 0s 1 both;
+}
+
+.notice-content {
+	min-height: 230px;
+	padding: 10px;
+	line-height: 150%;
+	marign-top:30px;
+	//-webkit-animation: bounceInUp 1s ease 0.5s 1 both;
+}
+.notice-content textarea{
+
+	line-height:150%;width: 100%;border:none;overflow: hidden;color:#34495e;
+	font-size:1.1em;
+}
+
+
+.notice-publish-user,.notice-publish-date {
+	text-align: right;
+	margin-right: 10px;
+	color:#7f8c8d;
+	font-size:1em;
+}
+
+
+.notice-tong {
+	position: relative;
+	width: 50px;
+	top: 30px;
+	left: 10px;
+	animation: bounceInDown 1s ease 0s 1 both;
+	-webkit-animation: bounceInDown 1s ease 0s 1 both;
+	-moz-animation: bounceInDown 1s ease 0s 1 both;
+	-o-animation: bounceInDown 1s ease 0s 1 both;
+}
+
+.notice-zhi {
+	position: relative;
+	width: 50px;
+	top: 40px;
+	left: 10px;
+	animation: bounceInDown 1s ease 1s 1 both;
+	-webkit-animation: bounceInDown 1s ease 0.1s 1 both;
+	-moz-animation: bounceInDown 1s ease 0.1s 1 both;
+	-o-animation: bounceInDown 1s ease 0.1s 1 both;
+}
+
+.notice-lan {
+	position: relative;
+	width: 50px;
+	top: 30px;
+	left: 10px;
+	animation: bounceInDown 1s ease 2s 1 both;
+	-webkit-animation: bounceInDown 1s ease 0.2s 1 both;
+	-moz-animation: bounceInDown 1s ease 0.2s 1 both;
+	-o-animation: bounceInDown 1s ease 0.2s 1 both;
+	
+}
+

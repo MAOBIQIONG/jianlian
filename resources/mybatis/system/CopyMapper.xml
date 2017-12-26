@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CopyMapper">
+	
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		      SELECT b.ID,
+				(select NAME from sys_user where ID=b.CREATE_BY) CREATE_NAME,
+				c.COMPANY_NAME,c.ENGLISH_NAME,c.BUSINESS_LICENSE,
+				c.ADDR,
+				(select NAME from category where ID=c.CATEGORY_ID) as CG_NAME,
+				c.COMPANY_PROPERTY,c.LOGO,
+				DATE_FORMAT(b.CREATE_DATE,'%Y-%m-%d %H:%i:%s') as CREATE_DATE,
+				c.ID as COMPANY_ID
+				from jl_chain_company b 
+				INNER JOIN
+				company c on b.COMPANY_ID=c.ID
+				WHERE 1=1 and c.ISDEL=1 
+			<if test="pd.COMPANY_NAME !=null">
+			    and c.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+	</select>
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+        SELECT count(*) counts 
+				from jl_chain_company b 
+				INNER JOIN
+				company c on b.COMPANY_ID=c.ID
+				WHERE 1=1 and c.ISDEL=1
+			
+			<if test="pd.COMPANY_NAME !=null">
+			    and c.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+	</select>
+	
+	<!-- 删除 -->
+     <delete id="delcompanybyid" parameterType="pd">
+     
+      delete from jl_chain_company where ID=#{ID}
+    </delete>
+    <!--查询公司荣誉信息  -->
+	<select id="queryRy" resultType="pd"> 
+		select HONOR,DATE_FORMAT(GET_TIME,'%Y-%m-%d') as GET_TIME from company_honor WHERE COMPANY_ID=#{COMPANY_ID}
+	</select>
+	<!-- 删除 -->
+     <delete id="delRy" parameterType="pd">
+      	delete from company_honor where COMPANY_ID=#{COMPANY_ID}
+    </delete>
+	<insert id="addRy" parameterType="pd">
+		insert into company_honor(ID,HONOR,GET_TIME,COMPANY_ID,CREATE_DATE)
+		values(#{ID},#{HONOR},#{GET_DATE},#{COMPANY_ID},NOW())  
+    </insert>
+    <insert id="addCylgs" parameterType="pd">
+		insert into jl_chain_company(ID,COMPANY_ID,CREATE_DATE,CREATE_BY)
+		values(#{ID},#{COMPANY_ID},NOW(),#{CREATE_BY})  
+    </insert>
+    
+     <!--查询公司是否已在产业链列表中  -->
+	<select id="queryCyl" resultType="pd"> 
+		select * from jl_chain_company WHERE COMPANY_ID=#{COMPANY_ID}
+	</select>
+    <!-- 新增公司信息 -->
+    <insert id="addGs" parameterType="pd">
+		insert into company(
+	        <if test="COMPANY_NAME !=null and COMPANY_NAME != ''">
+	       		COMPANY_NAME,
+	        </if>
+			<if test="ENGLISH_NAME !=null and ENGLISH_NAME != ''">
+				ENGLISH_NAME,
+			</if>
+			<if test="BUSINESS_LICENSE !=null and BUSINESS_LICENSE != ''">
+				BUSINESS_LICENSE,
+			</if>
+			<if test="ADDR !=null and ADDR != ''">
+				ADDR,
+			</if>
+			<if test="CATEGORY_ID !=null and CATEGORY_ID != ''">
+				CATEGORY_ID,
+			</if>
+			<if test="COMPANY_PROPERTY !=null and COMPANY_PROPERTY != ''">
+				COMPANY_PROPERTY,
+			</if>
+			<if test="LOGO !=null and LOGO != ''">
+				LOGO,
+			</if>
+			<if test="DESCRIPTION !=null and DESCRIPTION != ''">
+				DESCRIPTION,
+			</if>
+			<if test="INTERNET_PATH !=null and INTERNET_PATH != ''">
+				INTERNET_PATH,
+			</if>
+			<if test="FOUND_TIME !=null and FOUND_TIME != ''">
+				FOUND_TIME,
+			</if>
+			<if test="BUSINESS_SCOPE !=null and BUSINESS_SCOPE != ''">
+				BUSINESS_SCOPE,
+			</if>
+			<if test="DEVELOPE_HISTORY !=null and DEVELOPE_HISTORY != ''">
+				DEVELOPE_HISTORY,
+			</if>
+			<if test="PRIMARY_SERVICE !=null and PRIMARY_SERVICE != ''">
+				PRIMARY_SERVICE,
+			</if>
+			<if test="BUSINESS_SULTURE !=null and BUSINESS_SULTURE != ''">
+				BUSINESS_SULTURE,
+			</if>
+			<if test="FOUNDER !=null and FOUNDER != ''">
+				FOUNDER,
+			</if>
+			<if test="STAFFS_NUMBER !=null and STAFFS_NUMBER != ''">
+				STAFFS_NUMBER,
+			</if>
+			<if test="CREATE_BY !=null and CREATE_BY != ''">
+				CREATE_BY,
+			</if>
+			<if test="COVER_PATH !=null and COVER_PATH != ''">
+				COVER_PATH,
+			</if>
+				CREATE_DATE,
+				ID
+		) values(
+			<if test="COMPANY_NAME !=null and COMPANY_NAME != ''">
+	       		#{COMPANY_NAME},
+	        </if>
+			<if test="ENGLISH_NAME !=null and ENGLISH_NAME != ''">
+				#{ENGLISH_NAME},
+			</if>
+			<if test="BUSINESS_LICENSE !=null and BUSINESS_LICENSE != ''">
+				#{BUSINESS_LICENSE},
+			</if>
+			<if test="ADDR !=null and ADDR != ''">
+				#{ADDR},
+			</if>
+			<if test="CATEGORY_ID !=null and CATEGORY_ID != ''">
+				#{CATEGORY_ID},
+			</if>
+			<if test="COMPANY_PROPERTY !=null and COMPANY_PROPERTY != ''">
+				#{COMPANY_PROPERTY},
+			</if>
+			<if test="LOGO !=null and LOGO != ''">
+				#{LOGO},
+			</if>
+			<if test="DESCRIPTION !=null and DESCRIPTION != ''">
+				#{DESCRIPTION},
+			</if>
+			<if test="INTERNET_PATH !=null and INTERNET_PATH != ''">
+				#{INTERNET_PATH},
+			</if>
+			<if test="FOUND_TIME !=null and FOUND_TIME != ''">
+				#{FOUND_TIME},
+			</if>
+			<if test="BUSINESS_SCOPE !=null and BUSINESS_SCOPE != ''">
+				#{BUSINESS_SCOPE},
+			</if>
+			<if test="DEVELOPE_HISTORY !=null and DEVELOPE_HISTORY != ''">
+				#{DEVELOPE_HISTORY},
+			</if>
+			<if test="PRIMARY_SERVICE !=null and PRIMARY_SERVICE != ''">
+				#{PRIMARY_SERVICE},
+			</if>
+			<if test="BUSINESS_SULTURE !=null and BUSINESS_SULTURE != ''">
+				#{BUSINESS_SULTURE},
+			</if>
+			<if test="FOUNDER !=null and FOUNDER != ''">
+				#{FOUNDER},
+			</if>
+			<if test="STAFFS_NUMBER !=null and STAFFS_NUMBER != ''">
+				#{STAFFS_NUMBER},
+			</if>
+			<if test="CREATE_BY !=null and CREATE_BY != ''">
+				#{CREATE_BY},
+			</if>
+			<if test="COVER_PATH !=null and COVER_PATH != ''">
+				#{COVER_PATH},
+			</if>
+				NOW(),
+				#{COMPANY_ID}
+		)
+    </insert>
+    
+    
+     <!-- 修改公司信息 -->
+    <update id="editGs" parameterType="pd">
+		update company
+		  set 
+			<if test="COMPANY_NAME !=null and COMPANY_NAME != ''">
+	       		COMPANY_NAME=#{COMPANY_NAME},
+	        </if>
+			<if test="ENGLISH_NAME !=null and ENGLISH_NAME != ''">
+				ENGLISH_NAME=#{ENGLISH_NAME},
+			</if>
+			<if test="BUSINESS_LICENSE !=null and BUSINESS_LICENSE != ''">
+				BUSINESS_LICENSE=#{BUSINESS_LICENSE},
+			</if>
+			<if test="ADDR !=null and ADDR != ''">
+				ADDR=#{ADDR},
+			</if>
+			<if test="CATEGORY_ID !=null and CATEGORY_ID != ''">
+				CATEGORY_ID=#{CATEGORY_ID},
+			</if>
+			<if test="COMPANY_PROPERTY !=null and COMPANY_PROPERTY != ''">
+				COMPANY_PROPERTY=#{COMPANY_PROPERTY},
+			</if>
+			<if test="LOGO !=null and LOGO != ''">
+				LOGO=#{LOGO},
+			</if>
+			<if test="DESCRIPTION !=null and INTERNET_PATH != ''">
+				DESCRIPTION=#{DESCRIPTION},
+			</if>
+			<if test="INTERNET_PATH !=null and INTERNET_PATH != ''">
+				INTERNET_PATH=#{INTERNET_PATH},
+			</if>
+			<if test="FOUND_TIME !=null and FOUND_TIME != ''">
+				FOUND_TIME=#{FOUND_TIME},
+			</if>
+			<if test="BUSINESS_SCOPE !=null and BUSINESS_SCOPE != ''">
+				BUSINESS_SCOPE=#{BUSINESS_SCOPE},
+			</if>
+			<if test="DEVELOPE_HISTORY !=null and DEVELOPE_HISTORY != ''">
+				DEVELOPE_HISTORY=#{DEVELOPE_HISTORY},
+			</if>
+			<if test="PRIMARY_SERVICE !=null and PRIMARY_SERVICE != ''">
+				PRIMARY_SERVICE=#{PRIMARY_SERVICE},
+			</if>
+			<if test="BUSINESS_SULTURE !=null and BUSINESS_SULTURE != ''">
+				BUSINESS_SULTURE=#{BUSINESS_SULTURE},
+			</if>
+			<if test="FOUNDER !=null and FOUNDER != ''">
+				FOUNDER=#{FOUNDER},
+			</if>
+			<if test="STAFFS_NUMBER !=null and STAFFS_NUMBER != ''">
+				STAFFS_NUMBER=#{STAFFS_NUMBER},
+			</if>
+			<if test="MODIFY_BY !=null and MODIFY_BY != ''">
+				MODIFY_BY=#{MODIFY_BY},
+			</if>
+			<if test="COVER_PATH !=null and COVER_PATH != ''">
+				COVER_PATH=#{COVER_PATH},
+			</if>
+				MODIFY_DATE=NOW()
+			where ID=#{COMPANY_ID}
+    </update>
+    
+	<!--查询公司信息信息  -->
+	<select id="findGs" resultType="pd"> 
+		select *,(SELECT ID FROM category WHERE ID=(select PID from category where ID=CATEGORY_ID))TYPE_ID from company where 1=1
+		and ID= #{COMPANY_ID}
+	</select>
+	<select id="findGsbuname" resultType="pd"> 
+		select * from company where 1=1
+		and COMPANY_NAME= #{COMPANY_NAME}  and ISDEL='1'
+	</select>
+	
+	<!-- 查询 -->
+	<select id="listPageByParam1" parameterType="page" resultType="pd">
+	     SELECT CP.ID as COMPANY_ID,CP.COMPANY_NAME,
+			(select NAME from category where ID=CP.CATEGORY_ID) as CG_NAME,
+			DATE_FORMAT(CP.CREATE_DATE,'%Y-%m-%d %H:%i:%s') as CREATE_DATE,CP.ADDR,
+			CP.FOUNDER as CREATE_NAME
+			FROM company CP LEFT JOIN APP_USER AU ON AU.COMPANY_ID=CP.ID
+			WHERE 1=1 and CP.ISDEL=1 
+		<if test="pd.USERID !=null">
+			 AND AU.ID=#{pd.USERID}
+		</if>
+		<if test="pd.COMPANY_NAME !=null">
+		    and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+		</if>
+	</select>
+	<!-- 查询条数 -->
+	<select id="findCount1" parameterType="page" resultType="pd">
+		SELECT count(*) counts 
+			FROM company CP LEFT JOIN APP_USER AU ON AU.COMPANY_ID=CP.ID
+			WHERE 1=1 and CP.ISDEL=1 
+		<if test="pd.USERID !=null">
+			 AND AU.ID=#{pd.USERID}
+		</if>
+		<if test="pd.COMPANY_NAME !=null">
+		    and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+		</if>
+	</select>
+	
+	
+	<!--查询个人企业信息  -->
+	<select id="querycompany" resultType="pd"> 
+		select * from company where COMPANY_NAME=#{COMPANY_NAME},BUSINESS_LICENSE=#{BUSINESS_LICENSE}
+	</select>
+	<!-- 修改 -->
+	<update id="upcom" parameterType="pd" flushCache="false">
+		update  company set 
+		<if test="COMPANY_NAME !=null and COMPANY_NAME !='' ">
+			COMPANY_NAME=#{COMPANY_NAME},	
+		</if>
+		<if test="BUSINESS_LICENSE !=null and BUSINESS_LICENSE !='' ">
+			BUSINESS_LICENSE=#{BUSINESS_LICENSE},	
+		</if>
+		<if test="ADDR !=null and ADDR !='' ">
+			ADDR=#{ADDR},	
+		</if>
+		<if test="CATEGORY_ID !=null and CATEGORY_ID !='' ">
+			CATEGORY_ID=#{CATEGORY_ID},
+		</if> 
+		<if test="LOGO !=null and LOGO !='' ">
+			LOGO=#{LOGO},	
+		</if>
+		<if test="DESCRIPTION !=null and DESCRIPTION !='' ">
+			DESCRIPTION=#{DESCRIPTION},	
+		</if>
+		<if test="INTERNET_PATH !=null and INTERNET_PATH !='' ">
+			INTERNET_PATH=#{INTERNET_PATH},
+		</if>
+		ID = #{ID}
+			where ID = #{ID}
+	</update>
+	<!-- 通过id获取所有数据 -->
+	<select id="querypanyid" parameterType="pd" resultType="pd" useCache="false">
+	    select C.*,S.ID AS SID,A.ID AS AID from  company C LEFT JOIN sys_user S ON S.ID=C.CREATE_BY LEFT JOIN app_user A ON C.CREATE_BY=A.ID where C.ID=#{ID} 
+	</select>
+	<!-- 添加 -->
+	<insert id="addcompany" parameterType="pd">
+		insert into company(ID,COMPANY_NAME,BUSINESS_LICENSE,ADDR,CATEGORY_ID,CREATE_BY,CREATE_DATE,DESCRIPTION,INTERNET_PATH)
+		values(#{ID},#{COMPANY_NAME},#{BUSINESS_LICENSE},#{ADDR},#{CATEGORY_ID},#{CREATE_BY},#{CREATE_DATE},#{DESCRIPTION},#{INTERNET_PATH})  
+    </insert>
+    
+     <!-- 批量删除 -->
+    <update id="delpany">
+    	<!-- delete from company where ID in -->
+    	update company set ISDEL=2 where ID in
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </update>
+    <!-- 根据企业名称，用户名称进行查找 -->
+	<select id="querycompanyname" parameterType="pd" resultType="pd" useCache="false">
+	select * from company WHERE COMPANY_NAME=#{COMPANY_NAME} and ISDEL=1
+	</select>
+	<!-- 分配 -->
+	<insert id="inmanagers" parameterType="pd">
+		insert into company(ID,COMPANY_NAME,BUSINESS_LICENSE,ADDR,CATEGORY_ID,CREATE_BY,CREATE_DATE,LOGO,DESCRIPTION,INTERNET_PATH)
+		values(#{ID},#{COMPANY_NAME},#{BUSINESS_LICENSE},#{ADDR},#{CATEGORY_ID},#{CREATE_BY},#{CREATE_DATE},#{LOGO},#{DESCRIPTION},#{INTERNET_PATH})  
+    </insert>
+	<select id="querybyhangye" parameterType="pd" resultType="pd" >
+	    SELECT * from category where ISDEL=1
+	</select>
+	 <!--根据条件查询行业类型-->
+    <select id="queryByParam" parameterType="pd" resultType="pd">
+   		SELECT * FROM category l WHERE 1=1
+   		<if test="pid!=null and pid!=''">
+			and PID=#{pid}
+		</if>
+		<if test="ID!=null and ID!=''">
+			and ID=#{ID}
+		</if> 
+	</select> 
+	
+	 <!--根据条件查询行业类型-->
+    <select id="queryByPid" parameterType="pd" resultType="pd">
+   		SELECT * FROM category l WHERE PID!=#{pid} 
+	</select> 
+</mapper>

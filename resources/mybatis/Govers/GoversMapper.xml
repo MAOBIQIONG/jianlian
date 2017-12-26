@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GoversMapper">
+
+	
+	<select id="listPageByStatus" parameterType="page" resultType="pd">
+	   SELECT XM.*,SU.NAME AS XMJL,UU.NAME AS SHR,ZC.SUBCLASS FROM jl_zf_xm  XM LEFT JOIN sys_user SU ON XM.MANAGER=SU.ID LEFT JOIN sys_user UU ON XM.CHECK_BY=UU.ID
+	   LEFT JOIN jl_zf_cubclass ZC ON ZC.ID=XM.TYPE_ID 
+		where XM.ISDEL=1 and XM.STATUS &gt;=#{pd.STATUS}
+		<if test="pd.PRO_NAME !=null">
+		    and PRO_NAME LIKE CONCAT(CONCAT('%', #{pd.PRO_NAME}),'%')
+		</if>
+	</select> 
+	
+	 <!-- 查询总数 -->
+	<select id="findCountByStatus" parameterType="page" resultType="pd">
+	   SELECT count(*) counts FROM jl_zf_xm  XM LEFT JOIN sys_user SU ON XM.MANAGER=SU.ID LEFT JOIN sys_user UU ON XM.CHECK_BY=UU.ID 
+	   LEFT JOIN jl_zf_cubclass ZC ON ZC.ID=XM.TYPE_ID
+		where XM.ISDEL=1 and XM.STATUS &gt;=#{pd.STATUS}
+		<if test="pd.PRO_NAME !=null">
+		    and PRO_NAME LIKE CONCAT(CONCAT('%', #{pd.PRO_NAME}),'%')
+		</if>
+	</select>
+	
+	
+	<select id="listPage" parameterType="page" resultType="pd">
+		SELECT XM.*,SU.NAME AS XMJL,UU.NAME AS SHR,ZC.SUBCLASS FROM jl_zf_xm  XM LEFT JOIN sys_user SU ON XM.MANAGER=SU.ID LEFT JOIN sys_user UU ON XM.CHECK_BY=UU.ID
+		LEFT JOIN jl_zf_cubclass ZC ON ZC.ID=XM.TYPE_ID 
+		WHERE XM.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.PRO_NAME !=null">
+		    and PRO_NAME LIKE CONCAT(CONCAT('%', #{pd.PRO_NAME}),'%')
+		</if>
+		<if test="pd.CONTENT !=null">	
+			and CONTENT=#{pd.CONTENT}
+		</if> 
+		<if test="pd.CITY !=null">	
+			and CITY=#{pd.CITY}
+		</if>
+		<if test="pd.ADDR !=null">	
+			and ADDR=#{pd.ADDR}
+		</if>
+		<if test="pd.TOTAL_INVESTMENT !=null">	
+			and TOTAL_INVESTMENT=#{pd.TOTAL_INVESTMENT}
+		</if>
+		<if test="pd.COOPERATION_MODE !=null">	
+			and COOPERATION_MODE=#{pd.COOPERATION_MODE}
+		</if>
+		<if test="pd.CONTACTS_NAME !=null">	
+			and CONTACTS_NAME=#{pd.CONTACTS_NAME}
+		</if>
+		<if test="pd.CONTACT_PHONE !=null">
+			and CONTACT_PHONE=#{pd.CONTACT_PHONE}
+		</if>
+		<if test="pd.MARKET_ANALYSIS !=null">	
+			and MARKET_ANALYSIS=#{pd.MARKET_ANALYSIS}
+		</if>
+		<if test="pd.POSITION !=null">	
+			and POSITION=#{pd.POSITION}
+		</if>
+		<if test="pd.INVESTOR !=null">
+			and INVESTOR=#{pd.INVESTOR}
+		</if>
+		<if test="pd.PROJECT_VIDEO !=null">	
+			and PROJECT_VIDEO=#{pd.PROJECT_VIDEO}
+		</if>
+		<if test="pd.MANAGER !=null">
+			and MANAGER=#{pd.MANAGER}
+		</if>
+		<if test="pd.PRESIDER !=null">
+			and PRESIDER=#{pd.PRESIDER}
+		</if>
+		<if test="pd.PUBLISH_DATE !=null">
+			and PUBLISH_DATE=#{pd.PUBLISH_DATE}
+		</if>
+		<if test="pd.CREATE_DATE !=null">
+			and CREATE_DATE=#{pd.CREATE_DATE}
+		</if>
+		<if test="pd.DESCRIPTION !=null">
+			and DESCRIPTION=#{pd.DESCRIPTION} 
+		</if>
+		<if test="pd.TYPE_ID !=null">
+			and TYPE_ID=#{pd.TYPE_ID} 
+		</if>
+		<if test="pd.STATUS !=null">
+			and STATUS=#{pd.STATUS} 
+		</if>
+		<if test="pd.VIDEO !=null">
+			and VIDEO=#{pd.VIDEO} 
+		</if>
+		<if test="pd.CHECK_BY !=null">
+			and CHECK_BY=#{pd.CHECK_BY} 
+		</if>
+		<if test="pd.CHECK_DATE !=null">
+			and CHECK_DATE=#{pd.CHECK_DATE} 
+		</if> 
+		<if test="pd.MODIFY_BY !=null">
+			and MODIFY_BY=#{pd.MODIFY_BY} 
+		</if> 
+		<if test="pd.MODIFY_DATE !=null">
+			and MODIFY_DATE=#{pd.MODIFY_DATE} 
+		</if> 
+		<if test="pd.INVESTMENT !=null">
+			and INVESTMENT=#{pd.INVESTMENT} 
+		</if> 
+	</select> 
+	
+	<!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM jl_zf_xm  XM LEFT JOIN sys_user SU ON XM.MANAGER=SU.ID LEFT JOIN sys_user UU ON XM.CHECK_BY=UU.ID 
+		LEFT JOIN jl_zf_cubclass ZC ON ZC.ID=XM.TYPE_ID
+		WHERE XM.ISDEL=1
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>
+		<if test="pd.PRO_NAME !=null">
+		    and PRO_NAME LIKE CONCAT(CONCAT('%', #{pd.PRO_NAME}),'%')
+		</if>
+		<if test="pd.CONTENT !=null">	
+			and CONTENT=#{pd.CONTENT}
+		</if> 
+		<if test="pd.CITY !=null">	
+			and CITY=#{pd.CITY}
+		</if>
+		<if test="pd.ADDR !=null">	
+			and ADDR=#{pd.ADDR}
+		</if>
+		<if test="pd.TOTAL_INVESTMENT !=null">	
+			and TOTAL_INVESTMENT=#{pd.TOTAL_INVESTMENT}
+		</if>
+		<if test="pd.COOPERATION_MODE !=null">	
+			and COOPERATION_MODE=#{pd.COOPERATION_MODE}
+		</if>
+		<if test="pd.CONTACTS_NAME !=null">	
+			and CONTACTS_NAME=#{pd.CONTACTS_NAME}
+		</if>
+		<if test="pd.CONTACT_PHONE !=null">
+			and CONTACT_PHONE=#{pd.CONTACT_PHONE}
+		</if>
+		<if test="pd.MARKET_ANALYSIS !=null">	
+			and MARKET_ANALYSIS=#{pd.MARKET_ANALYSIS}
+		</if>
+		<if test="pd.POSITION !=null">	
+			and POSITION=#{pd.POSITION}
+		</if>
+		<if test="pd.INVESTOR !=null">
+			and INVESTOR=#{pd.INVESTOR}
+		</if>
+		<if test="pd.PROJECT_VIDEO !=null">	
+			and PROJECT_VIDEO=#{pd.PROJECT_VIDEO}
+		</if>
+		<if test="pd.MANAGER !=null">
+			and MANAGER=#{pd.MANAGER}
+		</if>
+		<if test="pd.PRESIDER !=null">
+			and PRESIDER=#{pd.PRESIDER}
+		</if>
+		<if test="pd.PUBLISH_DATE !=null">
+			and PUBLISH_DATE=#{pd.PUBLISH_DATE}
+		</if>
+		<if test="pd.CREATE_DATE !=null">
+			and CREATE_DATE=#{pd.CREATE_DATE}
+		</if>
+		<if test="pd.DESCRIPTION !=null">
+			and DESCRIPTION=#{pd.DESCRIPTION} 
+		</if>
+		<if test="pd.TYPE_ID !=null">
+			and TYPE_ID=#{pd.TYPE_ID} 
+		</if>
+		<if test="pd.STATUS !=null">
+			and STATUS=#{pd.STATUS} 
+		</if>
+		<if test="pd.VIDEO !=null">
+			and VIDEO=#{pd.VIDEO} 
+		</if>
+		<if test="pd.CHECK_BY !=null">
+			and CHECK_BY=#{pd.CHECK_BY} 
+		</if>
+		<if test="pd.CHECK_DATE !=null">
+			and CHECK_DATE=#{pd.CHECK_DATE} 
+		</if> 
+		<if test="pd.MODIFY_BY !=null">
+			and MODIFY_BY=#{pd.MODIFY_BY} 
+		</if> 
+		<if test="pd.MODIFY_DATE !=null">
+			and MODIFY_DATE=#{pd.MODIFY_DATE} 
+		</if> 
+		<if test="pd.INVESTMENT !=null">
+			and INVESTMENT=#{pd.INVESTMENT} 
+		</if> 
+	</select> 
+	
+	
+	<!-- 列表(全部) -->
+	<select id="listlxAll" parameterType="pd" resultType="pd">
+		SELECT * FROM jl_zf_cubclass
+	</select>
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into jl_zf_xm(
+		<if test="PRO_NAME != null">
+			PRO_NAME,
+		</if>
+		<if test="CONTENT != null">
+			CONTENT,
+		</if>
+		<if test="CITY != null">
+			CITY,
+		</if>
+		<if test="ADDR != null">
+			ADDR,
+		</if>
+		<if test="TOTAL_INVESTMENT != null">
+			TOTAL_INVESTMENT,
+		</if>
+		<if test="COOPERATION_MODE != null">
+			COOPERATION_MODE,	
+		</if>
+		<if test="CONTACTS_NAME != null">	
+			CONTACTS_NAME,
+		</if>
+		<if test="CONTACT_PHONE != null">
+			CONTACT_PHONE,
+		</if>
+		<if test="MARKET_ANALYSIS != null">
+			MARKET_ANALYSIS,
+		</if>
+		<if test="POSITION != null">
+			POSITION,
+		</if>
+		<if test="INVESTOR != null">
+			INVESTOR,
+		</if>
+		<if test="PROJECT_VIDEO != null">
+			PROJECT_VIDEO,
+		</if>
+		<if test="MANAGER != null">
+			MANAGER,
+		</if>
+		<if test="PRESIDER != null">
+			PRESIDER,
+		</if>
+		<if test="PUBLISH_DATE != null">
+			PUBLISH_DATE,
+		</if>
+		<if test="CREATE_DATE != null">
+			CREATE_DATE,
+		</if>
+		<if test="DESCRIPTION != null">
+			DESCRIPTION,
+		</if>
+		<if test="TYPE_ID != null">
+			TYPE_ID,
+		</if>
+		<if test="CHECK_BY != null">
+			CHECK_BY,
+		</if>
+		<if test="CHECK_DATE != null">
+			CHECK_DATE,
+		</if>
+		<if test="INVESTMENT != null">
+			INVESTMENT,
+		</if>
+		<if test="STATUS != null">
+			STATUS,
+		</if>
+		<if test="CREATE_BY != null">
+			CREATE_BY,
+		</if>
+		<if test="NO_PASS_REASON != null">
+			NO_PASS_REASON,
+		</if>
+			ID
+		) values (
+		<if test="PRO_NAME != null">
+			#{PRO_NAME},
+		</if>
+		<if test="CONTENT != null">
+			#{CONTENT},
+		</if>
+		<if test="CITY != null">
+			#{CITY},
+		</if>
+		<if test="ADDR != null">
+			#{ADDR},
+		</if>
+		<if test="TOTAL_INVESTMENT != null">
+			#{TOTAL_INVESTMENT},
+		</if>
+		<if test="COOPERATION_MODE != null">
+			#{COOPERATION_MODE},	
+		</if>
+		<if test="CONTACTS_NAME != null">	
+			#{CONTACTS_NAME},
+		</if>
+		<if test="CONTACT_PHONE != null">
+			#{CONTACT_PHONE},
+		</if>
+		<if test="MARKET_ANALYSIS != null">
+			#{MARKET_ANALYSIS},
+		</if>
+		<if test="POSITION != null">
+			#{POSITION},
+		</if>
+		<if test="INVESTOR != null">
+			#{INVESTOR},
+		</if>
+		<if test="PROJECT_VIDEO != null">
+			#{PROJECT_VIDEO},
+		</if>
+		<if test="MANAGER != null">
+			#{MANAGER},
+		</if>
+		<if test="PRESIDER != null">
+			#{PRESIDER},
+		</if>
+		<if test="PUBLISH_DATE != null">
+			#{PUBLISH_DATE},
+		</if>
+		<if test="CREATE_DATE != null">
+			#{CREATE_DATE},
+		</if>
+		<if test="DESCRIPTION != null">
+			#{DESCRIPTION},
+		</if>
+		<if test="TYPE_ID != null">
+			#{TYPE_ID},
+		</if>
+		<if test="CHECK_BY != null">
+			#{CHECK_BY},
+		</if>
+		<if test="CHECK_DATE != null">
+			#{CHECK_DATE},
+		</if>
+		<if test="INVESTMENT != null">
+			#{INVESTMENT},
+		</if>
+		<if test="STATUS != null">
+			#{STATUS},
+		</if>
+		<if test="CREATE_BY != null">
+			#{CREATE_BY},
+		</if>
+		<if test="NO_PASS_REASON != null">
+			#{NO_PASS_REASON},
+		</if>
+			#{ID}
+		) 
+	</insert>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd" flushCache="false">
+		update  jl_zf_xm set 
+		<if test="PRO_NAME != null">
+			PRO_NAME=#{PRO_NAME},
+		</if>
+		<if test="CONTENT != null">
+			CONTENT=#{CONTENT},
+		</if>
+		<if test="CITY != null">
+			CITY=#{CITY},
+		</if>
+		<if test="ADDR != null">
+			ADDR=#{ADDR},
+		</if>
+		<if test="TOTAL_INVESTMENT != null">
+			TOTAL_INVESTMENT=#{TOTAL_INVESTMENT},
+		</if>
+		<if test="COOPERATION_MODE != null">
+			COOPERATION_MODE=#{COOPERATION_MODE},	
+		</if>
+		<if test="CONTACTS_NAME != null">	
+			CONTACTS_NAME=#{CONTACTS_NAME},
+		</if>
+		<if test="CONTACT_PHONE != null">
+			CONTACT_PHONE=#{CONTACT_PHONE},
+		</if>
+		<if test="MARKET_ANALYSIS != null">
+			MARKET_ANALYSIS=#{MARKET_ANALYSIS},
+		</if>
+		<if test="POSITION != null">
+			POSITION=#{POSITION},
+		</if>
+		<if test="INVESTOR != null">
+			INVESTOR=#{INVESTOR},
+		</if>
+		<if test="PROJECT_VIDEO != null">
+			PROJECT_VIDEO=#{PROJECT_VIDEO},
+		</if>
+		<if test="MANAGER != null">
+			MANAGER=#{MANAGER},
+		</if>
+		<if test="PRESIDER != null">
+			PRESIDER=#{PRESIDER},
+		</if>
+		<if test="PUBLISH_DATE != null">
+			PUBLISH_DATE=#{PUBLISH_DATE},
+		</if>
+		<if test="MODIFY_DATE != null">
+			MODIFY_DATE=#{MODIFY_DATE},
+		</if>
+		<if test="DESCRIPTION != null">
+			DESCRIPTION=#{DESCRIPTION},
+		</if>
+		<if test="TYPE_ID != null">
+			TYPE_ID=#{TYPE_ID},
+		</if>
+		<if test="CHECK_BY != null">
+			CHECK_BY=#{CHECK_BY},
+		</if>
+		<if test="CHECK_DATE != null">
+			CHECK_DATE=#{CHECK_DATE},
+		</if>
+		<if test="INVESTMENT != null">
+			INVESTMENT=#{INVESTMENT},
+		</if>
+		<if test="STATUS != null">
+			STATUS=#{STATUS},
+		</if>
+		<if test="NO_PASS_REASON != null">
+			NO_PASS_REASON=#{NO_PASS_REASON},
+		</if>
+		<if test="MODIFY_BY != null">
+			MODIFY_BY=#{MODIFY_BY},
+		</if>   
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	
+	<!-- 删除项目 -->
+	<update id="delete" parameterType="pd">
+	 update  jl_zf_xm  set ISDEL=2 where ID = #{ID} 
+	</update>
+	
+	<!-- 根据编号查讯项目详情 -->
+	<select id="querybyid" parameterType="page" resultType="pd">
+	   SELECT XM.*,SU.NAME AS XMJL,UU.NAME AS SHR,ZC.SUBCLASS,CASE XM.STATUS  WHEN '1' THEN '待审核'  WHEN '2' THEN '审核未通过'  WHEN '3' THEN '审核通过'  WHEN '4' THEN '已分配'  WHEN '5' THEN '待确认'  WHEN '6' THEN '交易完成' END AS PROJECT_STATUS FROM jl_zf_xm  XM LEFT JOIN sys_user SU ON XM.MANAGER=SU.ID LEFT JOIN sys_user UU ON XM.CHECK_BY=UU.ID
+	   LEFT JOIN jl_zf_cubclass ZC ON ZC.ID=XM.TYPE_ID 
+		where XM.ISDEL=1 and XM.ID=#{ID}
+	</select> 
+</mapper>

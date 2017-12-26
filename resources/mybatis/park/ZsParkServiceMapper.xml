@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ZsParkServiceMapper">  
+
+	<select id="listPage" parameterType="page" resultType="pd">
+		  SELECT S.*,D.NAME AS TYPE_NAME,U.NAME AS SYS_NAME,A.REAL_NAME AS USER_NAME,R.NAME AS AUDIT_NAME  FROM ZS_PARK_SERVICE S LEFT JOIN SYS_DICTIONARIES D ON S.JOIN_CLASS=D.BIANMA 
+ 			LEFT JOIN SYS_USER U ON U.ID=S.CREATE_BY LEFT JOIN APP_USER A ON A.ID=S.USER_ID LEFT JOIN SYS_USER R ON R.ID=S.AUDIT_BY
+		 	WHERE S.ISDEL=1  
+		<if test="pd.COMPANY_NAME !=null">
+		    and S.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%')
+		</if> 
+	</select> 
+	
+	<!-- 查询总数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM ZS_PARK_SERVICE S LEFT JOIN SYS_DICTIONARIES D ON S.JOIN_CLASS=D.BIANMA
+		LEFT JOIN SYS_USER U ON U.ID=S.CREATE_BY LEFT JOIN APP_USER A ON A.ID=S.USER_ID LEFT JOIN SYS_USER R ON R.ID=S.AUDIT_BY
+		 WHERE S.ISDEL=1  
+		<if test="pd.COMPANY_NAME !=null">
+		    and S.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%')
+		</if> 
+	</select> 
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd"> 
+		SELECT * FROM ZS_PARK_SERVICE WHERE ID=#{ID}
+	</select>
+	
+	<!-- 通过ID查询app端发布人的信息 -->
+	<select id="queryBySid" parameterType="pd" resultType="pd"> 
+		 SELECT A.*,S.ID AS S_ID,S.COMPANY_NAME FROM APP_USER A LEFT JOIN ZS_PARK_SERVICE S ON A.ID=S.USER_ID WHERE S.ID=#{ID}
+	</select>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+	INSERT INTO ZS_PARK_SERVICE (ID,COMPANY_NAME,YQ_NAME,CONTACT_INFORMATION,LOGO,JOIN_CLASS,COMPANY_INTRODUCTION,STATUS,CREATE_BY,CREATE_DATE) VALUES 
+	(#{ID},#{COMPANY_NAME},#{YQ_NAME},#{CONTACT_INFORMATION},#{LOGO},#{JOIN_CLASS},#{COMPANY_INTRODUCTION},#{STATUS},#{CREATE_BY},#{CREATE_DATE})
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd"> 
+		UPDATE ZS_PARK_SERVICE SET 
+		<if test="COMPANY_NAME !=null">
+		     COMPANY_NAME= #{COMPANY_NAME},
+		</if>
+		<if test="USER_ID !=null">	
+			USER_ID=#{USER_ID},
+		</if> 
+		<if test="YQ_NAME !=null">	
+			YQ_NAME=#{YQ_NAME},
+		</if>
+		<if test="CONTACT_INFORMATION !=null">	
+			CONTACT_INFORMATION=#{CONTACT_INFORMATION},
+		</if>
+		<if test="PROJECT_DESCRIPTION !=null">	
+			PROJECT_DESCRIPTION=#{PROJECT_DESCRIPTION},
+		</if>
+		<if test="LOGO !=null">	
+			LOGO=#{LOGO},
+		</if>
+		<if test="JOIN_CLASS !=null">	
+			JOIN_CLASS=#{JOIN_CLASS},
+		</if>
+		<if test="COMPANY_INTRODUCTION !=null">
+			COMPANY_INTRODUCTION=#{COMPANY_INTRODUCTION},
+		</if>  
+		<if test="STATUS !=null">	
+			STATUS=#{STATUS},
+		</if> 
+		<if test="NOPASS_REASON !=null">
+			NOPASS_REASON=#{NOPASS_REASON},
+		</if> 
+		<if test="AUDIT_BY !=null">
+			AUDIT_BY=#{AUDIT_BY},
+		</if>
+		<if test="AUDIT_DATE !=null">
+			 AUDIT_DATE=#{AUDIT_DATE},
+		</if>
+		<if test="MODIFY_BY !=null">
+			MODIFY_BY=#{MODIFY_BY},
+		</if>
+		<if test="MODIFY_DATE !=null">
+			MODIFY_DATE=#{MODIFY_DATE},
+		</if>  
+		ID = #{ID}
+		where ID = #{ID}
+	</update>
+	
+	<!-- 删除用户 -->
+	<update id="delete" parameterType="pd">
+	 	UPDATE ZS_PARK_SERVICE SET ISDEL=2 WHERE ID = #{ID}  
+	</update>
+	
+	<update id="updateStatus" parameterType="pd">
+		UPDATE ZS_PARK_SERVICE SET STATUS=#{STATUS}
+		<if test="NOPASS_REASON != null || NOPASS_REASON != ''">
+			,NOPASS_REASON=#{NOPASS_REASON}
+		</if>	 
+		<if test="AUDIT_BY !=null">
+			,AUDIT_BY=#{AUDIT_BY}
+		</if>
+		<if test="AUDIT_DATE !=null">
+			,AUDIT_DATE=#{AUDIT_DATE}
+		</if>	
+		 where ID = #{ID}
+	</update>  
+</mapper>

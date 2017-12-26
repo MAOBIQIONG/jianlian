@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TbUserMapper">
+
+	<!-- 查询所有用户 -->
+    <select id="querytbuser" resultType="pd">
+	    select * from  app_user where ISDEL=1
+	</select>
+	
+	<!-- 查询用户信息 -->
+    <select id="queryuserandcom" resultType="pd">
+	    select a.*,c.company_name from  app_user a left join company c on a.company_id=c.id and c.ISDEL=1 where a.ISDEL=1 and a.id=#{ID}
+	</select>
+
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT AU.*,CP.COMPANY_NAME AS C_NAME,D.NAME AS LEVEL_NAME,case AU.IS_VIP when '1' then '是会员' when '0' then '非会员' when '3' then '内部员工' end AS VIP_NAME,
+		case AU.SERVICE_TYPE when '00' then '无'
+		 when '10' then '项目经理'
+		 when '20' then '会员经理'
+		 when '30' then '城市合伙人经理'
+		end AS SERVICE_TYPEN 
+		FROM app_user AU LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID and CP.ISDEL='1' LEFT JOIN SYS_DICTIONARIES D ON AU.VIP_LEVEL=D.BIANMA
+		WHERE 1=1 and AU.ISDEL=1
+			<if test="pd.ID !=null and pd.ID !=''">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''">
+			    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+			</if>
+			<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''">
+			    and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+			<if test="pd.NICK_NAME !=null and pd.NICK_NAME !=''">	
+				and NICK_NAME=#{pd.NICK_NAME}
+			</if>
+			<if test="pd.USER_NAME !=null and pd.USER_NAME !=''">	
+				and USER_NAME LIKE CONCAT(CONCAT('%', #{pd.USER_NAME}),'%') 
+			</if>
+			<if test="pd.PASSWORD !=null">	
+				and PASSWORD=#{pd.PASSWORD}
+			</if>
+			<if test="pd.POSITION !=null">	
+				and POSITION=#{pd.POSITION}
+			</if>
+			<if test="pd.COMPANY_ID !=null">	
+				and COMPANY_ID=#{pd.COMPANY_ID}
+			</if>
+			<if test="pd.SEX !=null">	
+				and SEX=#{pd.SEX}
+			</if>
+			<if test="pd.PHONE !=null and pd.PHONE !=''">	
+				and PHONE LIKE CONCAT(CONCAT('%', #{pd.PHONE}),'%') 
+			</if>
+			<if test="pd.EMAIL !=null">	
+				and EMAIL=#{pd.EMAIL}
+			</if>
+			<if test="pd.IS_VIP !=null">	
+				and IS_VIP=#{pd.IS_VIP}
+			</if>
+			<if test="pd.TY == 0">	
+				and IS_VIP = '3'
+			</if>
+			<if test="pd.TY == 1">	
+				and IS_VIP != '3'
+			</if>
+			<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''">	
+				and VIP_LEVEL=#{pd.VIP_LEVEL}
+			</if>
+			<if test="pd.DUE_DATE !=null">	
+				and DUE_DATE=#{pd.DUE_DATE}
+			</if>
+			<if test="pd.STATUS !=null">	
+				and STATUS=#{pd.STATUS}
+			</if>
+			<if test="pd.IMG !=null">	
+				and IMG=#{pd.IMG}
+			</if>
+			<if test="pd.CARD_NO !=null and pd.CARD_NO !=''">	
+				and CARD_NO LIKE CONCAT(CONCAT('%', #{pd.CARD_NO}),'%') 
+			</if>
+			<if test="pd.REGISTER_DATE !=null">	
+				and REGISTER_DATE=#{pd.REGISTER_DATE}
+			</if> 
+			<if test="pd.LAST_LOGIN_DATE !=null">	
+				and LAST_LOGIN_DATE =#{pd.LAST_LOGIN_DATE}
+			</if>
+			<if test="pd.SUMMARY !=null">	
+				and SUMMARY=#{pd.SUMMARY}
+			</if>
+			<if test="pd.ASSESS !=null">	
+				and ASSESS=#{pd.ASSESS}
+			</if>
+			<if test="pd.HONOR !=null">	
+				and HONOR=#{pd.HONOR}
+			</if>
+			<if test="pd.MANAGER_ID !=null">	
+				and MANAGER_ID=#{pd.MANAGER_ID}
+			</if>
+			<if test="pd.ID_NUMBER !=null">	
+				and ID_NUMBER=#{pd.ID_NUMBER}
+			</if>
+			<if test="pd.NOPASSREASON !=null">	
+				and NOPASSREASON=#{pd.pd.NOPASSREASON}
+			</if>
+			<if test="pd.TOTAL_POINTS !=null">	
+				and TOTAL_POINTS=#{pd.TOTAL_POINTS}),'%')
+			</if>
+			<if test="pd.WEBCHAT !=null">	
+				and WEBCHAT =#{pd.WEBCHAT}
+			</if>
+			<if test="pd.QQ !=null">	
+				and QQ = #{pd.QQ}
+			</if>
+			<if test="pd.WEBO !=null">	
+				and WEBO = #{pd.WEBO}
+			</if>
+	</select>
+	
+	<!-- 查询 -->
+	<select id="listShopUserByParam" parameterType="page" resultType="pd">
+		SELECT AU.REAL_NAME,AU.POSITION,CP.COMPANY_NAME,AU.VIP_LEVEL,SD.NAME,AU.CLIENT_ID,AU.PLATFORM,AU.ID FROM sys_dictionaries SD RIGHT JOIN  app_user AU ON SD.BIANMA=AU.VIP_LEVEL LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		WHERE AU.ISDEL=1 AND AU.IS_VIP != '3'
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''"> 
+			and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''"> 
+			and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%')
+		</if>
+		<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''"> 
+			and AU.VIP_LEVEL =#{pd.VIP_LEVEL}
+		</if>
+	</select>
+	
+	<!-- 查询 -->
+	<select id="listShopCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM sys_dictionaries SD RIGHT JOIN  app_user AU ON SD.BIANMA=AU.VIP_LEVEL LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		WHERE AU.ISDEL=1 AND AU.IS_VIP != '3'
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''"> 
+			and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''"> 
+			and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%')
+		</if>
+		<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''"> 
+			and AU.VIP_LEVEL =#{pd.VIP_LEVEL}
+		</if>
+	</select>
+	
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM app_user AU LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID and CP.ISDEL='1' LEFT JOIN SYS_DICTIONARIES D ON AU.VIP_LEVEL=D.BIANMA
+		WHERE 1=1 and AU.ISDEL=1
+			<if test="pd.ID !=null and pd.ID !=''">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''">
+			    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+			</if>
+			<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''">
+			    and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+			<if test="pd.NICK_NAME !=null and pd.NICK_NAME !=''">	
+				and NICK_NAME=#{pd.NICK_NAME}
+			</if>
+			<if test="pd.USER_NAME !=null and pd.USER_NAME !=''">	
+				and USER_NAME LIKE CONCAT(CONCAT('%', #{pd.USER_NAME}),'%') 
+			</if>
+			<if test="pd.PASSWORD !=null">	
+				and PASSWORD=#{pd.PASSWORD}
+			</if>
+			<if test="pd.POSITION !=null">	
+				and POSITION=#{pd.POSITION}
+			</if>
+			<if test="pd.COMPANY_ID !=null">	
+				and COMPANY_ID=#{pd.COMPANY_ID}
+			</if>
+			<if test="pd.SEX !=null">	
+				and SEX=#{pd.SEX}
+			</if>
+			<if test="pd.PHONE !=null and pd.PHONE !=''">	
+				and PHONE LIKE CONCAT(CONCAT('%', #{pd.PHONE}),'%') 
+			</if>
+			<if test="pd.EMAIL !=null">	
+				and EMAIL=#{pd.EMAIL}
+			</if>
+			<if test="pd.IS_VIP !=null">	
+				and IS_VIP=#{pd.IS_VIP}
+			</if>
+			<if test="pd.TY == 0">	
+				and IS_VIP = '3'
+			</if>
+			<if test="pd.TY == 1">	
+				and IS_VIP != '3'
+			</if>
+			<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''">	
+				and VIP_LEVEL=#{pd.VIP_LEVEL}
+			</if>
+			<if test="pd.DUE_DATE !=null">	
+				and DUE_DATE=#{pd.DUE_DATE}
+			</if>
+			<if test="pd.STATUS !=null">	
+				and STATUS=#{pd.STATUS}
+			</if>
+			<if test="pd.IMG !=null">	
+				and IMG=#{pd.IMG}
+			</if>
+			<if test="pd.CARD_NO !=null and pd.CARD_NO !=''">	
+				and CARD_NO LIKE CONCAT(CONCAT('%', #{pd.CARD_NO}),'%') 
+			</if>
+			<if test="pd.REGISTER_DATE !=null">	
+				and REGISTER_DATE=#{pd.REGISTER_DATE}
+			</if> 
+			<if test="pd.LAST_LOGIN_DATE !=null">	
+				and LAST_LOGIN_DATE =#{pd.LAST_LOGIN_DATE}
+			</if>
+			<if test="pd.SUMMARY !=null">	
+				and SUMMARY=#{pd.SUMMARY}
+			</if>
+			<if test="pd.ASSESS !=null">	
+				and ASSESS=#{pd.ASSESS}
+			</if>
+			<if test="pd.HONOR !=null">	
+				and HONOR=#{pd.HONOR}
+			</if>
+			<if test="pd.MANAGER_ID !=null">	
+				and MANAGER_ID=#{pd.MANAGER_ID}
+			</if>
+			<if test="pd.ID_NUMBER !=null">	
+				and ID_NUMBER=#{pd.ID_NUMBER}
+			</if>
+			<if test="pd.NOPASSREASON !=null">	
+				and NOPASSREASON=#{pd.pd.NOPASSREASON}
+			</if>
+			<if test="pd.TOTAL_POINTS !=null">	
+				and TOTAL_POINTS=#{pd.TOTAL_POINTS}),'%')
+			</if>
+			<if test="pd.WEBCHAT !=null">	
+				and WEBCHAT =#{pd.WEBCHAT}
+			</if>
+			<if test="pd.QQ !=null">	
+				and QQ = #{pd.QQ}
+			</if>
+			<if test="pd.WEBO !=null">	
+				and WEBO = #{pd.WEBO}
+			</if>
+	</select>
+	<select id="queryById" resultType="pd">
+	    select * from  app_user where ID=#{ID}
+	</select>
+	
+	<!-- 获取会员荣誉 -->
+	<select id="queryRy" resultType="pd">
+	    select * from  JL_USER_HONOR where USER_ID=#{ID}
+	</select>
+	<delete id="delRy" parameterType="pd">
+	    delete from JL_USER_HONOR where USER_ID=#{USER_ID}
+	</delete>
+	<insert id="addRy" parameterType="pd">
+		insert into JL_USER_HONOR(
+			USER_ID,HONOR,GET_DATE,CREATE_DATE,
+			ID
+		)
+		values(#{USER_ID},#{HONOR},#{GET_DATE},NOW(),
+		#{ID}
+		)  
+    </insert>
+	<!-- 获取会员资源 -->
+	<select id="queryZy" resultType="pd">
+	    select * from  JL_USER_RESOURCE where USER_ID=#{ID}
+	</select>
+	<delete id="delZy" parameterType="pd">
+	    delete from JL_USER_RESOURCE where USER_ID=#{USER_ID}
+	</delete>
+	<insert id="addZy" parameterType="pd">
+		insert into JL_USER_RESOURCE(
+			USER_ID,RESOURCE,CREATE_DATE,
+			ID
+		)
+		values(#{USER_ID},#{RESOURCE},NOW(),
+		#{ID}
+		)  
+    </insert>
+	<!-- 获取会员需求-->
+	<select id="queryXq" resultType="pd">
+	    select * from  JL_USER_NEEDS where USER_ID=#{ID}
+	</select>
+	<delete id="delXq" parameterType="pd">
+	    delete from JL_USER_NEEDS where USER_ID=#{USER_ID}
+	</delete>
+	<insert id="addXq" parameterType="pd">
+		insert into JL_USER_NEEDS(
+			USER_ID,NEED_NAME,CREATE_DATE,
+			ID
+		)
+		values(#{USER_ID},#{NEED_NAME},NOW(),
+		#{ID}
+		)  
+    </insert>
+	
+	
+	<!-- 添加 -->
+	<insert id="adduser" parameterType="pd">
+		insert into app_user(REAL_NAME,NICK_NAME,USER_NAME,PASSWORD,POSITION,COMPANY_ID,SEX,PHONE,EMAIL,IS_VIP,VIP_LEVEL,DUE_DATE,STATUS,IMG,CARD_NO,
+		REGISTER_DATE,LAST_LOGIN_DATE,SUMMARY,ASSESS,HONOR,MANAGER_ID,ID_NUMBER,NOPASSREASON,TOTAL_POINTS,WEBCHAT,QQ,WEBO,VALERIE,CLAN_ID,UPGRADE_DATE,
+		<if test="SERVICE_TYPE !=null">
+			SERVICE_TYPE,
+		</if> 
+		<if test="FLAG !=null">
+			FLAG,
+		</if> 
+		<if test="SHOW_NAME !=null">
+			SHOW_NAME,
+		</if>
+		ID
+		)
+		values(#{REAL_NAME},#{NICK_NAME},#{USER_NAME},#{PASSWORD},#{POSITION},#{COMPANY_ID},#{SEX},#{PHONE},#{EMAIL},#{IS_VIP},#{VIP_LEVEL},#{DUE_DATE},#{STATUS},#{IMG},#{CARD_NO},
+		#{REGISTER_DATE},#{LAST_LOGIN_DATE},#{SUMMARY},#{ASSESS},#{HONOR},#{MANAGER_ID},#{ID_NUMBER},#{NOPASSREASON},#{TOTAL_POINTS},#{WEBCHAT},#{QQ},#{WEBO},#{VALERIE},#{CLAN_ID},#{UPGRADE_DATE},
+		<if test="SERVICE_TYPE !=null">
+			#{SERVICE_TYPE},
+		</if> 
+		<if test="FLAG !=null">
+			#{FLAG},
+		</if> 
+		<if test="SHOW_NAME !=null">
+			#{SHOW_NAME},
+		</if>
+		#{ID}
+		)  
+    </insert>
+    
+    <update id="edituser" parameterType="pd">
+	   update app_user set REAL_NAME=#{REAL_NAME},NICK_NAME=#{NICK_NAME},USER_NAME=#{USER_NAME},PASSWORD=#{PASSWORD},
+	   COMPANY_ID=#{COMPANY_ID},POSITION=#{POSITION},PHONE=#{PHONE},IS_VIP=#{IS_VIP},VIP_LEVEL=#{VIP_LEVEL},CARD_NO=#{CARD_NO},
+	   VALERIE=#{VALERIE} where ID=#{ID}
+	</update>
+	
+	 
+      <!-- 批量删除 -->
+    <!-- <delete id="delTbuser">
+    	delete from app_user where ID in
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </delete> -->
+    <update id="delTbuser" parameterType="pd" flushCache="false">
+	    update app_user set ISDEL=2 where ID in 
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+	</update>
+     <!-- 禁止 -->
+     <update id="upstatus" parameterType="pd" flushCache="false">
+		update app_user set STATUS=${STATUS}
+		where ID=#{ID}
+	</update> 
+	
+	  <!-- 重置密码 -->
+   <update id="editPoint" parameterType="pd" flushCache="false">
+		UPDATE APP_USER SET TOTAL_POINTS=TOTAL_POINTS+#{POINTS} WHERE  ID=#{USER_ID}
+	</update>
+	
+    <!-- 重置密码 -->
+   <update id="uppassword" parameterType="pd" flushCache="false">
+		update  app_user set 
+		PASSWORD=#{PASSWORD}
+		where ID = #{ID}
+	</update>
+	<!-- 修改 -->
+	<update id="uptbuser" parameterType="pd" flushCache="false">
+		update  app_user set 
+		<if test="REAL_NAME !=null and REAL_NAME !=''">
+			REAL_NAME=#{REAL_NAME},	
+		</if>
+		<if test="NICK_NAME !=null">
+			NICK_NAME=#{NICK_NAME},	
+		</if>
+		<if test="USER_NAME !=null">
+			USER_NAME=#{USER_NAME},	
+		</if>
+		<if test="PASSWORD !=null">
+			PASSWORD=#{PASSWORD},	
+		</if>
+		<if test="POSITION !=null">
+			POSITION=#{POSITION},	
+		</if>
+		<if test="COMPANY_ID !=null">
+			COMPANY_ID=#{COMPANY_ID},	
+		</if>
+		<if test="SEX !=null">
+			SEX=#{SEX},
+		</if>
+		<if test="PHONE !=null">
+			PHONE=#{PHONE},	
+		</if>
+		<if test="EMAIL !=null">
+			EMAIL=#{EMAIL},
+		</if>
+		<if test="IS_VIP !=null">
+			IS_VIP=#{IS_VIP},
+		</if>
+		<if test="VIP_LEVEL !=null">
+			VIP_LEVEL=#{VIP_LEVEL},
+		</if>
+		<if test="DUE_DATE !=null">
+			DUE_DATE=#{DUE_DATE},
+		</if>
+		<if test="STATUS !=null">
+			STATUS=#{STATUS},
+		</if>
+		<if test="IMG !=null">
+			IMG=#{IMG},
+		</if>
+		<if test="CARD_NO !=null">
+			CARD_NO=#{CARD_NO}, 
+		</if>
+		<if test="LAST_LOGIN_DATE !=null">
+			LAST_LOGIN_DATE=#{LAST_LOGIN_DATE}, 
+		</if>
+		<if test="SUMMARY !=null">
+		    SUMMARY=#{SUMMARY},
+		</if>
+		<if test="ASSESS !=null">
+			ASSESS=#{ASSESS},
+		</if>
+		<if test="HONOR !=null">
+			HONOR=#{HONOR},
+		</if>
+		<if test="MANAGER_ID !=null">
+			MANAGER_ID=#{MANAGER_ID},
+		</if>
+		<if test="ID_NUMBER !=null">
+			ID_NUMBER=#{ID_NUMBER},
+		</if>
+		<if test="NOPASSREASON !=null">
+			NOPASSREASON=#{NOPASSREASON},
+		</if>
+		<if test="TOTAL_POINTS !=null">
+			TOTAL_POINTS=#{TOTAL_POINTS},
+		</if>
+		<if test="VALERIE !=null">
+			VALERIE=#{VALERIE},
+		</if>
+		<if test="CLAN_ID !=null">
+			CLAN_ID=#{CLAN_ID},
+		</if>
+		<if test="UPGRADE_DATE !=null">
+			UPGRADE_DATE=#{UPGRADE_DATE},
+		</if> 
+		<if test="FLAG !=null">
+			FLAG=#{FLAG},
+		</if> 
+		<if test="SHOW_NAME !=null">
+			SHOW_NAME=#{SHOW_NAME},
+		</if> 
+		<if test="SERVICE_TYPE !=null">
+			SERVICE_TYPE=#{SERVICE_TYPE},
+		</if> 
+		    ID = #{ID}  
+			where ID = #{ID}  
+	</update>
+	<!--根据用户姓名查找用户所有信息  -->
+	<select id="querybyname" parameterType="pd" resultType="pd"> 
+	select * from app_user where REAL_NAME=#{REAL_NAME} and ISDEL=1
+	</select>
+	 <!-- 删除 -->
+   <!--   <delete id="delmembyid" parameterType="pd">
+    delete from app_user where ID=#{ID}
+    </delete> --> 
+    <!-- 修改 -->
+	<update id="delmembyid" parameterType="pd" flushCache="false">
+	    update app_user set ISDEL=2 where ID=#{ID}
+	</update>
+    <!-- 查找公司名称 -->
+    <select id="querybycomname" resultType="pd"> 
+	SELECT COMPANY_NAME FROM app_user AU,company CP WHERE AU.COMPANY_ID=CP.ID AND COMPANY_ID=#{COMPANY_ID} and AU.ISDEL=1
+	</select>
+	
+	<!-- 查询 -->
+	<select id="listPageByEndtime" parameterType="page" resultType="pd">
+		SELECT AU.ID,AU.REAL_NAME,AU.POSITION,AU.USER_NAME,AU.PHONE,AU.CARD_NO,AU.DUE_DATE,AU.UPGRADE_DATE,CP.COMPANY_NAME AS C_NAME,D.NAME AS LEVEL_NAME FROM app_user AU LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID LEFT JOIN SYS_DICTIONARIES D ON AU.VIP_LEVEL=D.BIANMA
+		WHERE 1=1 and AU.ISDEL=1 AND AU.VIP_LEVEL!='02' AND AU.VIP_LEVEL!='' AND AU.VIP_LEVEL IS NOT NULL
+			<if test="pd.ID !=null and pd.ID !=''">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''">
+			    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+			</if>
+			<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''">
+			    and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+			<if test="pd.NICK_NAME !=null and pd.NICK_NAME !=''">	
+				and NICK_NAME=#{pd.NICK_NAME}
+			</if>
+			<if test="pd.USER_NAME !=null and pd.USER_NAME !=''">	
+				and USER_NAME LIKE CONCAT(CONCAT('%', #{pd.USER_NAME}),'%') 
+			</if>  
+			<if test="pd.PHONE !=null and pd.PHONE !=''">	
+				and PHONE LIKE CONCAT(CONCAT('%', #{pd.PHONE}),'%') 
+			</if>  
+			<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''">	
+				and VIP_LEVEL=#{pd.VIP_LEVEL}
+			</if>
+			<if test="pd.DUE_DATE !=null">	
+				and DUE_DATE=#{pd.DUE_DATE}
+			</if> 
+			<if test="pd.CARD_NO !=null and pd.CARD_NO !=''">	
+				and CARD_NO LIKE CONCAT(CONCAT('%', #{pd.CARD_NO}),'%') 
+			</if>  
+	</select>
+	<!-- 查询条数 -->
+	<select id="findCountByEndtime" parameterType="page" resultType="pd">
+		SELECT count(*) as counts FROM app_user AU LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID LEFT JOIN SYS_DICTIONARIES D ON AU.VIP_LEVEL=D.BIANMA
+		WHERE 1=1 and AU.ISDEL=1 AND AU.VIP_LEVEL!='02' AND AU.VIP_LEVEL!='' AND AU.VIP_LEVEL IS NOT NULL
+			<if test="pd.ID !=null and pd.ID !=''">
+				and ID = #{pd.ID}
+			</if>
+			<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''">
+			    and REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%') 
+			</if>
+			<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''">
+			    and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%') 
+			</if>
+			<if test="pd.NICK_NAME !=null and pd.NICK_NAME !=''">	
+				and NICK_NAME=#{pd.NICK_NAME}
+			</if>
+			<if test="pd.USER_NAME !=null and pd.USER_NAME !=''">	
+				and USER_NAME LIKE CONCAT(CONCAT('%', #{pd.USER_NAME}),'%') 
+			</if>  
+			<if test="pd.PHONE !=null and pd.PHONE !=''">	
+				and PHONE LIKE CONCAT(CONCAT('%', #{pd.PHONE}),'%') 
+			</if>  
+			<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''">	
+				and VIP_LEVEL=#{pd.VIP_LEVEL}
+			</if>
+			<if test="pd.DUE_DATE !=null">	
+				and DUE_DATE=#{pd.DUE_DATE}
+			</if> 
+			<if test="pd.CARD_NO !=null and pd.CARD_NO !=''">	
+				and CARD_NO LIKE CONCAT(CONCAT('%', #{pd.CARD_NO}),'%') 
+			</if>  
+	</select>
+	
+	<select id="findU" resultType="pd">
+	    select * from  app_user where isdel='1'
+	    <if test="USER_NAME !=null and USER_NAME !=''">	
+			and USER_NAME=#{USER_NAME}
+		</if> 
+		 <if test="CARD_NO !=null and CARD_NO !=''">	
+			and CARD_NO=#{CARD_NO}
+		</if> 
+	</select>
+	
+	 <!-- 根据USER_ID查询我的证件信息-->
+	<select id="listPage" parameterType="page" resultType="pd">
+		SELECT AU.REAL_NAME,AU.POSITION,CP.COMPANY_NAME,AU.VIP_LEVEL,SD.NAME,AU.CLIENT_ID,AU.PLATFORM,AU.ID FROM sys_dictionaries SD RIGHT JOIN  app_user AU ON SD.BIANMA=AU.VIP_LEVEL LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		WHERE AU.ISDEL=1 AND AU.IS_VIP = '3'
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''"> 
+			and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''"> 
+			and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%')
+		</if>
+		<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''"> 
+			and AU.VIP_LEVEL =#{pd.VIP_LEVEL}
+		</if>
+	</select> 
+	<!-- 查询条数 -->
+	<select id="findInnerCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM sys_dictionaries SD RIGHT JOIN  app_user AU ON SD.BIANMA=AU.VIP_LEVEL LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID
+		WHERE 1=1 AND AU.ISDEL=1 and AU.IS_VIP = '3'
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !=''"> 
+			and AU.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>
+		<if test="pd.COMPANY_NAME !=null and pd.COMPANY_NAME !=''"> 
+			and CP.COMPANY_NAME LIKE CONCAT(CONCAT('%', #{pd.COMPANY_NAME}),'%')
+		</if>
+		<if test="pd.VIP_LEVEL !=null and pd.VIP_LEVEL !=''"> 
+			and AU.VIP_LEVEL =#{pd.VIP_LEVEL}
+		</if>
+	</select>
+	
+	
+	<!-- 查询卡号是否重复 -->
+	<select id="findBmCount" parameterType="pd" resultType="pd">
+		SELECT ID FROM app_user 
+		WHERE CARD_NO=#{CARD_NO}
+		<if test="ID != null and ID != ''">
+			and ID != #{ID} 
+		</if>
+	</select>
+	
+	<!-- 查询需要导出的Excel信息 -->
+    <select id="doexlelist" parameterType="pd" resultType="pd">
+	 	SELECT AU.*,CP.COMPANY_NAME AS C_NAME,D.NAME AS LEVEL_NAME,case AU.IS_VIP when '1' then '是会员' when '0' then '非会员' when '3' then '内部员工' end AS VIP_NAME,
+		case AU.SERVICE_TYPE when '00' then '无'
+		 when '10' then '项目经理'
+		 when '20' then '会员经理'
+		 when '30' then '城市合伙人经理'
+		end AS SERVICE_TYPEN 
+		FROM app_user AU LEFT JOIN company CP ON AU.COMPANY_ID=CP.ID and CP.ISDEL='1' LEFT JOIN SYS_DICTIONARIES D ON AU.VIP_LEVEL=D.BIANMA
+		WHERE 1=1 and AU.ISDEL=1
+	</select>
+</mapper>

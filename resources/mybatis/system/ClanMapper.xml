@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ClanMapper">
+	<!-- 查询 -->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+		SELECT C.*,U.NAME AS USER_NAME,S.AREANAME AS AREA_NAME  FROM  CLAN  C LEFT JOIN SYS_USER U ON C.CREATE_BY=U.ID LEFT JOIN SYS_AREA S ON S.AREACODE=C.AREA_CODE WHERE 1=1 and C.ISDEL=1
+			<if test="pd.ID !=null">
+				and C.ID = #{pd.ID}
+			</if>  
+			<if test="pd.AREA_CODE !=null and pd.AREA_CODE !=''">
+				and C.AREA_CODE = #{pd.AREA_CODE}
+			</if>  
+			<if test="pd.NAME !=null and pd.NAME !=''">	
+				and C.NAME LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%')
+			</if>   
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY =#{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE = #{pd.CREATE_DATE}
+			</if>
+	</select> 
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM  CLAN  C LEFT JOIN SYS_USER U ON C.CREATE_BY=U.ID LEFT JOIN SYS_AREA S ON S.AREACODE=C.AREA_CODE WHERE 1=1 and C.ISDEL=1 
+			<if test="pd.ID !=null">
+				and C.ID = #{pd.ID}
+			</if> 
+			<if test="pd.AREA_CODE !=null and pd.AREA_CODE !=''">
+				and C.AREA_CODE = #{pd.AREA_CODE}
+			</if>   
+			<if test="pd.NAME !=null and pd.NAME !=''">	
+				and C.NAME LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%')
+			</if>   
+			<if test="pd.CREATE_BY !=null">	
+				and CREATE_BY =#{pd.CREATE_BY}
+			</if>
+			<if test="pd.CREATE_DATE !=null">	
+				and CREATE_DATE = #{pd.CREATE_DATE}
+			</if>
+	</select> 
+	
+	<!-- 查询城市建联成员数量 -->
+	<select id="listPage" parameterType="page" resultType="pd"> 
+		SELECT A.ID,A.REAL_NAME,A.USER_NAME,A.POSITION,A.COMPANY_ID,CASE A.SEX WHEN 1 THEN '男' WHEN 2 THEN '女' END AS SEX_NAME,A.PHONE,A.EMAIL,A.VIP_LEVEL,C.COMPANY_NAME,D.NAME AS LEVEL_NAME,A.REGISTER_DATE,A.CLAN_ID 
+		FROM APP_USER A LEFT JOIN COMPANY C ON A.COMPANY_ID=C.ID 
+		LEFT JOIN sys_dictionaries D ON D.BIANMA=A.VIP_LEVEL
+        WHERE A.ISDEL=1 AND  A.CLAN_ID=#{pd.CLAN_ID} 
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and A.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>  
+	</select>   
+	
+	<!-- 查询城市建联成员数量条数 -->
+	<select id="findMemberCount" parameterType="page" resultType="pd">
+		SELECT count(*) counts FROM APP_USER A LEFT JOIN COMPANY C ON A.COMPANY_ID=C.ID 
+		LEFT JOIN sys_dictionaries D ON D.BIANMA=A.VIP_LEVEL
+        WHERE A.ISDEL=1 AND A.CLAN_ID=#{pd.CLAN_ID} 
+		<if test="pd.REAL_NAME !=null and pd.REAL_NAME !='' ">
+		    and A.REAL_NAME LIKE CONCAT(CONCAT('%', #{pd.REAL_NAME}),'%')
+		</if>  
+	</select>   
+	
+	<select id="queryById" resultType="pd">
+	    SELECT * FROM CLAN WHERE ID=#{ID}
+	</select>
+	
+	<select id="queryAll" resultType="pd">
+	    SELECT * FROM CLAN 
+	</select>
+	 <!-- 添加用户信息 -->
+	<insert id="addClan" parameterType="pd" flushCache="false">
+	INSERT INTO CLAN (
+			ID,
+			IMG_PATH,
+			NAME,
+			INTRODUCE,
+			TYPE,
+			NUMBER_COUNTS, 
+			AREA_CODE, 
+			ZONE_CODE,
+			CREATE_BY,
+			CREATE_DATE
+		) VALUES (
+			#{ID},
+			#{IMG_PATH},
+			#{NAME},
+			#{INTRODUCE},
+			#{TYPE},
+			#{NUMBER_COUNTS}, 
+			#{AREA_CODE},
+			#{ZONE_CODE}, 
+			#{CREATE_BY},
+			#{CREATE_DATE}
+		)
+	</insert>
+	
+      <!-- 批量删除 -->
+    <!-- <delete id="delClan">
+    	DELETE FROM  CLAN WHERE ID IN
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </delete> -->
+    <update id="delClan" parameterType="pd">
+		UPDATE CLAN SET ISDEL='2'
+		WHERE ID IN
+		<foreach collection="array" item="des" open="(" close=")"
+			separator=",">
+			#{des}
+		</foreach>
+    </update>
+    
+      <!-- 删除 -->
+    <!-- <delete id="delClanbyid">
+    	DELETE FROM  CLAN WHERE ID=#{ID}
+    </delete> -->
+     <update id="delClanbyid" parameterType="pd">
+		UPDATE CLAN SET ISDEL='2'
+		WHERE ID=#{ID}
+    </update>
+	<!-- 修改 -->
+	<update id="upClan" parameterType="pd" flushCache="false">
+		UPDATE  CLAN SET
+			<if test="IMG_PATH !=null">	
+				IMG_PATH=#{IMG_PATH},
+			</if>  
+			<if test="NAME !=null">	
+				NAME=#{NAME},	
+			</if>  
+			<if test="INTRODUCE !=null">	
+				INTRODUCE=#{INTRODUCE},	
+			</if>  
+			<if test="TYPE !=null">	
+				TYPE=#{TYPE},	
+			</if>  
+			<if test="NUMBER_COUNTS !=null">	
+				NUMBER_COUNTS=#{NUMBER_COUNTS},	  
+			</if> 
+			<if test="AREA_CODE !=null">	
+				AREA_CODE=#{AREA_CODE},	  
+			</if>  
+			<if test="ZONE_CODE !=null">	
+				ZONE_CODE=#{ZONE_CODE},	  
+			</if>  
+			 ID = #{ID} 
+			WHERE ID = #{ID}
+	</update>
+	
+	<!-- 关注数量加一 --> 
+	<update id="updateaddClanCounts" parameterType="pd">
+		UPDATE clan SET 
+		   MEMBER_COUNT=MEMBER_COUNT+1
+		   WHERE ID=#{CLAN_ID}
+    </update>
+    <!-- 取消关注数量减少 -->
+    <update id="updatedelClanCounts" parameterType="pd">
+		UPDATE clan SET 
+		   MEMBER_COUNT=MEMBER_COUNT-1
+		   WHERE ID=#{CLAN_ID}
+    </update>
+    
+    <update id="updatedelhd" parameterType="pd" flushCache="false">
+		update  clan set  ISSYSLOOK='1'
+	</update>
+</mapper>

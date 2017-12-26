@@ -1,0 +1,142 @@
+.comment-all{
+	position: relative;
+	width: 100%;
+}
+.comment {
+	padding-left: 5px;
+	position: fixed;
+	bottom: 0px;
+	background: #f0f0f0;
+	width: 100%;
+	height: 40px;
+	padding-top:2px;
+	z-index: 100;
+	opacity:1;
+}
+
+.comment input {
+	height: 36px;
+	width: 78%;
+}
+
+.comment-list{
+	list-style: none;
+	margin-left: 0px;
+	padding-left:5px;
+	padding-right:5px;
+	border-top:1px dotted #ccc;
+	margin-top:20px;
+	padding-top:20px;
+	position: relative;
+	margin-bottom:50px;
+}
+.comment-list li{
+	margin-left:0px;
+	border-bottom: 1px solid #e0e0e0;
+	background:#ffffff;
+	min-height: 38px;
+	line-height:22px;
+	padding-left:15px;
+	padding-right:10px;
+	font-size:0.8em;
+	color:#555;
+	padding:10px;
+	position: relative;
+}
+
+.comment-list li:hover{
+	background:#fefefe;
+	
+}
+
+.comment-list .comment-user{
+	color:#2980b9;
+}
+.comment-list .comment-publish-time{
+	color:#999;
+	
+	right:20px;
+	top:10px;
+}
+.comment-publish-time{
+position:absolute;
+}
+
+
+.comment-list .comment-content{
+	clear:both;
+	min-height: 60px;
+}
+
+
+
+.comment-praise{
+	width: 1.5em;
+	height:1.5em;
+	position: absolute;
+	bottom: 5px;
+	right:5px;
+}
+
+.comment-list .comment-remove{
+	width: 1.5em;
+	height:1.5em;
+	position: absolute;
+	bottom: 5px;
+	right:55px;
+}
+.comment-list .comment-remove-1{
+	position: absolute;
+	bottom: 5px;
+	right:80px;
+	-webkit-animation:fadeInRight  0.35s ease 0s 1 both;
+	-moz-animation:fadeInRight  0.35s ease 0s 1 both;
+	-o-animation:fadeInRight  0.35s ease 0s 1 both;
+	animation:fadeInRight  0.35s ease 0s 1 both;
+}
+
+.comment-ding1{
+	width: 1.5em;
+	height:1.5em;
+	position: absolute;
+	bottom: 5px;
+	right:30px;
+}
+.comment-ding2{
+	width: 1.5em;
+	height:1.5em;
+	position: absolute;
+	bottom: 5px;
+	right:30px;
+	-webkit-animation:fadeIn  0.65s ease 0s 1 both;
+	-moz-animation:fadeIn  0.65s ease 0s 1 both;
+	-o-animation:fadeIn  0.65s ease 0s 1 both;
+	animation:fadeIn  0.65s ease 0s 1 both;
+}
+
+.comment-ding1 img,.comment-ding2 img,.comment-remove img{
+	width: 1.5em;
+	height:1.5em;
+}
+
+.comment-more{
+	height:35px;
+	color:#2980b9;
+	text-align:center;
+	padding-top:5px;
+	font-size:0.8em;
+}
+.comment-title{
+	position: absolute;
+	top:-12px;
+	max-width: 100px;
+	background: #f0f0f0;
+	font-size:0.8em;
+	color:#999;
+}
+.comment-no{
+	text-align: center;
+	color:#999;
+	font-size:0.8em;
+	padding-top:5px;
+}

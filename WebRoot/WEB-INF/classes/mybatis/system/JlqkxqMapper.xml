@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="JlqkxqMapper">
+	
+	<!-- 查询列表信息-->
+	<select id="listPageByParam" parameterType="page" resultType="pd">
+	 SELECT * FROM JL_QK_XQ WHERE ISDEL=1 
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>  
+		<if test="pd.QK_ID !=null">
+		    and QK_ID  LIKE CONCAT(CONCAT('%', #{pd.QK_ID}),'%') 
+		</if>
+		<if test="pd.PAGE_NUM !=null">	
+			and PAGE_NUM = #{pd.PAGE_NUM}
+		</if>
+		<if test="pd.CREATE_BY !=null">	
+			and CREATE_BY  = #{pd.CREATE_BY}
+		</if>
+		<if test="pd.CREATE_DATE !=null">	
+			and CREATE_DATE = #{pd.CREATE_DATE}
+		</if> 
+	</select> 
+	
+	<!-- 查询条数 -->
+	<select id="findCount" parameterType="page" resultType="pd">
+		 SELECT count(*) counts FROM JL_QK_XQ WHERE ISDEL=1 
+		<if test="pd.ID !=null">
+			and ID = #{pd.ID}
+		</if>  
+		<if test="pd.QK_ID !=null">
+		    and QK_ID  LIKE CONCAT(CONCAT('%', #{pd.QK_ID}),'%') 
+		</if>
+		<if test="pd.PAGE_NUM !=null">	
+			and PAGE_NUM = #{pd.PAGE_NUM}
+		</if>
+		<if test="pd.CREATE_BY !=null">	
+			and CREATE_BY  = #{pd.CREATE_BY}
+		</if>
+		<if test="pd.CREATE_DATE !=null">	
+			and CREATE_DATE = #{pd.CREATE_DATE}
+		</if> 
+	</select> 
+	
+	<select id="queryById" parameterType="pd" resultType="pd">
+	   SELECT * FROM JL_QK_XQ WHERE ID=#{ID}
+	</select>
+	
+	 <!-- 添加用户信息 -->
+	<insert id="save" parameterType="pd"> 
+		INSERT INTO  JL_QK_XQ (ID,QK_ID,IMG_PATH,PAGE_NUM,CREATE_BY,CREATE_DATE) VALUES (
+		#{ID}, #{QK_ID}, #{IMG_PATH}, #{PAGE_NUM}, #{CREATE_BY}, #{CREATE_DATE})
+	</insert>  
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		UPDATE JL_QK_XQ SET
+		<if test="QK_ID !=null and QK_ID !='' ">
+			QK_ID=#{QK_ID},	
+		</if>
+		<if test="IMG_PATH !=null and IMG_PATH !='' ">
+			IMG_PATH=#{IMG_PATH},	
+		</if>
+		<if test="PAGE_NUM !=null and PAGE_NUM !='' ">
+			PAGE_NUM=#{PAGE_NUM},	
+		</if>
+		<if test="CREATE_BY !=null and CREATE_BY !='' ">
+			CREATE_BY=#{CREATE_BY},	
+		</if>
+		<if test="CREATE_DATE !=null and CREATE_DATE !='' ">
+			CREATE_DATE=#{CREATE_DATE},	
+		</if>  
+		ID = #{ID} WHERE ID = #{ID}
+	</update> 
+	
+     <update id="delete" parameterType="pd">
+		UPDATE JL_QK_XQ SET ISDEL='2' WHERE ID=#{ID} 
+	</update> 
+</mapper>
